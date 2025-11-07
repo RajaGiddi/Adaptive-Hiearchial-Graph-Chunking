@@ -1,0 +1,2156 @@
+PREPRINT VERSION 2025
+
+1
+
+ NeuFMT: Optical-Property-Adaptive Fluorescence
+Molecular Tomography via Implicit
+Neural Representation
+
+arXiv:2511.04510v1 [eess.IV] 6 Nov 2025
+
+Shihan Zhao, Jianru Zhang, Yanan Wu, Linlin Li, Siyuan Shen, Xingjun Zhu, Guoyan Zheng, Member IEEE,
+Jiahua Jiang, and Wuwei Ren
+
+Abstract Fluorescence Molecular Tomography (FMT) is a
+promising technique for non-invasive 3D visualization of fluorescent probes, but its reconstruction remains challenging due to
+the inherent ill-posedness and reliance on inaccurate or oftenunknown tissue optical properties. While deep learning methods
+have shown promise, their supervised nature limits generalization
+beyond training data. To address these problems, we propose
+ NeuFMT, a self-supervised FMT reconstruction framework that
+integrates implicit neural-based scene representation with explicit
+physical modeling of photon propagation. Its key innovation lies
+in jointly optimize both the fluorescence distribution and the
+optical properties ( ) during reconstruction, eliminating the need
+for precise prior knowledge of tissue optics or pre-conditioned
+training data. We demonstrate that NeuFMT robustly recovers
+accurate fluorophore distributions and optical coefficients even
+with severely erroneous initial values (0.5 to 2 of ground
+truth). Extensive numerical, phantom, and in vivo validations
+show that NeuFMT outperforms conventional and supervised
+deep learning approaches across diverse heterogeneous scenarios.
+Our work establishes a new paradigm for robust and accurate
+FMT reconstruction, paving the way for more reliable molecular
+imaging in complex clinically related scenarios, such as fluorescence guided surgery.
+Index Terms fluorescence molecular tomography, image reconstruction, optical properties, implicit neural representation,
+fluorescence guided surgery
+
+The work was supported by Science and Technology Commission of Shanghai Municipality under Grant 25JS2830300 (Wuwei Ren), National Natural
+Science Foundation of China under Grants 62105205 (Wuwei Ren), and
+Shanghai Clinical Research and Trial Center (Wuwei Ren). (Corresponding
+author: Wuwei Ren.)
+Shihan Zhao and Jianru Zhang contributed equally to this work.
+Shihan Zhao, Yanan Wu, Linlin Li and Siyuan Shen are with
+the School of Information Science and Technology, ShanghaiTech
+University, Shanghai 201210, China (e-mail: zhaoshh, wuyn1, lill,
+shensy2023@shanghaitech.edu.cn).
+Jianru Zhang and Jiahua Jiang are with the School of Mathematics,
+University of Birmingham, Edgbaston, B15 2QN, United Kingdom (e-mail:
+jxz389@student.bham.ac.uk; j.jiang.3@bham.ac.uk).
+Xingjun Zhu is with the School of Physical Science and Technology, ShanghaiTech University, Shanghai 201210, China (e-mail:
+zhuxj1@shanghaitech.edu.cn).
+Guoyan Zheng is with the Institute of Medical Robotics, School of
+Biomedical Engineering, Shanghai Jiao Tong University, Shanghai 200240,
+China (e-mail: guoyan.zheng@sjtu.edu.cn)
+Wuwei Ren is with the School of Information Science and Technology,
+ShanghaiTech University, Shanghai 201210, China, and also with State
+Key Laboratory of Advanced Medical Materials and Devices, ShanghaiTech
+University, Shanghai 201210, China (e-mail: renww@shanghaitech.edu.cn).
+
+I. INTRODUCTION
+Fluorescence Molecular Tomography (FMT) has emerged
+as a promising molecular imaging modality, enabling noninvasive 3D visualization of fluorescent probe distribution
+in highly turbid media [1]. Owning to its high sensitivity,
+cost-effectiveness, and non-ionizing radiation, FMT has found
+broad applications in preclinical research and clinical practice, e.g., brain imaging [2], in vitro cell culture monitoring
+[3] and tumor detection [4]. FMT reconstructs the internal
+fluorescence distribution by measuring the photon distribution
+on the object surface and minimizing the discrepancy between
+real measurements and the simulated results. A canonic framework of FMT reconstruction employs an iterative optimization
+strategy with a forward model typically based on the
+Radiation Transfer Equation (RTE) or the diffusion equation
+(DE) and an inverse model that refines fluorescence distribution prediction until convergence [5], [6]. However, FMT
+reconstruction is inherently ill-posed due to insufficient surface measurements and strong photon scattering effect within
+tissues. Development of high-precision FMT reconstruction
+algorithms is highly attractive for further improvement of
+the spatial resolution and detection depth of this technology,
+which ultimately broaden the biological applications in drug
+discovery [7] and clinical use such as fluorescence guided
+surgery [8], [9].
+To address the ill-posed nature of FMT reconstruction,
+regularization techniques that incorporate prior knowledge are
+applied. Conventional approaches include Tikhonov (L2 norm)
+regularization for smoothing the results [10], [11], and sparsepromoting regularization (L1 , Lp norm) or total variation (TV)
+regularization for enhancing the spatial resolution [12], [13].
+Recent advancements in regularization techniques, such as
+the solution-decomposition algorithm, utilize an advanced
+stochastic prior model that improves the differentiation of
+fluorescence targets from background interference, thereby
+enhancing reconstruction quality [14]. While these methods
+stabilize solutions, their reliance on time-consuming iterative
+optimization and idealized assumptions about optical parameters often results in slow convergence and limited accuracy in
+heterogeneous tissues. Deep learning (DL) methods, particularly en-decoder-based neural networks [15] [21] and graphbased networks [22] [24], have recently been used in FMT
+reconstruction by learning direct mappings from boundary
+measurements to fluorescence distributions. These approaches
+
+2
+
+encode physical priors within network parameters, enabling
+overwhelmingly rapid inference. However, their dependence
+on supervised training with large, scenario-specific datasets restricts generalizability across variable experimental conditions
+(e.g., tissue object geometry and optical properties), leading
+to significant accuracy degradation when the object properties
+deviate from training assumptions.
+Recently, implicit neural representation (INR) models have
+emerged as a powerful alternative for medical image reconstruction. By mapping arbitrary spatial coordinates to certain
+unknown physical quantities via a coordinate-based multilayer perceptron network (MLP), INRs achieve continuous
+3D representations, self-supervised training, and memory efficiency. Originally popularized in computer vision and medical imaging, INRs have demonstrated remarkable success
+in modalities such as computed tomography (CT), magnetic
+resonance imaging (MRI) [25] [29], and notably in diffuse
+optical tomography (DOT), where INR has been proven to be
+able to capture a high-resolution, continuous optical absorption
+map that account for light scattering in complex tissues [30].
+INR captures continuous spatial information and integrates
+physical priors makes it particularly suited for various imaging problems. In the context of FMT, preliminary work has
+explored position encoding strategies to enhance spatial resolution and improve the quality of FMT reconstructions [31].
+Nevertheless, systematic studies integrating optical diffusion
+physics within an INR framework remain scarce. This gap
+presents an opportunity to harness the strengths of implicit
+modeling for robust and data-efficient FMT reconstruction.
+To bridge this gap, we propose neural-field-based FMT, or
+NeuFMT, a physics-driven reconstruction framework unifying
+INR with explicit physical models. Unlike conventional DLbased FMT reconstruction algorithms that couple explicit
+fluorescence predictions to implicit physical model, NeuFMT
+integrates the DE-based forward model in the network loss,
+enabling self-supervised training without paired data. The
+differentiability of the forward model is achieved via finite
+element method (FEM). This inversion-free approach ensures
+rapid, continuous reconstruction across diverse geometries
+while inherently addressing scattering effects. Another critical
+limitation of both traditional and DL methods lies in the
+presumed optical properties of the object during reconstruction, which largely aggravate the ill-posedness of the inverse
+problem given the optical parameters were initially biased. To
+overcome this, we further introduce optical-property-adaptive
+NeuFMT, or NeuFMT, an adaptive extension of NeuFMT
+that dynamically optimizes scattering / absorption coefficients
+and fluorescence distributions jointly. By integrating an adaptive module of adjusting optical property during the iterations, NeuFMT achieves robust accuracy even when provided
+with erroneous initial guess of the optical coefficient values,
+addressing the problem of unrealistic assumption prior to
+FMT reconstruction. Both proposed INR-based FMT reconstruction algorithms were thoroughly compared and validated
+by simulations and phantom experiments along with other
+methods. Furthermore, in vivo lymph node imaging in mice
+was performed, further demonstrating the advantages of the
+proposed methods.
+
+PREPRINT VERSION 2025
+
+II. M ETHODS
+A. Forward Modeling of FMT
+Model-based FMT reconstruction comprises two fundamental steps: forward modeling and inversion. The former predicts
+surface photon density measurements based on an assumed
+fluorescence distribution. At the macroscopic scale, we employ
+the first-order approximation of the radiative transport equation (RTE), known as the diffusion equation (DE) [32]. The
+excitation and fluorescence emission processes in continuouswave (CW) mode form a coupled pair of DEs expressed as
+[33], [34]:
+ κ ϕx (r) + a ϕx (r) = qx (r),
+
+r , (1)
+
+ κ ϕm (r) + a ϕm (r) = η C(r) ϕx (r),
+
+r , (2)
+
+where ϕx and ϕm denote the excitation and emission photon
+density, qx is the excitation source, C(r) is the fluorophore
+concentration to be reconstructed in the inversion, and η
+collects quantum-yield factors in the CW source term. κ
+represents the diffusion coefficient, calculated by [33]
+1
+,
+(3)
+κ=
+3 ( a + s )
+with the absorption coefficient a and the reduced scattering
+coefficient s . In a non-contact setting of FMT, to calculate
+the value of ϕ (r) on the object surface as the measurement, a Robin-type boundary condition is added alongside the
+equation pair (1 2):
+ ϕ (r)
+= 0, {x, m}, r , (4)
+ ν
+where ζ(c) is the refractive index mismatch parameter that
+accounts for the light reflection on the boundary surface, with
+c representing the light speed inside the medium. ν denotes
+the outward normal on the boundary. Notably, to simplified the
+problem setting, we only consider a homogeneous medium
+case and the difference of a , s values under different
+wavelengths are neglected.
+ϕ (r) + 2 ζ(c) κ
+
+B. Finite Element Discretization and System Matrix Construction
+We apply the finite element method (FEM) [35] to the
+diffusion model (1) - (4). Discretizing with a tetrahedral
+N
+mesh of N
+i }i=1 , we approximate
+P nodes and nodal basis {ψP
+ϕ (r) i Φ ,i ψi (r) and qx (r) i (Qx )i ψi (r), which
+transforms the continuous-form equations into a linear system
+for excitation and emission photon propagation:
+S Φx = Qx
+
+(5)
+
+S Φm = Qm
+
+(6)
+
+where S RN N is the system matrix and Φ , Q RN
+are discretized form (coefficient vectors) for ϕ and q , respectively. In particular, the excitation field ϕx interacts with
+fluorophores C RN to produce the emission source term
+Qm = C Φx
+
+(7)
+
+with denoting element-wise multiplication. The equation
+(7) physically describes how fluorophores absorb excitation
+
+ZHAO et al.: NEUFMT: OPTICAL-PROPERTY-ADAPTIVE FLUORESCENCE MOLECULAR TOMOGRAPHY VIA IMPLICIT NEURAL REPRESENTATION
+
+explicitly reveals the functional dependence of S on the
+optical parameters a and s , which forms the mathematical
+foundation for our adaptive optimization approach introduced
+in Subsection II-C.
+
+(b)
+
+(a)
+
+3
+
+Camera
+Filter Wheel
+Real Measurement
+Sample
+
+C. INR-based FMT reconstruction: NeuFMT / NeuFMT
+Scanners
+
+Laser
+Predicted
+Measurement
+
+Focal Lens OD Filter
+(c)
+
+(d)
+
+Adaption Module
+
+Forward Model
+Based on DE
+
+Absorption Term
+High Absorption
+
+Low Absorption
+
+inv
+Di usion Term
+
+High Scattering
+
+Sti ness Matrix
+
+Low Scattering
+Boundary Term
+
+(e)
+
+Forward Data
+Backward Gradient
+
+Fluorescence Distribution Encoded with INR
+Node Coordinate
+
+3D Mesh with
+
+Nodes
+
+sine
+
+cosine
+
+Positional
+Encoding
+
+MLP
+
+Fig. 1. Conceptual illustration of NeuFMT. (a) The FMT setup: a scanned
+laser illuminates the sample while a CMOS camera with filter wheel on the
+opposite side records boundary images. The raster scanning method yields
+the raw 2D image stack M real , serving as the input to the subsequent FMT
+reconstruction. (b) The difference between M real and the simulated meac( a , , Cθ ) is iteratively minimized until an optimized value
+surement M
+s
+of unknown fluorescence distribution C is found. R(C) is a regularization
+term and { a , s } is the intrinsic optical properties consisting of
+absorption coefficient a and scattering coefficient s . (c) A -adaption
+module is integrated into the FMT reconstruction. The stiffness matrix S is
+determined by both a and s . (d) The FEM-based simulator predicts virtual
+c( a , , Cθ ) based on the operator S 1 ( ) and predicted
+measurement M
+s
+fluorescence distribution C. (e) Fluorescence distribution encoded in an INR.
+3D node coordinate serves as input, while a continuous C map is generated
+through positional encoding and an MLP network.
+
+Unlike traditional voxel-based or mesh-dependent representations, INR provides a continuous, memory-efficient framework for modeling complex physical fields. The basic variant,
+NeuFMT, learns only the fluorophore Cθ with fixed optical
+properties; the proposed adaptive NeuFMT jointly optimizes
+the optical coefficients ( a , s ) with Cθ for enhancing the
+reconstruction accuracy and robustness. In this section, we
+describe the NeuFMT representation, formulate the learning
+objective, introduce optical-property adaptation, and summarize the network architecture and implementation.
+1) INR representation of the unknown fluorescence: Our
+ NeuFMT model the 3D fluorescence field as an INR, i.e., a
+coordinate-conditioned MLP:
+
+Cθ (r) = fθ Γ (r) ,
+(10)
+where r = (x, y, z) R3 , Γ : Rd is a highdimensional positional encoding of spatial coordinates, and
+fθ : Rd R is an MLP with parameters θ. This INR formulation (10) enables resolution-independent reconstruction and
+naturally accommodates arbitrary spatial queries without being
+constrained by the conventional discrete grid structure.
+To enhance the network s ability to represent high-frequency
+details, which is crucial for resolving complex in vivo fluorescence patterns, we apply a sinusoidal positional encoding to
+each coordinate component. Let γ : R R2L be
+γ(p) = sin(20 πp), cos(20 πp), ,
+L 1
+
+sin(2
+
+πp), cos(2
+
+L 1
+
+(11)
+
+πp) ,
+
+p {x, y, z},
+
+photons and re-emit light at longer wavelengths. The emission
+source Qm then propagates through the same medium to
+produce the emission photon density Φm , which is finally
+detected at the boundary, which is computed as
+
+where L is the number of frequency bands. The
+ 3D position
+is then encoded as Γ (r) = γ(x), γ(y), γ(z) R6L , so that
+d = 6L. Feeding Γ (r) into fθ enables compact representation
+of both low- and high-frequency variations in Cθ .
+2) Learning objective: We estimate the fluorescence field
+Cθ and, in NeuFMT, the optical properties { a , s } by
+minimizing a data-fidelity term plus regularization:
+
+M = P Φm
+
+c( a , , Cθ ) M real 2 + λ R(Cθ ), (12)
+L( a , s , θ) = M
+s
+2
+
+(8)
+
+where P represents the transfer function, which maps the
+boundary photon density Φm the measurement data M acquired by the camera. The above linearized forward model
+provides the physical foundation for the inversion procedure.
+Crucially, the SPD FEM stiffness matrix S( a , s ) 
+N N
+R
+in (5) (6) encode the optical properties and boundary
+geometry, generating from a linear combination of matrices
+corresponding to distinct physical components [33], [36]
+
+1
+
+ Sd + Sb . (9)
+S( a , s ) = c a Sa +
+3( a + s )
+with Sa , Sd , and Sb the assembled absorption, diffusion, and
+Robin-boundary matrices, respectively. This decomposition
+
+c denotes the boundary measurements, and R(Cθ ) is
+where M
+a regularization term applied to the fluorescence distribution.
+The hyperparameter λ controls the regularization strength,
+balancing data fidelity with sparsity constraints. The training of
+ NeuFMT / NeuFMT follows a fully self-supervised paradigm
+that explicitly integrates the DE-based physical model into
+the optimization loop. Note that NeuFMT uses fixed optical
+parameters ( a , s ), whereas NeuFMT updates jointly.
+3) Alternating optical-property adaptation: A fundamental
+innovation of NeuFMT lies in formulating the entire photon propagation process from excitation to emission as an
+end-to-end differentiable map. The forward model follows a
+
+4
+
+PREPRINT VERSION 2025
+
+precise physical sequence from excitation source to surface
+measurements, as described in Subsection II-B:
+
+c( a , s , Cθ ) = P S( a , s ) 1 Cθ S( a , s ) 1 Qx ,
+M
+(13)
+We optimize the introduced objective L( a , s , θ) in (12),
+jointly updating network parameters θ and optical coefficients
+( a , s ). The chain in (13) contains only differentiable operations, including linear solves, elementwise products, and linear
+c is differentiable w.r.t. both Cθ (hence θ)
+projections. Thus M
+
+and ( a , s ), enabling standard gradient-based training. For
+completeness, we state the chain-rule decomposition of the
+loss gradient with respect to ( a , s ). Based on (13), the
+gradient splits into an emission term and an excitation term:
+
+c 
+ S
+ L M
+ L
+ S 1
+=
+Φm +
+c Φm
+
+{z
+}
+| M
+Emission pathway
+
+c Φm Qm 
+ L M
+ S
+Φx
+ S 1
+c Φm Qm Φx
+
+| M
+{z
+}
+
+(14)
+
+Excitation pathway
+
+ { a , s }.
+The only model-specific ingredient of a and s is the
+Jacobian of S( a , s ). According to (9), the partial derivatives
+are
+
+ S
+1
+= c Sa 
+Sd ,
+ a
+3( a + s )2
+
+ S
+1
+=c 
+Sd .
+(15)
+ s
+3( a + s )2
+This allows a and s to be optimized directly using gradient
+descent, and then be updated together with θ, bridging the
+learning process with the underlying physical model.
+To mitigate potential coupling effects between a and s
+during optimization, we propose an alternating update strategy,
+which periodically updates one optical parameter with the
+other fixed. The alternating framework largely promotes training stability to avoid oscillations with sufficient computational
+efficiency. The complete NeuFMT algorithm is described in
+Algorithm 1. Overall, the alternating -adaption module ensures that each optical parameter receives dedicated optimization attention while maintaining the physical consistency of
+the forward model, yielding more accurate FMT reconstruction
+results even in the presence of mismatch between the initial
+guess and ground truth of the optical properties.
+4) Network architecture and implementation: We adopt
+MLP for the NeuFMT / NeuFMT, comprising 8 fullyconnected layers with 512 hidden units each, followed by
+a final layer with 128 units. ReLU activation functions are
+employed throughout the network. A critical skip connection
+bridges the input Γ (r) to the 4th hidden layer, facilitating
+gradient flow and enhancing the ability to learn fine-grained
+details. This architectural choice is particularly suited for FMT
+applications where accurately reconstructing high-contrast targets against complex backgrounds is essential.
+We implement the NeuFMT / NeuFMT framework with
+PyTorch, leveraging its automatic differentiation capability to
+
+compute the gradient through both MLP and the physical
+model. Adam optimizer is used with the initial learning rates
+of 10 4 for θ update, 10 3 for scattering coefficient and
+10 5 for absorption coefficient. To improve the computational
+efficiency, a learning rate decay is applied for MLP update.
+These rates are determined empirically to ensure stable convergence. The L1 regularization parameter λ is set to 10 6
+based on cross validation. The training typically requires 200020000 iterations to achieve satisfactory reconstruction quality,
+with the entire process completing within 3 30 minutes on
+a single NVIDIA RTX 3090 GPU for problems of varying
+scales. The FEM discretization is built on TOAST++ toolkit
+[37], and the FMT simulation is based on a modular software
+platform STIFT [38] in MATLAB (R2024b, MathWorks, MA,
+US) using a desktop computer (Intel Core i5-12600 CPU @
+3.30 GHz, 128 GB RAM).
+Algorithm 1 NeuFMT
+Require: Real measurements M real , light speed c, stepsizes
+αθ , αa , αs , alternation period T , total iterations K
+1: Initialize θ, a , s ;
+2: Precompute Sa , Sd , Sb , Qx , P
+3: Compute S via (9);
+4: for i = 1 to K do 
+5:
+C = fθ Γ (r)
+6:
+Solve Φx RN satisfying S Φx = Qx
+7:
+Qm = C Φx
+8:
+Solve Φm RN satisfying S Φm = Qm
+c = P Φm
+9:
+Compute predicted measurements: M
+real 2
+c
+10:
+Compute loss: L = M M 2 + R(C)
+11:
+Update MLP parameters: θ = θ αθ L
+ θ
+12:
+if i mod
+ T = 0 then
+13:
+if i/T is even then
+ L
+14:
+Update absorption: a = a αa 
+a
+15:
+else
+ L
+16:
+Update diffusion: s = s αs 
+
+s
+17:
+end if
+
+1
+18:
+Update S = c a Sa +
+S
++
+S
+d
+b ;
+3( a + s )
+19:
+end if
+20: end for
+21: Output: fluorescence C, optical parameters a , s
+
+D. FMT System Setup
+We devised a continuous-wave (CW) FMT system
+(SHMOT) [39], [40] as depicted in Fig. 1 (a), which incorporates a 16-bit CMOS camera (Edge 4.2, PCO, Germany) with
+2048 2048 pixel resolution and a filter wheel (FW102C,
+Thorlabs, NJ, US) for selective wavelength detection. A
+tunable laser source (SuperK EXTREME, NKT, Denmark),
+spanning 400-890 nm, provides fluorescence excitation with a
+power density of approximately 2 mW/mm2 at the sample
+plane. The imaging object can be positioned on a heightadjustable platform, while a galvanometer-driven mirror system (basiCube 10, SCANcube, Germany) mounted aside steers
+the laser beam to raster-scan either the top or bottom object
+
+ZHAO et al.: NEUFMT: OPTICAL-PROPERTY-ADAPTIVE FLUORESCENCE MOLECULAR TOMOGRAPHY VIA IMPLICIT NEURAL REPRESENTATION
+
+surface, enabling switchable reflection-/transmission-mode detection. During experiments, the camera exposure time was
+fixed at 500 ms, with pixel binning applied to improve the
+signal-to-noise ratio. The acquired raw 2D image data serve
+as supervision target for NeuFMT / NeuFMT reconstruction
+(Fig. 1 (b)). It worth mentioning that our FMT system also
+integrates a programmable line-scanning illumination, which
+enables high-precision extraction of the surface geometry
+with approximated maximum error of 0.1 mm. The extracted
+surface information is then leveraged as prior knowledge for
+FEM meshing and improving reconstruction accuracy.
+
+E. Phantom preparation and optical calibration
+In our validation, the slab phantomswere cast from silicone (SYLGARDTM 184; DOW, CA, USA) to emulate softtissue matrix. Optical properties were tuned by dispersing
+titanium dioxide (TiO2 ; Colins, Shanghai, China) and carbon
+black powder (Colins, Shanghai, China) as scattering and
+absorbing additives, respectively. In all phantoms, TiO2 and
+carbon black were uniformly distributed. All the designs
+shown in Fig. 4 (a) used the same TiO2 /carbon-black mixing
+ratio, yielding isotropic media with identical absorption and
+scattering parameters.
+
+F. In Vivo Lymph Node FMT Imaging
+Following numerical simulations and phantom experiments,
+we evaluated the proposed method in vivo in a murine lymph
+node imaging task. In cancer diagnostics, lymph node metastasis is a key prognostic indicator of tumor progression. Fluorescence imaging enables rapid screening of sentinel lymph
+nodes [41].
+In our experiment, all animal procedures were approved by
+the Institutional Animal Care and Use Committee of ShanghaiTech University (Approval No. 20211115001). 5 female
+BALB/c mice (8 weeks old) were obtained from Shanghai
+Jihui Laboratory Animal Breeding Co. Ltd. and housed under
+a circadian rhythm of 12 hours of day and night alternation.
+Before taking imaging experiments, fur was removed over the
+whole body. For FMT reconstruction, we assumed an optically
+homogeneous medium with properties calibrated during the
+excitation step with ( a = 0.0055 mm 1 , s = 1.1 mm 1 ).
+We followed a three-stage protocol fluorescent-dye injection, imaging, and ex vivo validation. Prior to FMT imaging, Cy5-saline solution (1.2146 mol mL 1 , 40 L) was injected subcutaneously into the left forepaw to drive lymphatic
+drainage toward the sentinel lymph nodes and create a highintensity target. Next, follow-up FMT measurements were
+acquired using the system setup in Subsection II-D. Finally,
+after data collection, ex vivo verification was performed using
+a fluorescent stereoscopic microscope (MVX10, Olympus,
+Japan; 6.3 objective). Illumination was provided by a heightadjustable 630 nm LED at 20 mW cm 2 . White-light and
+Cy5-channel fluorescence images were recorded using filters
+matched to the Cy5 spectrum, and the lymph nodes were
+identified, excised, and imaged to validate the in vivo findings.
+
+5
+
+III. R ESULTS
+A. Convergence Verification of Optical Property Adaptive
+Optimization
+To validate our proposed optical property adaptation mechanism, we conducted a series of numerical experiments on
+a digital phantom. The primary objective was to demonstrate
+that the -adaption module can robustly recover absorption a
+and s coefficients from severely erroneous initial estimates,
+thereby enabling high-fidelity fluorescence reconstruction.
+We constructed a homogeneous digital slab phantom of size
+55 55 15 mm3 featuring an S -shaped fluorescent target at
+its geometric center. The ground-truth optical properties were
+ 1
+set to true
+and s true = 1.0 mm 1 . To rigorously
+a = 0.1 mm
+test the correction capability, we initialized the reconstruction
+with significantly mismatched scattering coefficients ( s init =
+0.5, 1.5, 2.0 mm 1 ) while keeping the absorption coefficient
+fixed at its true value for this specific test.
+As summarized in Fig. 2 (a), without the -adaption module, the reconstructed fluorescence distributions suffered from
+substantial errors in both depth localization and morphological accuracy. The mismatched s value led to an incorrect
+model of photon propagation, which directly translated to
+distorted reconstructions. In contrast, when the -adaption
+module was enabled, the proposed NeuFMT successfully
+recovered fluorescence distributions that closely matched the
+ground truth obtained with the correct optical properties.
+Crucially, the evolution of the scattering coefficient during
+optimization, plotted in Fig. 2 (b), demonstrates the module s
+robust convergence. Regardless of the initial value whether
+halved or doubled the estimated s reliably converged to the
+neighborhood of the true value (1.0 mm 1 ).
+A similar convergence behavior was observed for the absorption coefficient a . When initialized with biased values
+ 1
+( init
+) against a fixed true s , the a = 0.05, 0.15, 0.2 mm
+adaption module corrected a with an average error of only
+1.5% (Fig. 2 (d)), and its convergence curves are shown in
+Fig. 2 (e). This convergence robustness was maintained across
+a range of true a and s values, confirming the general
+efficacy of our alternating optimization strategy in mitigating
+parameter coupling (Fig. 2 (c), (f)).
+We further extended the validation to the most challenging
+scenario, where both optical parameters were simultaneously
+initialized with substantial errors. In this experiment, the initial
+values for both a and s were set to 50% higher than
+their GT values. Remarkably, even under these highly adverse
+conditions, the -adaption module successfully drove both
+parameters towards their true values. The convergence trajectories remained stable and ultimately reached a neighborhood
+of the true parameter pair. These results collectively verify
+that the integrated -adaption module empowers NeuFMT
+to jointly recover accurate optical properties and fluorescence
+distributions even from profoundly inaccurate initial guesses,
+effectively addressing a critical source of ill-posedness in
+practical FMT scenarios.
+
+6
+
+PREPRINT VERSION 2025
+
+0.995
+
+1.0
+
+0.996
+
+1.5
+
+1.007
+
+2.0
+
+1.006
+
+GT
+y
+x
+
+DICE =
+0.0257
+
+0.7337
+
+0.4660
+
+Norm.int (a.u.)
+
+= 1.0
+= 0.1
+
+Non-Adaptive
+
+1
+
+0.3967
+
+(b)
+
+1.2
+1.0
+
+(c)
+
+1.6
+
+Adaptive
+
+y
+
+0.7198
+
+0.7230
+
+0.6964
+
+Norm.int (a.u.)
+
+z
+
+0.7796
+
+ 0.9
+ 0.8
+ 0.5
+Asym.
+Line
+
+0.8
+0.4
+
+2
+
+4
+
+6
+
+8
+
+10
+
+12
+
+14
+
+ 0.12
+ 0.11
+
+1.4
+
+Predicted
+
+z=8
+
+ 2.0
+ 1.5
+ 1.2
+ 1.1
+
+1.6
+
+0
+1
+
+2.0
+
+Predicted
+
+0.5
+
+(a)
+
+ 0.10
+ 0.09
+
+1.2
+
+ 0.08
+1.0
+
+0
+
+Asym.
+Line
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+iterations
+0.10
+
+0.100
+
+0.15
+
+0.101
+
+0.20
+
+0.102
+
+y
+x
+
+0.0281
+
+0.7337
+
+0.7390
+
+Norm.int (a.u.)
+
+GT
+
+0.5991
+
+z=8
+z
+
+Adaptive
+
+y
+
+0.6718
+
+0.7642
+
+0.8740
+
+0.8708
+
+(e)
+
+0.2
+
+= 1.0
+= 0.1
+
+GT
+
+ 0.11
+ 0.09
+
+0.12
+0.1
+0.08
+
+0
+
+0.04
+
+1
+
+(f) 0.16
+0.14
+
+2
+
+4
+
+6
+
+8
+
+10
+
+12
+
+ 0.08
+ 0.05
+Asym.
+Line
+
+14
+
+ 1.2
+ 1.1
+ 1.0
+ 0.9
+
+0.12
+
+ 0.8
+0.1
+
+0
+
+(g)
+
+ 0.20
+ 0.15
+ 0.12
+
+0.16
+
+Norm.int (a.u.)
+
+= 1.0
+= 0.1
+
+Non-Adaptive
+
+1
+
+Predicted
+
+(d)
+
+0.097
+
+Predicted
+
+0.05
+
+Asym.
+Line
+1
+
+2
+
+4
+
+8
+
+16
+
+32
+
+64
+
+iterations
+2000 iters
+
+5000 iters
+
+10000 iters
+
+20000 iters
+1
+
+y
+
+(h)
+
+1.6
+
+0.16
+
+1.4
+
+0.14
+
+1.2
+
+0.12
+
+1.0
+
+0.1
+
+0.8125
+
+0.8651
+
+0.8691
+
+z
+y
+
+= 1.5
+= 0.15
+
+1.333
+0.1332
+
+1.177
+0.1156
+
+1.050
+0.1045
+
+1.001
+0.0995
+
+0
+
+0.8
+
+2
+
+5
+
+8
+
+11
+
+14
+
+17
+
+Predicted
+
+0.6481
+
+Norm.int (a.u.)
+
+z=8
+
+Predicted
+
+x
+
+0.08
+20
+
+iterations
+
+Fig. 2. Ablation test for the optical-property-adaption ( -adaption) module in NeuFMT. (a-c) Effective test for the correction of s . (a) For a homogeneous
+phantom simulation with a S -shaped fluorescence inclusion, the ground truth (GT) of a and s values are 0.1 mm-1 and 1.0 mm-1 respectively. A
+mismatched initial guess of s was assumed for FMT reconstruction. The -adaption module successfully corrects s with an average error of 0.55%,
+leading to significantly improved FMT reconstruction results compared to non-adaptive NeuFMT. (b) Convergence curve of s given more initial s values
+ranging from 0.5 to 2 GT value under the same setting of (a). (c) Convergence curve of s value across all cases with different a values, given
+initial s = 1.5 mm-1 . (d-f) Effective test for the correction of the absorption coefficient ( a ). (d) For the same phantom in (a), a (mismatched) a initial
+value is assumed for FMT reconstruction. The -adaption module successfully corrects a with an average error of 1.5%, leading to significantly improved
+FMT reconstruction results. (e) Convergence curve of a given more initial a values ranging from 0.5 to 2 GT value under the same setting of (d).
+(f) Convergence curve of a value across all cases with different s values, given initial a = 0.15 mm-1 . (g-h) Effective test for the correction of both
+absorption and diffusion coefficients. (g) For the same phantom in (a), given mismatched initial a = 1.5 and s = 0.15, both of which are 50% higher than
+GT, the -adaption module successfully corrects both a and s at the same time. (h) Convergence curve given the iteration process in (g) for both optical
+coefficients.
+
+B. Numerical Simulations
+To comprehensively evaluate the performance of the proposed NeuFMT under controlled conditions, we designed
+four distinct numerical phantoms (Fig. 3 (a) (d) respectively)
+to systematically increase the reconstruction challenge:
+ Case 1 - single small target: a 3 mm-diameter spherical
+fluorescence target embedded in a homogeneous cuboid
+phantom (55 55 15 mm3 ), serving as a baseline
+for evaluating localization and quantitative accuracy of
+a simple, isolated inclusion.
+ Case 2 - complex surface geometry: a 2 mm-diameter
+spherical target inside a phantom with a curved surface
+geometry, featuring a spherical cap top (base: 50 50 4
+mm, cap height = 5 mm, total height = 9 mm). This
+case tests the method s robustness to non-planar surface
+topography.
+
+Case 3 - complex target shape: a large peanut-shaped fluorescence region with uniform concentration embedded in
+a standard cuboid phantom same as Case 1. This scenario
+assesses the capability to recover intricate morphological
+details beyond simple spheres.
+ Case 4 - multi-target with background: the same peanutshaped region as in Case 3, but with the addition of
+a small, high-concentration spherical target inside. This
+represents a highly realistic and challenging condition,
+testing the ability to resolve targets of different concentrations and shapes against a noisy background.
+
+The ground-truth optical properties for all simulated measurements in this test were set to a = 0.1 mm 1 and s = 1.0
+mm 1 , and a 5% gaussian noise is added to all simulated measurements. For each case, we compared our NeuFMT against
+four established methods: conventional Tikhonov-regularized
+
+ZHAO et al.: NEUFMT: OPTICAL-PROPERTY-ADAPTIVE FLUORESCENCE MOLECULAR TOMOGRAPHY VIA IMPLICIT NEURAL REPRESENTATION
+
+GT
+
+L2-CG
+
+L1-FISTA
+
+U-Net
+
+NeuFMT
+
+μNeuFMT
+1
+
+y
+x
+
+y
+
+z
+
+DICE =
+0.6581
+
+z=8
+
+0.4956
+
+0.6446
+
+Norm.int (a.u.)
+
+Case 1
+
+(a)
+
+0.8800
+
+0.5128
+
+0
+z
+
+y
+x
+
+y
+x
+
+y
+
+z
+
+0.6286
+
+z=2
+
+0.7500
+
+0.0000
+
+Norm.int (a.u.)
+
+Case 2
+
+(b)
+
+1
+
+0.7586
+
+0.2041
+
+0
+z
+
+y
+x
+
+x
+
+y
+
+z
+
+z=8
+
+0.6938
+
+0.0828
+
+0.6153
+
+Norm.int (a.u.)
+
+Case 3
+
+(c)
+
+1
+
+y
+
+0.9751
+
+0.4766
+
+0
+z
+
+y
+x
+
+y
+x
+
+y
+
+z
+
+0.5435
+
+z=8
+
+0.5908
+
+0.2637
+
+Norm.int (a.u.)
+
+Case 4
+
+(d)
+
+1
+
+0.8983
+
+0.7645
+
+0
+z
+
+y
+x
+
+Norm.int (a.u.)
+
+(e)
+
+Case 1
+
+Case 2
+
+Case 3
+
+Case 4
+
+1
+
+1
+
+1
+
+1
+
+0.8
+
+0.8
+
+0.8
+
+0.8
+
+0.6
+
+0.6
+
+0.6
+
+0.6
+
+0.4
+
+0.4
+
+0.4
+
+0.4
+
+0.2
+
+0.2
+
+0.2
+
+0
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+0
+15
+
+0
+20
+
+25
+
+30
+
+mm
+
+GT
+
+L2-CG
+
+35
+
+0.2
+0
+
+10
+
+mm
+
+L1-FISTA
+
+20
+
+30
+
+40
+
+50
+
+0
+
+15
+
+20
+
+25
+
+30
+
+35
+
+mm
+
+U-Net
+
+NeuFMT
+
+40
+
+mm
+
+μNeuFMT
+
+Fig. 3. Results of numerical phantom simulations. (a) (d) Ground truth (GT)
+and FMT reconstruction results from five methods (L2 -CG, L1 -FISTA, UNet, direct NeuFMT, and NeuFMT) across four numerical cases. For each
+method, two cross-sections (along XY- and XZ-planes), a 3D isosurface, and
+the Dice coefficient are displayed. (e) Intensity profiles along the dashed lines
+in the XY slices are compared for the four cases.
+
+conjugate gradients (L2 -CG) [42] and L1 -regularized nonnegative least squares (L1 -FISTA) [43], a pretrained supervised U-Net, and our baseline method NeuFMT without adaption. The U-Net was trained on a large, synthetically
+generated dataset of 5,488 samples. For each sample, the
+input was a boundary measurement simulated using the DEbased forward model under the ground-truth properties in a
+cuboid phantom (55 55 15 mm3 ), and the label was the
+corresponding 3D fluorescence map of 1 2 ellipsoids with
+random sizes and spatial positions. To clearly demonstrate the
+effect of the -adaption module, we focused on adapting s
+while fixing a at its true value during reconstruction. For all
+methods, the initial s was set to an erroneous value of 1.2
+mm 1 , which is 20% higher than the ground truth.
+The results presented in Fig. 3 (a) (d) demonstrate the
+consistent superiority of NeuFMT across all four numerical cases. We observe that the conventional methods were
+adversely affected by the optical property mismatch: L2 -CG
+reconstructions were characteristically blurred and exhibited
+significant depth errors, such as full-depth penetration in
+Cases 3 and 4 and depth-wise expansion in Case 1. L1 -FISTA
+frequently introduced non-physical, fragmented artifacts, such
+as staircase patterns in Case 1 and hollow structures in Case 3,
+while it also suffered from severe depth inaccuracy. The
+supervised U-Net, though performed well in Case 1, showed
+limited generalization beyond its training data, as seen in its
+localization failure in the complex surface geometry of Case 2
+
+7
+
+and noticeable shape distortion in the unseen peanut-shaped
+target of Case 3 and 4. The direct NeuFMT provided better
+depth prediction than the traditional methods but remained
+sensitive to the erroneous s , resulting in substantial shape
+expansion in the x-y plane (Cases 1, 2) and axial splitting
+(Case 3). In contrast, NeuFMT successfully rectified the
+optical properties and overcame these limitations. It achieved
+the most accurate spatial localization and shape fidelity, as
+evidenced by its 3D isosurfaces tightly conforming to the
+ground truth in both simple and complex targets, and it clearly
+resolved both the small target and the complex background in
+Case 4. Quantitatively, NeuFMT consistently achieved the
+highest Dice coefficients, and its intensity profiles (Fig. 3 (e))
+most closely matched the ground truth in terms of peak
+location, width, and background suppression.
+C. Phantom Experiments
+We further evaluated the performance of all methods using
+physical phantom experiments to assess their practicality under real-world conditions, including measurement noise. The
+phantoms were fabricated from silicone, with their optical
+properties calibrated to be approximately a = 0.0055 mm 1
+and s = 1.1 mm 1 at 680 nm. Fluorescent targets were embedded within the phantoms to create the four cases previously
+defined in the simulations. The initial value of s was set identically for all reconstruction methods as the calibrated value,
+and also the U-Net was retrained accordingly. Consistent with
+the simulation study, we focused on the adaptive recovery of
+the reduced scattering coefficient s .
+The reconstruction results are summarized in Fig. 4. Under
+these challenging real-world conditions, the limitations of the
+baseline methods became evident: conventional approaches
+(L2 -CG, L1 -FISTA) produced blurry or fragmented reconstructions with significant depth errors, while the supervised
+U-Net, susceptible to domain shift and noise, failed to generalize, resulting in complete localization failures (Case 1)
+or severely distorted shapes (Cases 3 and 4). In contrast,
+the INR-based frameworks, NeuFMT and NeuFMT, demonstrated markedly superior robustness, consistently yielding
+physically plausible and continuous reconstructions where
+other methods failed. A detailed comparison between the two
+reveals that NeuFMT provided critical refinements toward
+enhanced physical consistency. In Cases 1 and 3, NeuFMT
+achieved better depth sensitivity and more uniform fluorophore
+distribution, more faithfully representing the homogeneous
+nature of the true targets. In the complex geometry of Case 2,
+it uniquely achieved accurate localization, whereas direct
+NeuFMT produced a solution with an aberrant depth shift. For
+the multi-target scenario in Case 4, NeuFMT reconstructed
+the background region with improved morphological accuracy.
+Although the performance gap in quantitative metrics such
+as the Dice coefficient was occasionally narrow, which reflects the inherent robustness of the shared INR architecture,
+ NeuFMT provided consistent, subtle refinements, particularly
+in depth accuracy. The phantom experiments confirm that the
+adaptive physical correction mechanism in NeuFMT can enhance reconstruction fidelity under practical conditions where
+the exact coefficient in most real experiments is uncertain.
+
+8
+
+PREPRINT VERSION 2025
+
+(a)
+
+Silicone Phantoms
+GT
+
+L2-CG
+
+L1-FISTA
+
+U-Net
+
+NeuFMT
+
+μNeuFMT
+1
+
+y
+x
+
+y
+
+z
+
+DICE =
+0.5895
+
+z=8
+
+0.6154
+
+0.0762
+
+Norm.int (a.u.)
+
+Case 1
+
+(b)
+
+Fluorescence Inclusions
+
+0.7023
+
+0.6615
+
+0
+z
+
+(Fig. 5 (c)). The reconstructed target lengths from NeuFMT
+showed the closest agreement with the physical measurements
+taken from the ex vivo lymph nodes, as visualized by the
+intensity profiles in Fig. 5 (c). These results demonstrate that
+ NeuFMT provides a definitive advantage in practical in vivo
+scenarios, enabling robust and accurate target segmentation
+and localization under complex clinically related scenarios,
+such as fluorescence guided surgery.
+
+y
+x
+
+y
+x
+
+y
+
+z
+
+0.3371
+
+z=2
+
+0.3810
+
+0.4000
+
+0.5200
+
+0.2586
+
+White Light Image
+
+(a)
+
+vein
+
+LN-2
+
+0
+z
+
+y
+x
+
+y
+
+z
+
+z=8
+
+0.5413
+
+0.3358
+
+0.7011
+
+0.8230
+
+0.8050
+
+0
+z
+
+y
+x
+
+y
+x
+
+y
+
+z
+
+0.5193
+
+z=8
+
+0.4319
+
+0.6601
+
+0.2849
+
+Norm.int (a.u.)
+
+0.6240
+
+NeuFMT
+
+μNeuFMT
+z
+x
+
+vein
+
+LN-3
+LN-2
+LN-1
+
+Case 3
+
+Case 4
+
+1
+
+1
+
+0.8
+
+0.8
+
+0.6
+
+0.6
+
+0.6
+
+0.6
+
+0.4
+
+0.4
+
+0.4
+
+0.4
+
+0.2
+
+0.2
+20
+
+25
+
+30
+
+35
+
+40
+
+0
+15
+
+0.2
+20
+
+25
+
+30
+
+mm
+
+GT
+
+L2-CG
+
+35
+
+0.2
+
+0
+
+0
+0
+
+10
+
+mm
+
+L1-FISTA
+
+20
+
+30
+
+40
+
+50
+
+15
+
+20
+
+25
+
+30
+
+35
+
+mm
+
+U-Net
+
+NeuFMT
+
+40
+
+mm
+
+NeuFMT-Ada
+
+Fig. 4. Results of real phantom experiments. (a) Photograph of the real
+silicone phantoms and fluorescence inclusions. (b) (e) Ground truth (GT)
+and FMT reconstruction results from five methods (L2 -CG, L1 -FISTA, UNet, direct NeuFMT, and NeuFMT) across four numerical cases. For each
+method, two cross-sections (along XY- and XZ-planes), a 3D isosurface, and
+the Dice coefficient are displayed. (f) Intensity profiles along the dashed lines
+in the XY slices are compared for the four cases.
+
+10 mm
+
+(c)
+
+We performed an in vivo imaging experiment on mice.
+Following the protocol described in Subsection II-F, Cy5
+fluorescent dye accumulated primarily at the sentinel lymph
+nodes (LN), with some residual signal at the vein (Fig. 5 (a)).
+Our task was to reconstruct the spatial location and shape of
+the sentinel lymph nodes.
+The 3D FMT reconstruction results from all methods
+are presented in Fig. 5 (b). The conventional L2 -CG method
+produced a reconstruction where the volume of LN-3 was
+overestimated, and the signals from LN-1, LN-2, and the vein
+merged into a single, indistinguishable cluster. The L1 -FISTA
+reconstruction was highly fragmented, making it impossible
+to discern the shape or count of the lymph nodes accurately.
+Also, the baseline NeuFMT failed to produce a physiologically plausible reconstruction. In contrast, NeuFMT was
+the only method that successfully and distinctly resolved all
+three lymph nodes (LN-1, LN-2, LN-3) and the vein, clearly
+identifying each as separate, localized regions of fluorescence.
+For quantitative validation, the mouse was sacrificed, and
+the lymph nodes were excised to be imaged by ex vivo FRI
+
+LN-1
+
+x
+y
+
+LN-3 LN-2
+
+10 mm
+
+0
+
+1
+
+1
+
+1
+
+0.8
+
+0.8
+
+0.8
+
+0.6
+
+LN-1
+
+0.4
+
+0.6
+
+LN-2
+
+0.4
+
+0.2
+
+0.6
+
+0.2
+
+0
+2
+
+4
+
+6
+
+L2-CG
+
+8
+
+10
+
+12
+mm
+
+LN-3
+
+0.4
+
+0.2
+
+0
+0
+
+D. In Vivo Lymph Node FMT Imaging Experiments
+
+Concentration of Cy5 (a.u.)
+
+Case 2
+1
+0.8
+
+Slice z = 8 mm
+
+Case 1
+1
+0.8
+
+x
+y
+
+Slice z = 11 mm
+
+(f)
+Norm.int (a.u.)
+
+L1-FISTA
+
+R
+
+1
+
+Profiles
+
+y
+x
+
+15
+
+L2-CG
+
+LN-3
+
+L
+
+0
+z
+
+0
+
+R
+
+y
+
+Concentration of Cy5 (a.u.)
+
+Case 4
+
+(e)
+
+1
+
+(b)
+
+LN-1
+
+L
+
+3D Segmentation
+
+x
+
+Norm.int (a.u.)
+
+Case 3
+
+(d)
+
+1
+
+y
+
+In vivo FRI
+
+Norm.int (a.u.)
+
+Case 2
+
+(c)
+
+1
+
+0
+0
+
+2
+
+L1-FISTA
+
+4
+
+6
+
+8
+
+10
+
+12
+mm
+
+0
+
+2
+
+NeuFMT
+
+4
+
+6
+
+8
+
+10
+
+12
+mm
+
+μNeuFMT
+
+Fig. 5. In vivo lymph node FMT imaging and reconstruction results. (a) The
+white-light image and preview via 2D fluorescence reflectance imaging (FRI)
+overlaid on the white-light image with the red aera indicating the concentrated
+distribution of Cy5 probe on the cites of three lymph nodes (LN-1, LN-2, LN3) and the vein. (b) Comparison of FMT reconstruction results from different
+methods. The 3D segmentation, along with two slices at z = 8 and 11 mm,
+are displayed. (c) Intensity profiles along the dashed lines in b. are compared
+for each ex vivo images of lymph nodes after sacrificing the animal. The gray
+zone represents the estimated size of LN, based on the ex vivo fluorescence
+images.
+
+IV. D ISCUSSION AND C ONCLUSION
+In this study, we introduced NeuFMT, an optical-propertyadaptive FMT reconstruction framework that integrates INR
+with an explicitly differentiable FEM-based light propagation model. By unifying a continuous fluorescence field parameterized by an INR and a physics-based forward model
+amenable to end-to-end optimization, NeuFMT addresses
+two fundamental limitations of existing FMT reconstruction
+techniques: their inability to efficiently adapt to complex and
+heterogeneous fluorescence distribution, and their reliance on
+
+ZHAO et al.: NEUFMT: OPTICAL-PROPERTY-ADAPTIVE FLUORESCENCE MOLECULAR TOMOGRAPHY VIA IMPLICIT NEURAL REPRESENTATION
+
+fixed, often inaccurate, optical properties, which significantly
+exacerbates the inherent ill-posedness of the inverse problem.
+Unlike supervised deep learning approaches which are constrained by the diversity and scale of training datasets and
+often fail under domain shift, NeuFMT operates in a selfsupervised, physics-informed regime. It does not require paired
+training data; instead, it directly minimizes the discrepancy between measured and simulated boundary fluxes. This not only
+eliminates the need for extensive experimental datasets but also
+ensures generalizability across different imaging geometries
+and target configurations. The continuous, coordinate-based
+representation provided by the INR further ensures that our
+reconstructions are free from discretization artifacts and inherently resolution-agnostic.
+A central contribution of our work is the introduction of
+an optical property adaptation mechanism, which enables the
+dynamic optimization of absorption and scattering coefficients
+( a , s ) concurrently with the fluorescence distribution. Our
+framework demonstrates that the integration of a differentiable
+physics-based forward model is the key to enabling this
+self-supervised adaptation. The FEM-based light propagation
+model is not merely a component of the loss function, but
+an active and adaptive part of the inverse solver. This stands
+in contrast to both traditional iterative methods, which hold
+optical properties static and thus aggravate the problem s illposedness, and conventional end-to-end deep learning approaches, which struggle to generalize beyond their training
+data. The adaptivity of our model is thus its core strength,
+providing a principled way to refine the physical model itself
+based on the measured data, which is crucial for practical
+applications where precise prior knowledge of tissue optics
+is unavailable.
+Our results from numerical simulations, phantom experiments, and in vivo mouse imaging collectively demonstrate
+that NeuFMT achieves superior reconstruction fidelity compared to both conventional (L2 , L1 ) and deep learningbased (U-Net) benchmarks. In particular, the method consistently localized fluorescent targets with higher spatial accuracy, improved contrast, and more realistic morphological
+features especially under challenging conditions involving
+background fluorescence and complex geometry.
+Despite these promising results, several aspects of
+ NeuFMT merit further investigation. First, the current implementation assumes a homogeneous optical background a
+common simplification in FMT studies. Extending the model
+to incorporate spatially varying optical properties represents
+a logical next step, potentially by representing a (r) and
+ s (r) with additional INRs, though this would significantly
+increase the complexity of the inverse problem. Nevertheless,
+the proposed NeuFMT can be validated or even combined
+with time-domain near-infrared spectroscopy (fNIRS) [44],
+[45] or diffuse optical tomography (DOT) [46] techniques,
+where the complex optical properties related with absorption
+and scattering can disentangled and calibrated. More importantly, the integration of NeuFMT with emerging imaging
+technologies holds particular promise. The inherent adaptivity
+of our framework is well-suited to the distinct scattering
+and absorption landscapes of NIR-II fluorescence tomography
+
+9
+
+[47], [48], where our optical property optimization could be
+crucial for accurately modeling the increased photon penetration and achieving higher-resolution reconstruction at depth.
+Furthermore, the framework can be naturally extended to
+hyperspectral FMT, using a single INR to output both fluorophore concentration and spectral signature, thereby disentangling multiple probes or accounting for wavelength-dependent
+optical properties. Finally, translating NeuFMT into clinical
+settings, such as intraoperative fluorescence-guided surgery
+[8], [9], represents an exciting frontier where its adaptability
+could overcome patient-specific variations in tissue optics.
+In conclusion, by harmonizing a differentiable physics
+model with a continuous INR, NeuFMT provides a robust,
+self-supervised, and adaptive framework for FMT reconstruction. It effectively mitigates the ill-posedness inherent to
+inverse problems with uncertain parameters, setting a new
+paradigm for practical, high-resolution fluorescence molecular
+imaging. We believe this physics-in-the-loop INR approach
+offers a generalizable template for tackling a wide range of
+tomographic and inverse problems in biomedical imaging.
+R EFERENCES
+[1] F. Song, P. Zhang, H. Wu, C. Ma, Z. Liu, R. Cai, Y. Feng, Y. He,
+X. Dong, Y. Tian, and G. Zhang, Advances of fluorescence molecular
+imaging: NIR-II window, probes, and tomography, Laser & Photonics
+Reviews, vol. 19, no. 10, p. 2400275, 2025.
+[2] B. Zhu, J. Hendricks, J. E. Morton, J. C. Rasmussen, C. Janssen,
+M. N. Shah, and E. M. Sevick-Muraca, Near-infrared fluorescence
+tomography and imaging of ventricular cerebrospinal fluid flow and
+extracranial outflow in non-human primates, IEEE Transactions on
+Medical Imaging, vol. 42, no. 12, pp. 3555 3565, 2023.
+[3] M. S. Ozturk and et al., High-resolution tomographic analysis of in
+vitro 3D glioblastoma tumor model under long-term drug treatment, 
+Science Advances, vol. 6, no. 10, p. eaay7513, 2020.
+[4] M. Cai, Z. Zhang, X. Shi, Z. Hu, and J. Tian, NIR-II/NIR-I fluorescence molecular tomography of heterogeneous mice based on gaussian
+weighted neighborhood fused lasso method, IEEE Transactions on
+Medical Imaging, vol. 39, no. 6, pp. 2213 2222, 2020.
+[5] S. R. Arridge and J. C. Schotland, Optical tomography: forward and
+inverse problems, Inverse problems, vol. 25, no. 12, p. 123010, 2009.
+[6] L. V. Wang and H.-i. Wu, Biomedical optics: principles and imaging.
+John Wiley & Sons, 2007.
+[7] F. Stuker, J. Ripoll, and M. Rudin, Fluorescence molecular tomography:
+principles and potential for pharmaceutical research, Pharmaceutics,
+vol. 3, no. 2, pp. 229 274, 2011.
+[8] J. S. D. Mieog, F. B. Achterberg, A. Zlitni, M. Hutteman, J. Burggraaf,
+R.-J. Swijnenburg, S. Gioux, and A. L. Vahrmeijer, Fundamentals and
+developments in fluorescence-guided cancer surgery, Nature Reviews
+Clinical Oncology, vol. 19, no. 1, pp. 9 22, 2022.
+[9] K. Wang, Y. Du, Z. Zhang, K. He, Z. Cheng, L. Yin, D. Dong, C. Li,
+W. Li, Z. Hu et al., Fluorescence image-guided tumour surgery, Nature
+Reviews Bioengineering, vol. 1, no. 3, pp. 161 179, 2023.
+[10] D. Zhu et al., Comparison of regularization methods in fluorescence
+molecular tomography, Photonics, vol. 1, no. 2, pp. 95 109, 2014.
+[11] H. Yi et al., Reconstruction algorithms based on l1-norm and l2norm for two imaging models of fluorescence molecular tomography:
+a comparative study, Journal of Biomedical Optics, vol. 18, no. 5, p.
+56013, 2013.
+[12] J. Shi, B. Zhang, F. Liu, J. Luo, and J. Bai, Efficient L1 regularizationbased reconstruction for fluorescent molecular tomography using
+restarted nonlinear conjugate gradient, Optics letters, vol. 38, no. 18,
+pp. 3696 3699, 2013.
+[13] D. Zhu and C. Li, Nonconvex regularizations in fluorescence molecular
+tomography for sparsity enhancement, Physics in Medicine & Biology,
+vol. 59, no. 12, p. 2901, 2014.
+[14] J. Zhang, L. Li, Q. Hu, J. Zhang, Y. Wu, L. Gu, J. Li, F. Li, X. Zhu,
+J. Jiang et al., High-fidelity solution decomposition fluorescence tomography in the presence of background interference, Laser & Photonics
+Reviews, p. e01013, 2025.
+
+10
+
+[15] C. Huang, H. Meng, Y. Gao, S. Jiang, K. Wang, and J. Tian, Fast and
+robust reconstruction method for fluorescence molecular tomography
+based on deep neural network, in Imaging, Manipulation, and Analysis
+of Biomolecules, Cells, and Tissues XVII, vol. 10881. SPIE, 2019, pp.
+257 262.
+[16] L. Guo, F. Liu, C. Cai, J. Liu, and G. Zhang, 3D deep encoder decoder
+network for fluorescence molecular tomography, Optics letters, vol. 44,
+no. 8, pp. 1892 1895, 2019.
+[17] P. Zhang, G. Fan, T. Xing, F. Song, and G. Zhang, UHR-DeepFMT:
+ultra-high spatial resolution reconstruction of fluorescence molecular
+tomography based on 3-d fusion dual-sampling deep neural network, 
+IEEE Transactions on Medical Imaging, vol. 40, no. 11, pp. 3217 3228,
+2021.
+[18] J. Cheng, P. Zhang, F. Liu, J. Liu, H. Hui, J. Tian, and J. Luo, Encoderdecoder deep learning network for simultaneous reconstruction of fluorescence yield and lifetime distributions, Biomedical Optics Express,
+vol. 13, no. 9, pp. 4693 4705, 2022.
+[19] P. Zhang, C. Ma, F. Song, Z. Liu, Y. Feng, Y. Sun, Y. He,
+F. Liu, D. Wang, and G. Zhang, Multi-branch attention prior based
+parameterized generative adversarial network for fast and accurate
+limited-projection reconstruction in fluorescence molecular tomography, Biomedical Optics Express, vol. 13, no. 10, pp. 5327 5343, 2022.
+[20] P. Zhang, F. Song, C. Ma, Z. Liu, H. Wu, Y. Sun, Y. Feng, Y. He, and
+G. Zhang, Robust reconstruction of fluorescence molecular tomography
+based on adaptive adversarial learning strategy, Physics in Medicine &
+Biology, vol. 68, no. 4, p. 04LT01, 2023.
+[21] P. Zhang, X. Liu, Q. Xue, Y. Shang, C. Liu, R. Chen, H. Gao, J. Liang,
+W. Wang, and G. Zhang, PAH2T-Former: Paired-attention hybrid
+hierarchical transformer for synergistically enhanced fmt reconstruction
+quality and efficiency, IEEE Transactions on Computational Imaging,
+2025.
+[22] H. Meng, Y. Gao, X. Yang, K. Wang, and J. Tian, K-nearest neighbor
+based locally connected network for fast morphological reconstruction
+in fluorescence molecular tomography, IEEE transactions on medical
+imaging, vol. 39, no. 10, pp. 3019 3028, 2020.
+[23] D. Li, C. Chen, J. Li, and Q. Yan, Reconstruction of fluorescence
+molecular tomography based on graph convolution networks, Journal
+of Optics, vol. 22, no. 4, p. 045602, 2020.
+[24] Y. Wang, C. Bian, Y. An, H. Wang, Q. Liang, Y. Du, and J. Tian,
+ Graph convolution based residual connected network for morphological reconstruction in fluorescence molecular tomography, in Medical
+Imaging 2022: Biomedical Applications in Molecular, Structural, and
+Functional Imaging, vol. 12036. SPIE, 2022, pp. 527 533.
+[25] Y. Sun, J. Liu, M. Xie, B. Wohlberg, and U. S. Kamilov, Coil:
+Coordinate-based internal learning for tomographic imaging, IEEE
+Transactions on Computational Imaging, vol. 7, pp. 1400 1412, 2021.
+[26] L. Lozenski, M. A. Anastasio, and U. Villa, A memory-efficient selfsupervised dynamic image reconstruction method using neural fields, 
+IEEE Transactions on Computational Imaging, vol. 8, pp. 879 892,
+2022.
+[27] A. W. Reed, H. Kim, R. Anirudh, K. A. Mohan, K. Champley, J. Kang,
+and S. Jayasuriya, Dynamic CT reconstruction from limited views
+with implicit neural representations and parametric motion fields, in
+Proceedings of the IEEE/CVF International Conference on Computer
+Vision, 2021, pp. 2258 2268.
+[28] L. Shen, J. Pauly, and L. Xing, NeRP: implicit neural representation
+learning with prior embedding for sparsely sampled image reconstruction, IEEE Transactions on Neural Networks and Learning Systems,
+vol. 35, no. 1, pp. 770 782, 2022.
+[29] R. Liu, Y. Sun, J. Zhu, L. Tian, and U. S. Kamilov, Recovery
+of continuous 3D refractive index maps from discrete intensity-only
+measurements using neural fields, Nature Machine Intelligence, vol. 4,
+no. 9, pp. 781 791, 2022.
+[30] S. Shen, L. Li, S. Gao, Y. Wang, L. Gu, S. Li, X. Zhu, J. Jiang, J. Yu, and
+W. Ren, High resolution diffuse optical tomography via neural fields, 
+IEEE Transactions on Computational Imaging, 2024.
+[31] K. Han, C. Li, A. Xiao, Y. Tian, J. Tian, and Z. Hu, TSPE: Reconstruction of multi-morphological tumors of NIR-II fluorescence molecular
+tomography based on positional encoding, Computer Methods and
+Programs in Biomedicine, vol. 261, p. 108554, 2025.
+[32] S. R. Arridge, Optical tomography in medical imaging, Inverse problems, vol. 15, no. 2, p. R41, 1999.
+[33] , Photon-measurement density functions. part I: Analytical forms, 
+Applied Optics, vol. 34, no. 31, pp. 7395 7409, 1995.
+[34] S. R. Arridge and M. Schweiger, Photon-measurement density functions. part 2: Finite-element-method calculations, Applied Optics,
+vol. 34, no. 34, pp. 8026 8037, 1995.
+
+PREPRINT VERSION 2025
+
+[35] O. C. Zienkiewicz, R. L. Taylor, P. Nithiarasu, and J. Zhu, The finite
+element method. Elsevier, 1977, vol. 3.
+[36] V. Ntziachristos, C. Bremer, and R. Weissleder, Fluorescence molecular
+tomography resolves protease activity in vivo, Nature Medicine, vol. 8,
+no. 7, pp. 757 760, 2002.
+[37] M. Schweiger and S. Arridge, The Toast++ software suite for forward
+and inverse modeling in optical tomography, Journal of biomedical
+optics, vol. 19, no. 4, pp. 040 801 040 801, 2014.
+[38] W. Ren, H. Isler, M. Wolf, J. Ripoll, and M. Rudin, Smart toolkit
+for fluorescence tomography: simulation, reconstruction, and validation, 
+IEEE Transactions on Biomedical Engineering, vol. 67, no. 1, pp. 16 
+26, 2019.
+[39] S. Gao, J. Zhang, Y. Hu, Y. Wu, L. Li, Q. Hu, X. Lou, X. Zhu, J. Jiang,
+and W. Ren, Multifunctional optical tomography system with highfidelity surface extraction based on a single programmable scanner and
+unified pinhole modeling, IEEE Transactions on Biomedical Engineering, 2023.
+[40] Y. Hu, Y. Wu, L. Li, L. Gu, X. Zhu, J. Jiang, and W. Ren, Simultaneous
+reconstruction of 3D fluorescence distribution and object surface using
+structured light illumination and dual-camera detection, Optics Express,
+vol. 32, no. 9, pp. 15 760 15 773, 2024.
+[41] C. Ji, M. Zhao, C. Wang, R. Liu, S. Zhu, X. Dong, C. Su, and Z. Gu,
+ Biocompatible tantalum nanoparticles as radiosensitizers for enhancing
+therapy efficacy in primary tumor and metastatic sentinel lymph nodes, 
+ACS nano, vol. 16, no. 6, pp. 9428 9441, 2022.
+[42] S. Kawata and O. Nalcioglu, Constrained iterative reconstruction by
+the conjugate gradient method, IEEE Transactions on Medical Imaging,
+vol. 4, no. 2, pp. 65 71, 1985.
+[43] A. Beck and M. Teboulle, A fast iterative shrinkage-thresholding algorithm for linear inverse problems, SIAM Journal on Imaging Sciences,
+vol. 2, no. 1, pp. 183 202, 2009.
+[44] Y. Yamada, H. Suzuki, and Y. Yamashita, Time-domain near-infrared
+spectroscopy and imaging: a review, Applied Sciences, vol. 9, no. 6, p.
+1127, 2019.
+[45] H. Y. Ban, G. M. Barrett, A. Borisevich, A. Chaturvedi, J. L. Dahle,
+H. Dehghani, J. Dubois, R. M. Field, V. Gopalakrishnan, A. Gundran
+et al., Kernel flow: a high channel count scalable time-domain functional near-infrared spectroscopy system, Journal of biomedical optics,
+vol. 27, no. 7, p. 074710, 2022.
+[46] A. Pifferi, D. Contini, A. D. Mora, A. Farina, L. Spinelli, and A. Torricelli, New frontiers in time-domain diffuse optics, a review, Journal
+of Biomedical Optics, vol. 21, no. 9, pp. 091 310 091 310, 2016.
+[47] F. Wang, Y. Zhong, O. Bruns, Y. Liang, and H. Dai, In vivo NIRII fluorescence imaging for biology and medicine, Nature Photonics,
+vol. 18, no. 6, pp. 535 547, 2024.
+[48] Z. Zhang, Y. Du, X. Shi, K. Wang, Q. Qu, Q. Liang, X. Ma, K. He,
+C. Chi, J. Tang et al., NIR-II light in clinical oncology: opportunities
+and challenges, Nature Reviews Clinical Oncology, vol. 21, no. 6, pp.
+449 467, 2024.

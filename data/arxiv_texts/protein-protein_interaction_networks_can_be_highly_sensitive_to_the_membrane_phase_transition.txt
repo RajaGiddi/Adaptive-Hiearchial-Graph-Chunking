@@ -1,0 +1,434 @@
+P ROTEIN - PROTEIN INTERACTION NETWORKS CAN BE HIGHLY
+
+arXiv:2510.26949v1 [physics.bio-ph] 30 Oct 2025
+
+SENSITIVE TO THE MEMBRANE PHASE TRANSITION
+
+Taylor Schaffner
+Department of Physics
+Yale University
+New Haven, CT
+taylor.schaffner@yale.edu
+
+Benjamin Machta
+Department of Physics
+Yale University
+New Haven, CT
+benjamin.machta@yale.edu
+
+November 3, 2025
+
+A BSTRACT
+Many protein-protein interaction (PPI) networks take place in the fluid yet structured plasma membrane. Lipid domains, sometimes termed rafts, have been implicated in the functioning of various
+membrane-bound signaling processes. Here, we present a model and a Monte Carlo simulation
+framework to investigate how changes in the domain size that arise from perturbations to membrane
+criticality can lead to changes in the rate of interactions among components, leading to altered outcomes. For simple PPI networks, we show that the activity can be highly sensitive to thermodynamic
+parameters near the critical point of the membrane phase transition. When protein-protein interactions
+change the partitioning of some components, our system sometimes forms out of equilibrium domains
+we term pockets, driven by a mixture of thermodynamic interactions and kinetic sorting. More
+generally, we predict that near the critical point many different PPI networks will have their outcomes
+depend sensitively on perturbations that influence critical behavior.
+
+Introduction
+Once thought of as a uniform two-dimensional solvent for membrane-bound proteins, the plasma membrane is
+recognized today as having a heterogeneous yet fluid structure. The spatial organization in the membrane is likely due
+in part to membrane component interactions with the actin cytoskeletal network [1, 2, 3], inter-protein interactions
+[4, 5], and membrane morphology [6, 7, 8]. But in addition, spatial organization arises directly from thermodynamic
+interactions between lipids through proximity to a miscibility critical point. Liquid membranes have a rich phase
+behavior. Synthetic giant unilamellar vesicles (GUVs) exhibit miscibility critical points with critical fluctuations
+consistent with the 2D Ising model [9, 10]. Vesicles extracted via blebbing from live cells demonstrate critical behavior
+without experimental fine-tuning of composition, suggesting that in vivo their membranes may be poised close to
+criticality [11, 12]. Extrapolation to live cells seems to indicate that intact membranes are tuned slightly above the
+critical point where there is no macroscopic phase separation, but where relatively large domains up to a correlation
+length of 20 nm are expected. Although the thermodynamics of the membrane are now better understood, we do not yet
+understand how proximity to criticality impacts the protein interaction networks that take place in the two-dimensional
+solvent of the plasma membrane.
+We have previously explored the ramifications of this proximity to criticality. We and others have shown that pairs of
+proteins embedded in a nearly critical solvent may feel effective forces mediated by thermodynamic domains that can
+extend to a correlation length, much larger than electrostatic interactions [13, 14, 15, 16]. We also showed that single
+ion channels that interact with lipids can be sensitively regulated by changes to their solvent environment near demixing
+criticality [17, 18]. An area that remains unexplored is how the membrane coupling could impact the protein-protein
+interactions that take place in the membrane. Here, we seek to understand how membrane domains can alter which
+components interact with each other, thereby shaping the outcomes of protein interaction networks and signaling
+cascades.
+
+A PREPRINT - N OVEMBER 3, 2025
+
+Diverse lines of evidence suggest that protein-protein interaction networks are sensitive to their membrane environment.
+Perturbations known to influence the distance to criticality often impact PPI networks. Miscibility critical points have
+two sensitive directions; here, area fraction of liquid-ordered domains and the distance to the critical temperature which
+sets the typical size of domains. Cholesterol depletion and loading primarily change the area fraction of domains and
+impact many signaling assays, including that in neurotransmitters [19] and RAS clusters [5]. We have shown that
+conditions that induce and stabilize domain formation by lowering transition temperature also reverse the anesthetic
+effects of short chain n-alcohols [20]. In addition, many components of protein-protein interaction networks have
+been shown to partition into membrane domains. In B lymphocytes, activating kinases often partition into ordered
+domains, while deactivating phosphatases partition into disordered domains [21]. Furthermore, some PPI networks lead
+to downstream changes in domain size and composition [22]; for example, B-Cell receptor (BCR) activation increases
+ordered domain formation [21].
+In this manuscript, we demonstrate that when signaling components couple to different domains near a critical point,
+signaling outcomes can sensitively depend on thermodynamic parameters that affect the stability of domains. We present
+a Monte Carlo simulation framework to probe the robustness of this behavior alongside a diagrammatic method of
+predicting changes in signaling outcomes. We find that interactions between larger proteins become especially sensitive
+to perturbations that change the critical temperature and thus the domain size. We additionally explore mechanisms
+that modify domain preference, like palmitoylation, and find that interaction networks that include such reactions can
+produce far from equilibrium domains.
+
+Methods
+Model
+
+Figure 1: Effective reaction rates between components depend on solvent s distance to the critical point. A: Signal
+components are disks of spins that diffuse in the 2D Ising Model. At time t0 , an activator (black) comes in contact with
+an inactive target (pink). In the same time step, the target is activated (blue) at some fixed rate. During the next sweep,
+the activated target diffuses away. Because of coupling to Ising degrees of freedom, the effective rate of these reactions
+depends on the state of the surrounding membrane through their rate of coming into contact. B: Cascade diagram with
+component partitioning. Sign above reaction arrow (purple +/-) indicates that the pathway increases/decreases target
+activity. Sign below reaction arrow (orange +/-) indicates whether interaction rate increases or decreases with rescaled
+temperature. The product of these two signs (here positive in both cases) predicts how increasing temperature changes
+the target s activity. C: In this PPI the product of the upper and lower signs is positive for all reactions, indicating target
+activity should increase monotonically with respect to temperature, as sketched. While the explicit reaction rates do not
+change with temperature, the effective rate of the activating reaction increases while the deactivating reaction decreases
+as unlike components interact more at higher temperature and like components interact less.
+Here we develop a minimal simulation framework to investigate PPIs solvated by a membrane poised close to a
+liquid-liquid critical point. We represent the membrane with a 2D square lattice. We represent membrane lipids as Ising
+spins si = 1 [23], corresponding to components that preferentially partition into the ordered/disordered phases of
+real membranes. Two lines of experimental evidence suggest equating our lattice spacing with approximately 1nm;
+2
+
+A PREPRINT - N OVEMBER 3, 2025
+
+extrapolating the correlation length near the critical point of cell-derived vesicles yields an l near 2 nm [12], and the
+size of a membrane lipid generally falls around 0.8 nm2 [24].
+Membrane-embedded components of PPIs in our model, such as kinases and phosphatases, are represented as diskshaped inclusions. As in previous work [17], these inclusions are coupled to the membrane in which they are embedded
+by coupling to neighboring lipids Ising spins. These disk-shaped inclusions are bounded by uniform sets of spins {b}i
+where i denotes the ith inclusion in the membrane. The Hamiltonian of this system has the form
+Htot = Hmem ({s}) +
+
+N
+X
+
+Hint ({s} , {b}i )
+
+(1)
+
+i=1
+
+where Hmem contains the energy of membranes lipids interacting among themselves and Hint represents the interaction
+of the spins on the boundaries of inclusions with their adjacent membrane spins denoted by {s} .
+To capture the diffusive dynamics of membrane lipids, we use the Kawasaki algorithm in which spins are swapped
+with their neighbors with a probability chosen to obey detailed balance. These dynamics locally conserve the order
+parameter and are thus in the model B universality class [25]. Our model does not include hydrodynamic interactions
+that may contribute at cellular length and time scales [10]. Inclusions translate to neighboring lattice sites with moves
+that obey detailed balance [26], simulating the diffusive dynamics of proteins. In a standard sweep of the algorithm, an
+attempt is made to move every lipid on the lattice, and C attempts are made to move each disk (see supplement for
+details).
+The interactions between the PPI components are carried out as shown in figure 1A. When two particular components
+come into contact, a reaction can change the state of one, reflecting a biochemical modification such as phosphorylation.
+Because the interacting partners must be in contact, the effective reaction rates thus depend implicitly on the properties
+of the nearly critical solvent in which they are embedded. These dynamics represent non-equilibrium reactions, and
+thus do not satisfy detailed balance.
+Qualitative Analysis
+By detailing the interaction network s components partitioning along with their interactions as shown in figure 1B, a
+straightforward prediction may be made about the PPI s outcome as the system passes through criticality. This particular
+interaction network contains the chemical reactions
+A + T I A + TA
+I + TA I + TI
+where A denotes the activator (black), I denotes the inactivator (green), and TI/A denotes the inactive/active target
+(pink/blue). Each component s partitioning is denoted by the legs that attach it to the membrane from above wavy lines
+for ld and straight for lo . On each pathway, denoted as arrows in the diagram, two signs are labeled. The sign above the
+pathway refers to if this interaction increases or decreases the activity of the component of interest, denoted here as the
+target. The orange sign below the pathway indicates if the rate of contact between the two components increases or
+decreases with the rescaled temperature τ where
+τ=
+
+T
+.
+Tc
+
+In cells, this rescaled temperature could be accessed either by changing temperature T or through changes in composition
+which change the critical temperature Tc . This orange sign is negative if the two components partition into the same
+domains and positive if they partition into different domains. If the product of the upper and lower signs on each
+pathway agrees for all pathways in the interaction network then we expect this product to give the sign of the slope
+of the target s activity with respect to τ as shown in figure 1C. This scheme allows for ease of creating interaction
+networks with straightforward predictions from our model.
+
+Results
+Domains regulate protein-protein interactions according to partitioning
+We first wanted to understand how solvent properties near the critical point could influence PPIs whose components
+have fixed partitioning into domains. In these systems, the configurations of proteins and lipids are in equilibrium, so
+3
+
+A PREPRINT - N OVEMBER 3, 2025
+
+Figure 2: Interaction networks are highly sensitive to solvent properties near criticality. Results are from the
+interaction network depicted in figure 1B when carried out with Monte Carlo simulation. A: Configurations of the
+simulation at a range of rescaled temperatures. As temperature increases domains become smaller and the target is more
+likely to be found near its activator which prefers a different domain, thus increasing the activity. B: Radially-averaged
+cross-correlation functions between the activators and targets (solid lines) and between the inactivators and targets
+(dashed lines) for the three temperature values in part A. As temperature is increased, the activator is found closer to the
+target while the inactivator is found more distant. C: The target s activity grows with rescaled temperature, most steeply
+near the critical point. D: Taking a closer look at the near-critical region of part C, the greatest increase in target activity
+occurs between τ = 1 and τ = 1.1. Binning the various simulation runs by activity clearly demonstrates the increased
+variance near the critical point.
+
+that the probability of a configurational state is given by a Boltzmann weight. However, while spatial configurations are
+given by this equilibrium distribution, the dynamics of the activity state of target proteins is not in equilibrium.
+As a model of such a system, we explored the cascade depicted in Figure 1B. Here the receptor state that we are
+interested in tracking is denoted as the target which has an inactive (pink) state and an active (blue) state. Alongside the
+target in this cascade, there are inactivating (green) and activating (black) components. The target and the inactivating
+component partition into the ordered domain while the activating component partitions into the disordered domain. In
+each simulation, the components and the lipids are allowed to evolve under locally conserved Kawasaki dynamics, and
+the target activation rate achieves steady-state.
+The model predictions may be understood visually by analyzing how the spatial organization of components modifies
+their respective interaction rates. In Figure 2A, three snapshots show simulations at different τ . As τ increases,
+the oppositely-partitioned activators and targets come into contact more frequently, resulting in increased activity.
+The spatial correlation analysis shown in Figure 2B demonstrates the correlation change between components. As
+temperature increases, the target is more often localized near the activator compared to the inactivator.
+Figure 2C demonstrates that as predicted in figure 1C, the target s activity in this protein-protein interaction network
+increases as the rescaled temperature increases. Additionally, we observe the greatest changes in activity, and thus
+effective interaction rate among PPI components, near the thermodynamic critical point. This is because near the
+critical point the typical size of domains becomes sharply dependent on the thermodynamic rescaled temperature, either
+through actual temperature, or through the critical temperature. A finer look at activity as a function of temperature
+is shown in figure 2D. Near the critical point, the activity becomes highly susceptible to perturbations in the rescaled
+temperature.
+Sensitivity increases with PPI component size
+Inspection of the Hamiltonian in Eq. 1 reveals that the energy contribution per inclusion increases with inclusion size.
+In Fig. 3, we explore how target activity changes as we vary PPI component radius for the same interaction network. In
+Fig. 3A we show the lattice shapes of the disks for which we plot data. PPI s containing larger components are more
+4
+
+A PREPRINT - N OVEMBER 3, 2025
+
+Figure 3: Larger components are more sensitive to critical solvent properties. A: Visual schematic of lattice shape
+for each disk radii discussed here. A network containing radii zero components has spatial configurations equivalent to
+the standard 2D Ising model. The solid boundary of each disk denotes the spins which interact with the solvent while
+the spins they bound have no impact. B: Activity data (diamond markers) for various disk radii along with the result of
+fitting each data set with a logistic function (solid lines). C: The growth width τ of the logistic curve fits from A.
+Increasing disk size results in a stronger sensor of Tc . The error bars here denote the 95% confidence interval for each
+ τ value. All fit values are tabled in the supplement.
+
+sensitive to temperature changes (see Fig. 3B). To quantify these curves, we fit the fraction of active targets fA in the
+steady-state system to a generalized logistic function of temperature,
+
+fA (τ ) =
+
+R L
+(τ τ0fit ) R + L
+tanh
++
+,
+2
+2 τ
+2
+
+(2)
+
+where the fit parameters L and R denote left and right asymptotes, respectively, τ the growth width, and τ0fit is the
+point of steepest activity increase. We note that τ0fit is near 1, consistent with the idea that near the critical point is
+where PPIs are most sensitive to solvent properties. We also note that larger proteins have the effect of raising the
+critical temperature slightly, and we report τ for a bare membrane, so that the true thermodynamic critical point in these
+systems is at τ slightly larger than 1, increasing for larger inclusions and larger inclusion density.
+The fitted values for the growth width τ are plotted in Fig. 3C for each radius. As intuited, the growth width decreases
+with increasing radius, demonstrating that sensitivity to τ increases with the size of the PPI component.
+5
+
+A PREPRINT - N OVEMBER 3, 2025
+
+Figure 4: PPIs with large components are also sensitive to the composition parameter parallel to the tie-lines.
+In the Ising model, this is parameterized by magnetization, m, which previous figures take to be zero (equal area of
+bright and dark phases below Tc ). Here we explore varying m for systems with small components (r = 0, A-C) and
+larger components (r = 3 D-F), for the interaction network depicted in figure 1B. A,B: Activity as a function of m
+for three values of temperature and activity as a function of temperature for three values of m. When components are
+small results do not depend strongly on m, though they do depend on temperature. C: configurations at two values of
+m and τ . At negative m, τ < 1 the system has less dark phase. Above the critical temperature, there are still fewer
+dark domains. D,E: Activity as a function of m and τ for the same network with larger components, r = 3. With these
+larger components the system is sensitive to both m and τ near the critical temperature. F: At negative m, there is less
+dark phase similar to C, but the larger inclusions form higher contrast domains even above the critical temperature of
+the bare Ising model.
+
+Large proteins are sensitive to domain area fraction
+The results we have presented thus far have considered how network activity is modulated by changes to rescaled
+temperature. This changes the size and contrast of domains, but without altering the relative ratio of bright to dark
+domain area, moving perpendicular to the low temperature tie lines. Here we explore how changes to the ratio of
+these two domain areas impact PPIs, moving parallel to these low temperature tie lines. In the Ising model we
+can access this by changing the relative fraction numbers of spins with the value si = 1, quantified through the
+magnetization m =< si >. m = 0 corresponds to membranes with unequal area fractions of liquid-ordered and
+liquid-disordered phases when cooled below the phase transition temperature. This effective parameter depends on
+membrane composition, and can be accessed by depleting and loading cholesterol, or more broadly by any perturbation
+which moves along a tie line in the phase separated regime. In Fig. 4, we look at how varying m and τ impact the same
+PPI detailed in Fig. 1 for a range of component sizes.
+Fig. 4A and Fig. 4B demonstrate that variation in m has very little impact on the activity for the PPI with components
+of radii 0. Conversely, Fig. 4D and Fig. 4E indicate that varying m has a substantial effect on the activity of a PPI with
+components of radii r = 3. As m decreases, the frequency of interaction between the like-partitioned inactivator and
+target increases while the interaction between the opposite-partitioned activator and target decreases. The resulting
+effect is a monotonic increase in the target s activity with m that continues across the range of negative to positive m.
+Comparing the 4-panels in Fig. 4C to Fig. 4F suggests that this difference is in part due to changes in the system s
+spatial organization that arise from the varying strength of the force that causes solvent to aggregate around extended
+objects [26, 15]. In particular, the m = 0.4, τ = 1.2 panel demonstrates high contrast domains which are absent in
+simulations with radius 0 proteins.
+6
+
+A PREPRINT - N OVEMBER 3, 2025
+
+Coupling protein partitioning to PPI dynamics can drive non-equilibrium domain formation
+
+Figure 5: Dynamics that modify component partitioning produce non-equilibrium domains. A: Diagram of an
+interaction network in which the target s partitioning is modified alongside its state. The target s inactive state (pink)
+prefers disorder while its active state (blue) prefers order indicated by the respective membrane legs. Qualitative
+analysis suggest the target s activity should increase with τ . B: Mean activity measurements follow these predictions,
+but below the critical temperature a small number of simulations produce outliers with very high activity. We term this
+phenomenon pocketing and trace it to the formation of non-equilibrium domains. C: Three example configurations
+from simulations in which pockets form with their activity vs time traces below. We understand pocket formation
+kinetically. First, a pocket originates when an activator (dark preferring) and an inactive target (white preferring) meet
+in a disordered (white) domain, leading to target activation. Now each prefer the dark (ordered) domain and with some
+probability such a dark domain will form around them before they diffuse to a larger dark domain. We term this domain
+a pocket. Once this pocket is formed, inactive targets (white preferring) can diffuse through the surrounding white
+phase. But when they make contact with the pocket, they can be activated, preventing them from leaving. Dark lipids
+are small enough to diffuse through the white phase to join the pocket as well but inactivators are excluded kinetically.
+D,E: The same interaction network in a system with composition adjusted to m = 0.4 demonstrates an enhanced
+pocketing rate, including at temperatures τ > 1.
+The results we have presented so far have domains and spatial fluctuations that are in thermal equilibrium. While the
+activity state of the proteins is out-of-equilibrium and does not satisfy detailed balance, but because these internal states
+7
+
+A PREPRINT - N OVEMBER 3, 2025
+
+do not feed back onto configurational degrees of freedom, spatial configurations are exactly given by the Boltzmann
+distribution. Here we consider PPIs wherein the activity state of proteins alters their energetic interactions with boundary
+lipids such that the configurations are no longer in thermal equilibrium.
+We are inspired by reactions such as palmitoylation, in which fatty acids are covalently attached to proteins by specific
+enzymes in a reversible and signal-dependent manner [27, 22]. Palmitoylation is a major driver of partitioning into
+liquid-ordered phases [28, 29, 30], indicating that these reactions likely change the domain partitioning of target proteins.
+We implement similar dynamics by having target proteins change their energetic interactions with neighboring lipids
+in response to changes to their PPI state. Because the rate of such reactions does not explicitly depend on the spatial
+configurational state of bounding lipids, this reaction scheme violates detailed balance.
+A PPI that contains a domain-changing mechanism is detailed in the diagram in Figure 5A. The activator and in-activator
+both partition into the ordered domain. The target, when inactive, partitions into the disordered domain and upon
+activation changes to the ordered domain. Our qualitative analysis, which successfully predicted previous qualitative
+results makes a clear prediction for how the temperature should impact activity. Because the signs on both pathways
+present in this interaction network have a positive product, we anticipate that the target s activity will increase with
+temperature.
+Aligning with the diagrammatic predictions, Figure 5B demonstrates that activity on average increases with temperature
+in this PPI. In addition to the average along the red-dotted line, this plot also includes the individual average activity
+of each of the many separate simulations of this network performed in this analysis as blue semi-transparent markers.
+When looking at the low-temperature clusters of these simulations, a peculiarity arises that is not present in the static
+partitioning case. Small subsets of low-temperature simulations exhibit extremely high levels of activity that would
+appear to break the predictions of our diagrams. The second and third panels of Fig. 5C contain prominent examples of
+what occurs in these anamolous simulations. We label this emergent behavior pocketing .
+Simulation runs that contain pocketing have two distinct dark domain types something not observed in equilibrium
+simulations. The first type corresponds to that predicted by the diagrams and equilibrium; it contains activators and
+inactivators, but few targets. A second dark domain type the pocket (circled in red in Figure 5C) is filled with activated
+targets and contains several activators, but no inactivators. Because activators modify targets to prefer dark domains,
+here we term these recruiters , and we term inactivators excluders .
+Pocketing is an explicitly kinetic process that is best understood through its formation process. Pocketing begins when
+a recruiter sits in a small dark domain which contains no excluders. Inactive targets can diffuse into this domain where
+they become activated, trapping them in the domain. In this way, the domain grows. Inactive targets can diffuse through
+the bright phase, but once activated (recruited) they cannot leave. Excluders are unable to enter the pocket because doing
+so would require them to cross through a bright domain. As the pocket grows, so does the energy barrier that blocks
+excluders and recruiters from entering and leaving, increasing its stability. We note that pocket formation frequency is
+dependent on details that are slow to reach steady state, an issue we discuss in more detail in the supplement
+In Fig. 5D we demonstrate that the frequency with which this bistable aggregation-like behavior occurs may be
+considerably increased by using the aggregation-enhancing effect of increasing the ratio of inclusions to lipids in a
+domain as demonstrated in the domain area fraction perturbation results. In Fig. 5E, the lipid budget is tighter, i.e.
+when there are less ordered lipids to accumulate around order-preferring inclusions, partition-modifying dynamics have
+greater impact, forming and dissolving energy barriers with higher frequency and greater amplitude.
+
+Discussion
+Here we present a model and simulation framework for protein interaction networks in a membrane near a de-mixing
+transition. In our model, proteins have preference for local lipid environments through their boundary. Near the critical
+point, small changes in composition or temperature alter the frequency with which components co-locate, changing
+effective reaction rates and network outcomes. We provide a diagrammatic framework to qualitatively predict how
+changing distance to the phase transition should impact protein interactions. In simulation, we show that near the
+critical point the activity of specific targets can vary dramatically as the distance to the critical temperature is varied.
+This effect is especially large for large proteins, which also become sensitive to composition parameters which do not
+change the critical temperature. Finally, when some interactions modify a component s partitioning, we find that some
+of our simulations produce distinct out-of-equilibrium domains which we term pockets.
+Our model is motivated by the findings that membranes from a range of animal cell types have compositions tuned
+near but above a liquid-liquid critical point [11, 9, 31]. Different membrane bound proteins have differing partitioning
+into low temperature domains, presumably changing their rate of interactions with other components, even above Tc .
+On the functional side, perturbations that influence the membrane phase transition, such as n-alcohols [32, 33] and
+8
+
+A PREPRINT - N OVEMBER 3, 2025
+
+cholesterol loading/depletion [34, 35] often lead to changes in signaling activity. Past work has argued that proximity to
+the membrane phase transition could influence membrane-mediated forces [13], or the allosteric states of proteins [17],
+but here we show that these changes could also influence protein-protein interactions by changing the frequency with
+which components come into contact.
+The protein interaction networks that we examine here are especially sensitive to small changes in membrane properties
+when those membranes are tuned near their critical point. In our simulations, the reaction rates between different
+components are implicitly set by the rate at which they come into contact. This requires proteins to co-localize to
+the same local lipid environment, and the availability of different environments becomes strongly dependent on the
+two Ising parameters of reduced temperature (T Tc ) and magnetization (the fraction of dark spins). For example,
+reactions between pairs of proteins that prefer different low-temperature phases become strongly suppressed on
+lowering temperature, as their preferred environments become more different. Interaction networks that carry out signal
+transduction seem to use this motif. In B-cell signaling, liquid-ordered membrane domains cluster around ligand-bound
+receptors, enriched in activating kinase Lyn and depleted of inhibitory phosphatase CD45 [21, 14]. Signaling is inhibited
+by n-alcohol treatments which lower critical temperatures (raise rescaled temperature), possibly by altering the balance
+between activating and inhibiting reactions through this mechanism [20].
+Our results suggest that cells could exert control over many protein interaction networks at once by altering the
+composition of the membrane near the critical point. In support of this idea, experimental work in macrophage cells
+demonstrate that pro-inflammatory perturbations including interferon γ, Kdo 2-Lipid A, and lipopolysaccharide move
+the cell s membrane closer to the critical point, whereas an anti-inflammatory perturbation in the form of interleukin
+4 moves the membrane away from the critical point [36]. Cells also modulate the transition temperature of their
+membrane based on growth conditions and cell density in culture, and with phase in the cell cycle [37]. Recent work
+also showed that cholesterol chemical potential was higher in metastatic cells than in closely related non-metastatic
+cell lines, and found that artificially raising cholesterol chemical potential leads to increased STAT3 phosphorylation,
+a pro-oncogenic signal [38]. These changes to the membrane solvent environment could exert functional influence
+through other mechanisms including allosterically modulating functional states of individual proteins [17, 39, 40],
+and changing the stability of prewet protein liquid domains [41]. However, our results suggest that changes in lipid
+composition could also exert control more directly, by changing the outcomes of signal transduction cascades and other
+protein-protein interaction networks.
+In simulations where component partitioning changes with protein state, we sometimes see far-from-equilibrium
+domains form, generated through a combination of thermodynamic interactions and kinetically driven sorting. These
+domains, which we term pockets, can be seen by the differential partitioning of active targets into pockets (blue
+components in figure 5C) even while inactivators (green) are excluded, even though they have the same interactions with
+surrounding lipids. In our simulations, pocketing requires that activators are recruiters, modifying their target in a way
+that gives them a thermodynamic preference for the local domain. Palmitoylation [29], in which a fatty acid is covalently
+attached to an amino acid, could play this role. This modification is reversible in cells, and has been shown to shift
+partitioning into liquid-ordered domains [35, 28]. A similar motif is also seen in some signaling cascades. For example,
+during TCR signaling, TCR and bound ZAP70 phosphorylate LAT, leading to the formation of a LAT cluster [42, 43].
+Here, TCR/ZAP70 act as a recruiter for the target LAT. Different from our simulation, the LAT phosphorylation likely
+changes the interaction with Grb2 and SOS1, rather than through the membrane, suggesting these domains are prewet
+[41, 44]. Nevertheless, the motif of recruiting targets to a domain formed through a combination of thermodynamic
+forces and non-equilibrium sorting seems shared.
+Although our focus is on protein interaction networks that take place on the two-dimensional plasma membrane, it is
+likely that thermodynamic domains stabilized by thermodynamic interactions between proteins lead to similar effects in
+three dimensions. Currently, there are many structures attributed to liquid-liquid phase separation of disordered domains
+within the nucleus and cytoplasm, many of which wet and prewet onto membranes [41, 43], chromosomes [45], and
+likely other surfaces [46]. In some condensate-driven systems such as TCR signaling via pLAT, Grb2, and Sos1, a
+combination of membrane-bound and free components work together directly linking the two- and three-dimensional
+systems [47]. Away from surfaces, phase separation in many biological condensates has been ascribed to serve a wide
+mileu of functions including the enhancement or suppression of biochemical reactions [48], and the means by which
+this may function in vivo, as in our results, is by regulating interaction network component proximity a feature that
+readily extends from two dimensions to three.
+Self-organized criticality has been proposed as a mechanism for maintaining a system near a precise operating point
+without fine-tuning [49, 50, 51, 52, 53, 54, 55, 56, 57]. Cell membranes seem to be precisely tuned near to a miscibility
+critical point, but the mechanism which achieves this is unknown. An investigation of zebrafish cell membranes
+demonstrated that they adapt their miscibility temperature to stay a fixed distance above their growth temperature [58].
+Distantly related yeast cells also regulate the miscibility temperature of vacuole organelle membrane to maintain a fixed
+
+9
+
+A PREPRINT - N OVEMBER 3, 2025
+
+distance below their growth temperature [59]. In each case, cells are thought to adjust their lipid composition to achieve
+this tuning. While mechanisms for lipid homeostasis are diverse, the robustness of criticality to temperature changes in
+these systems suggests involvement of a sensor that can detect and feedback on the distance to the critical point. Our
+results suggest that protein-protein interaction networks may provide such a sensor. The activity of networks that are
+embedded in the membrane provide a natural way to read out the solvent properties of the membrane. One aim of future
+work with this model will explore the development of such self-organizing systems.
+
+Data availability
+The simulations here were carried out using a monte carlo framework developed and available at https://gitlab.
+com/taylor-schaffner/memtropic.
+Post-simulation data analysis was carried out using MATLAB (The MathWorks). Analysis code and data files can be
+found organized by figure at https://gitlab.com/taylor-schaffner/ppi-paper-figure-data.
+
+Author Contributions
+Machta conceptualized the research. Schaffner developed the computational framework, carried out all simulations, and
+analyzed the data. Schaffner and Machta interpreted simulation results connecting them to biological observations.
+Schaffner and Machta wrote the article.
+
+Acknowledgments
+This work was supported by NIH R35 GM138341. We thank Yu Fu, Isabella Graf, Mason Rouches, Sarah Veatch for
+useful discussions.

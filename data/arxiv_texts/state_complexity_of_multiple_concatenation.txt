@@ -1,0 +1,2650 @@
+Accepted for publication in the Journal of Automata, Languages and Combinatorics
+Final version created on November 7, 2025
+
+arXiv:2511.03814v1 [cs.FL] 5 Nov 2025
+
+STATE COMPLEXITY OF MULTIPLE CONCATENATION
+
+Jozef Jir sek
+(A)
+
+(A,B)
+
+Galina Jir skov 
+
+(C,D)
+
+Institute of Computer Science, P. J. af rik University
+Jesenn 5, 040 01 Ko ice, Slovakia
+jozef.jirasek@upjs.sk
+
+(C)
+
+Mathematical Institute, Slovak Academy of Sciences
+Gre kova 6, 040 01 Ko ice, Slovakia
+jiraskov@saske.sk
+
+ABSTRACT
+We describe witness languages meeting the upper bound on the state complexity of
+the multiple concatenation of k regular languages over an alphabet of size k + 1 with
+a significantly simpler proof than that in the literature. We also consider the case
+where some languages may be recognized by two-state automata. Then we show that
+one symbol can be saved, and we define witnesses for the multiple concatenation of k
+languages over a k-letter alphabet. This solves an open problem stated by Caron et al.
+[2018, Fundam. Inform. 160, 255 279]. We prove that for the concatenation of three
+languages, the ternary alphabet is optimal. We also show that a trivial upper bound
+on the state complexity of multiple concatenation is asymptotically tight for ternary
+languages, and that a lower bound remains exponential in the binary case. Finally,
+we obtain a tight upper bound for unary cyclic languages and languages recognized by
+unary automata that do not have final states in their tails.
+
+Keywords: regular languages, multiple concatenation, state complexity
+
+1. Introduction
+Given formal languages L1 , L2 , . . . , Lk over an alphabet Σ, their concatenation is the
+language L1 L2 Lk = {u1 u2 uk | ui Li for i = 1, 2, . . . , k}. Here we consider
+the case where all languages are regular and ask the question of how many states
+are sufficient and necessary in the worst case for a deterministic finite automaton
+to recognize their concatenation assuming that each Li is recognized by an ni -state
+deterministic finite automaton.
+A preliminary version of this paper appeared in Proc. DCFS 2020, LNCS vol. 12442, pp. 78 90.
+(B) Research supported by VEGA grant 1/0350/22.
+(D) Research supported by VEGA grant 2/0096/23.
+
+Jozef Jir sek: 0000-0003-4822-230X, Galina Jir skov : 0000-0001-9817-8197
+
+2
+
+J. Jir sek, G. Jir skov 
+
+The first results for the concatenation of two regular languages were obtained by
+Maslov [5] in 1970. In particular, he described binary witnesses meeting the upper
+bound n1 2n2 2n2 1 . In 1994 Yu et al. [8] proved that this upper bound cannot be
+met if the first language is recognized by a minimal deterministic finite automaton
+that has more than one final state.
+The concatenation of three and four regular languages was considered by sik et
+al. [2] in 2009, where the witnesses for the concatenation of three languages over a
+five-letter alphabet can be found. The rather complicated expression for the upper
+bounds for the concatenation of k languages, as well as witnesses over a (2k 1)-letter
+alphabet were given by Gao and Yu [4].
+Caron et al. [1] presented recursive formulas for the upper bounds, and described
+witnesses over a (k + 1)-letter alphabet using Brzozowski s universal automata. They
+also showed that to meet the upper bound for the concatenation of two or three
+languages, the binary or ternary alphabet, respectively, is enough, and they conjectured that k symbols could be enough to describe witnesses for the concatenation of k
+languages.
+In this paper, we study in detail the state complexity of multiple concatenation
+of k regular languages. We first describe witnesses over an alphabet consisting
+of k + 1 symbols with a significantly simpler proof than that in [1]. Our witness
+automata A1 , A2 , . . . , Ak are defined over the alphabet {b, a1 , . . . , ak }. Each ai performs the circular shift in Ai and the identity in all the other automata. These k
+permutation symbols are used to get the reachability of all so-called valid states in a
+DFA for concatenation. The symbol b performs a contraction in each Ai and assures
+the distinguishability of all valid states almost for free. However, the proof requires
+that each Ai has at least three states. With a slightly more complicated proof, we
+also solve the case that includes two-state automata. Then we describe special binary
+witnesses for the concatenation of two languages. We combine our ideas used for
+the (k + 1)-letter alphabet and those for binary witnesses to describe witnesses for
+multiple concatenation over a k-letter alphabet, which solves an open problem stated
+by Caron et al. [1]. In the case of k = 3, we show that the ternary alphabet is optimal.
+We also examine multiple concatenation on binary, ternary, and unary languages. We show that in the binary case, the lower bounds remain exponential in
+n2 , n3 , . . . , nk , and in the ternary case, the trivial upper bound n1 2n2 +n3 + +nk can
+be met up to some multiplicative constant depending on k. For unary languages, we
+use Frobenius numbers to get a tight upper bound for cyclic languages, or languages
+recognized by automata that do not have final states in their tails. We also consider
+the case with final states in tails, and provide upper and lower bounds for multiple
+concatenation in such a case.
+2. Preliminaries
+We assume that the reader is familiar with basic notions in automata and formal
+language theory. For details and all unexplained notions, we refer the reader to [7].
+The size of a finite set S is denoted by |S|, and the set of all its subsets by 2S .
+
+State Complexity of Multiple Concatenation
+
+3
+
+For a finite non-empty alphabet of symbols Σ, the set of all strings over Σ,
+including the empty string ε, is denoted by Σ . A language is any subset
+of Σ . The multiple concatenation of k languages L1 , L2 , . . . , Lk is the language L1 L2 Lk = {u1 u2 uk | u1 L1 , u2 L2 , . . . , uk Lk }.
+A deterministic finite automaton (DFA) is a quintuple A = (Q, Σ, , s, F ) where Q
+is a non-empty finite set of states, Σ is a non-empty finite alphabet of input symbols,
+ : Q Σ Q is the transition function, s Q is the initial state, and F Q is the
+set of final (accepting) states. The transition function can be naturally extended to
+the domain Q Σ . The language recognized (accepted) by the DFA A is the set of
+strings L(A) = {w Σ | s w F }.
+All deterministic finite automata in this paper are assumed to be complete; that
+is, the transition function is a total function.
+We usually omit , and write qa instead of q a. Next, for a subset S of Q and
+a string w, let Sw = {qw | q S} and wS = {q | qw S}. Each input symbol a induces a transformation on Q = {q1 , q2 , . . . , qn } given by q 7 qa. We denote
+by a : (q1 , q2 , . . . , q ) the transformation that maps qi to qi+1 for i = 1, . . . , 1, the
+state q to q1 , and fixes any other state in Q. In particular, (q1 ) denotes the identity.
+Next, we denote by a : (q1 q2 q ) the transformation that maps qi to qi+1
+for i = 1, 2, . . . , 1 and fixes any other state. Finally, we denote by a : (S qi ) the
+transformation that maps each q S to qi and fixes any other state.
+A state q Q is reachable in the DFA A if there is a string w Σ such that q = sw.
+Two states p and q are distinguishable if there is a string w such that exactly one of
+the states pw and qw is final. A state q Q is a dead state if qw 
+/ F for every
+string w Σ .
+A DFA is minimal (with respect to the number of states) if all its states are
+reachable and pairwise distinguishable. The state complexity of a regular language L, sc(L), is the number of states in the minimal DFA recognizing L. The
+state complexity of a k-ary regular operation f is a function from Nk to N given
+by (n1 , n2 , . . . , nk ) 7 max{sc(f (L1 , L2 , . . . , Lk )) | sc(Li ) ni for i = 1, 2, . . . , k}.
+A nondeterministic finite automaton (NFA) is a quintuple N = (Q, Σ, , I, F )
+where Q, Σ, and F are the same as for a DFA, I Q is the set of initial
+states, and : Q (Σ {ε}) 2Q is the transition function. A string w in Σ 
+is accepted by the NFA N if w = a1 a2 am where ai Σ {ε} and a sequence of states q0 , q1 , . . . , qm exists in Q such that q0 I, qi+1 qi ai+1
+for i = 0, 1, . . . , m 1, and qm F . The language recognized by the NFA N is the
+set of strings L(N ) = {w Σ | w is accepted by N }. For p, q Q and a Σ {ε},
+we say that a triple (p, a, q) is a transition in N if q p a.
+Let N = (Q, Σ, , I, F ) be an NFA. For a set S Q, let E(S) denote
+the ε-closure of S; that is, the set of states {q | q is reached from a state
+in S through 0 or more ε-transitions}. The subset automaton of the NFA N
+is the DFA D(N ) = (2Q , Σ, , E(I), F ) where F = {S 2Q | S F = }
+and S a = q S E(q a) for each S 2Q and each a Σ. The subset automaton D(N ) recognizes the language L(N ).
+The reverse of the NFA N is the NFA N R = (Q, Σ, R , F, I) where the transition
+function is defined by q R a = {p Q | q p a}; that is, N R is obtained from N by
+
+4
+
+J. Jir sek, G. Jir skov 
+
+swapping the roles of initial and final states, and by reversing all transitions.
+A subset S of Q is reachable in N if there is a string w in Σ such that S = I w,
+and it is co-reachable in N if it is reachable in the reverse N R .
+We use the following two simple observations to prove distinguishability of states
+in subset automata.
+Lemma 1. Let N = (Q, Σ, , I, F ) be an NFA without ε-transitions. Let S, T Q
+and q S \ T . If the singleton set {q} is co-reachable in N , then S and T are
+distinguishable in the subset automaton D(N ).
+Proof. Since the singleton set {q} is co-reachable in N , there is a string w Σ which
+sends the set of final states F to {q} in the reversed automaton N R . It follows that
+the string wR is accepted by N from the state q, and it is rejected from any other
+state. Thus, the string wR is accepted by D(N ) from S and rejected from T .
+
+Corollary 2. If for each state q of an NFA N , the singleton set {q} is co-reachable
+in N , then all states of the subset automaton D(N ) are pairwise distinguishable. 
+3. Multiple Concatenation: Upper Bound
+In this section, we recall the constructions of ε-NFAs and NFAs for multiple concatenation, as well as the known upper bounds. We also provide a simple alternative
+method to get upper bounds. In the last part of this section, we consider the case
+when some of given automata have just one state.
+For i = 1, 2, . . . , k, let Ai = (Qi , Σ, i , si , Fi ) be a DFA, and assume that Qi Qj = 
+if i = j. Then the concatenation L(A1 )L(A2 ) L(Ak ) is recognized by an NFA
+N = (Q1 Q2 Qk , Σ, , s1 , Fk ), where for each i = 1, 2, . . . , k, each q Qi , and
+each a Σ, we have q a = {q i a} and for each i = 1, 2, . . . , k 1 and each q Fi ,
+we have q ε = {si+1 }, that is, the NFA N is obtained from the DFAs A1 , A2 , . . . , Ak
+by adding the ε-transition from each final state of Ai to the initial state si+1 of Ai+1
+for i = 1, 2, . . . , k 1; the initial state of N is s1 , and its set of final states is Fk .
+Since A1 is a complete DFA, in the corresponding subset automaton D(N ), each
+reachable subset is of the form {q} S2 S3 Sk where q S1 and Si Qi
+for i = 2, 3, . . . , k. We represent such a set by the k-tuple ({q}, S2 , S3 , . . . , Sk ), or
+more often by (q, S2 , S3 , . . . , Sk ), and with this representation, it is not necessary to
+have the state sets disjoint. Nevertheless, since we sometimes use special properties
+of the NFA N , we keep in mind that this k-tuple represents the union of appropriate
+set of states of the corresponding DFAs. We usually denote all transition functions
+by , and simply write (qa, S2 , S3 , . . . , Sk ) or (q, S2 a, S3 , . . . , Sk ); that is, applying a
+to the i-th component means that we use the transition function i .
+It follows from the construction of the NFA N that if Si Fi = then si+1 Si+1 ,
+and if Si = , then Si+1 = in any reachable state (S1 , S2 , . . . , Sk ) of the subset
+automaton D(N ). The states satisfying the above mentioned properties are called
+valid in [1]; let us summarize the three properties in the next definition.
+
+State Complexity of Multiple Concatenation
+
+5
+
+Definition 3. A state (S1 , S2 , . . . , Sk ) of the subset automaton D(N ) is valid if
+(I) |S1 | = 1,
+(II) if Si = and i k 1, then Si+1 = ,
+(III) if Si Fi = and i k 1, then si+1 Si+1 .
+Since each reachable state of D(N ) is valid, we have the next observation.
+Proposition 4. An upper bound on sc(L(A1 )L(A2 ) L(Ak )) is given by the number
+of valid states in the subset automaton D(N ).
+
+Notice that, to reach as many valid states as possible, each automaton Ai
+with i k 1 should have exactly one final state fi , that is, we have Fi = {fi }. Moreover, if Ai has at least two states, then we should have si = fi . If this is the case for
+all Ai , then we can construct an NFA N for the concatenation L(A1 )L(A2 ) L(Ak )
+from the DFAs A1 , A2 , . . . , Ak as follows: for each i = 1, 2, . . . , k 1, each state q Qi ,
+and each symbol a Σ such that q i a = fi , we add the transition (q, a, si+1 ); the
+initial state of N is s1 , and its unique final state is fk .
+For k = 2, an upper bound on the number of valid states is (n1 1)2n2 + 2n2 1 [8],
+which is the sum of the number of states (q, S2 ) with q = f1 and S2 Q2 and the
+number of states (f1 , S2 ) with s2 S2 . For k 3, we have the following inequalities.
+Proposition 5. Let k 3 and #τk denote the number of valid states. Then
+1
+2k 1
+
+n1 2n2 +n3 + +nk #τk 
+
+3
+n1 2n2 +n3 + +nk .
+4
+
+Proof. Every state (S1 , S2 , . . . , Sk ) with si Si for i = 2, 3, . . . , k is a valid state. This
+gives the left inequality. On the other hand, every state (S1 , S2 , . . . , Sk ) with f2 S2
+and s3 
+/ S3 is not valid, which gives the right inequality.
+
+We now provide a simple alternative method for obtaining an upper bound on the
+number of valid states. To this aim let
+
+ Ui be the number of tuples (Si , Si+1 , . . . , Sk ) such that for fixed S1 , S2 , . . . , Si 1
+
+with fi 1 
+/ Si 1 the state (S1 , . . . , Si 1 , Si , Si+1 , . . . , Sk ) is valid,
+
+ Vi be the number of tuples (Si , Si+1 , . . . , Sk ) such that for a fixed S1 , S2 , . . . , Si 1
+
+with fi 1 Si 1 the state (S1 , . . . , Si 1 , Si , Si+1 , . . . , Sk ) is valid.
+Then we have the next result.
+
+Theorem 6. Let k 2, ni 2 for i = 1, 2, . . . , k, and Ai = (Qi , Σ, , si , {fi })
+be an ni -state DFA with si = fi . Let Ui and Vi be as defined above, and #τk be the
+number of valid states in the subset automaton D(N ) accepting L(A1 )L(A2 ) L(Ak ).
+Then
+Uk = 2nk and Vk = 2nk 1 ,
+
+(1)
+
+6
+
+J. Jir sek, G. Jir skov 
+
+and for i = 2, 3, . . . , k 1,
+Ui = 1 + (2ni 1 1)Ui+1 + 2ni 1 Vi+1 ,
+ni 2
+
+Vi = 2
+
+(Ui+1 + Vi+1 ).
+
+(2)
+(3)
+
+Finally, we have
+#τk = (n1 1)U2 + V2 .
+
+(4)
+
+Proof. If fk 1 
+/ Sk 1
+, then Sk may be an arbitrary subset of Qk . If fk 1 Sk 1
+,
+then Sk must contain sk . This gives (1).
+
+Let fi 1 
+/ Si 1
+. Then we have just one tuple with Si = , namely, ( , , . . . , ),
+ni
+then (2 1)Ui+1 tuples with fi 
+/ Si and Si non-empty, and 2ni 1 Vi+1 tuples
+with fi Si final. This gives (2).
+
+Let fi 1 Si 1
+. Then si Si . We have (2ni 2)Ui+1 tuples with si Si
+ni 2
+and fi 
+/ Si , and 2
+Vi+1 tuples with si Si and fi 
+/ Si . This gives (3).
+Finally, we have (n1 1) possibilities for S1 to be non-final singleton set, and one,
+namely, S1 = {f1 }, to be final. This gives (4).
+
+Let us illustrate the above result in the following example.
+Example 7. Let k = 3 and n1 , n2 , n3 2. Then
+U3 =2n3 and V3 = 2n3 1 ,
+U2 =1 + (2n2 1 1)U3 + 2n2 1 V3 = 1 + (2n2 1 1)2n3 + 2n2 1 2n3 1 ,
+V2 =2n2 2 (U3 + V3 ) = 2n2 2 (2n3 + 2n3 1 )
+#τk =(n1 1)U2 + V2 =
+(n1 1)(1 + (2n2 1 1)2n3 + 2n2 1 2n3 1 ) + 2n2 2 (2n3 + 2n3 1 ) =
+n1 (1 + 2n2 +n3 1 2n3 + 2n2 +n3 2 ) 1 2n2 +n3 1 + 2n3 2n2 +n3 2 +
+2n2 +n3 2 + 2n2 +n3 3 =
+3
+3
+n1 (1 + 2n2 +n3 2n3 ) 2n2 +n3 + 2n3 1,
+4
+8
+which is the same as in [1, Example 3.6].
+
+To conclude this section, let us consider also the case when some automata have just
+one state. If this state is non-final, then the resulting concatenation is empty. Thus,
+assume that all one-state automata recognize Σ , so consist of one initial and final
+state fi . Then we construct an NFA N accepting the language L(A1 )L(A2 ) L(Ak )
+as described above. Let D(N ) be the corresponding subset automaton. We represent
+is states by k-tuples ({q}, S2 , S3 , . . . , Sk ) where q Q1 and Si Qi . Moreover,
+if ni = 1, then Si = {fi }. If ni 2 and i < k, then to get maximum number of valid
+reachable sets, we must have Fi = {fi } and si = fi . The next observation provides
+an upper bound in the case when exactly one of given DFAs has one state.
+
+State Complexity of Multiple Concatenation
+
+7
+
+Proposition 8. Let k 2, j {1, 2, . . . , k}, nj = 1, and ni 2 if i = j.
+For i = 1, 2, . . . , k, let Ai be an ni -state DFA and L = L(A1 )L(A2 ) L(Ak ). Let Ui
+and Vi be given by expressions (2)-(3). Then
+
+V2 ,
+if j = 1;
+
+n1 ,
+if j = k = 2;
+
+ (n 1)U + V + 1
+1
+2
+2
+sc(L) 
+
+with
+U
+=
+2nk 1 1 and Vk 1 = 2nk 1 2 , if j = k 3;
+k 1
+
+(n1 1)U2 + V2 + Vi+1
+
+with Uj 1 = 2nj 1 1 and Vj 1 = 2ni 1 2 , if 2 j k 1.
+Proof. First, let j = 1. Then we have S1 = {f1 } in each valid state (S1 , S2 , . . . , Sk ).
+It follows that the number of valid states is V2 with Uk = 2nk and Vk = 2nk 1 .
+Now, let j = k. Then all states (S1 , S2 , . . . , Sk 1 , {fk }) are equivalent to a final sink
+state. If Sk = , then fk 1 
+/ Sk 1 . This results in an upper bound (n1 1)U2 +V2 +1
+with Uk 1 = 2nk 1 1 and Vk 1 = 2nk 1 2 if k 3 and (n1 1) + 1 if k = 2.
+Finally, let 2 j k 1. Then all states (S1 , S2 , . . . , Si 1 , {fi }, {si+1 }, , , . . . , )
+are equivalent to the state ({s1 }, {s2 }, . . . , {si 1 }, {fi }, {si+1 }, , , . . . , ) since
+we have a loop on each input symbol in the state fi and therefore every string accepted by N from a state in Q1 Q2 Qi 1 is accepted
+also from fi . It follows that the reachable and pairwise distinguishable valid
+states of D(N ) are either of the form (S1 , S2 , . . . , Si 1 , , , . . . , ) or of the
+form ({s1 }, {s2 }, . . . , {si 1 }, {fi }, Si+1 , Si+2 , . . . , Sk ). If Si = , then Si 1 does not
+contain fi , so the number of valid states of the first form is given by (ni 1)U2 + V2
+with Ui 1 = 2ni 1 1 and Vi 1 = 2ni 1 2 . The number of valid states of the second
+form is given by Vi+1 .
+
+Example 9. Let k = 4, n3 = 1, and n1 , n2 , n4 2. Then number of valid
+states (S1 , S2 , , ) is (n1 1)U2 + V2 where U2 = 2n2 1 and V2 = 2n2 2 . Next,
+the number of valid states ({s1 }, {s2 }, {f3 }, S4 ) is V4 = 2n4 1 . This gives an upper
+bound (n1 1)2n2 1 + 2n2 2 + 2n4 1 for concatenation of four languages, the third
+of which is Σ .
+
+4. Matching Lower Bound: (k + 1)-letter Alphabet
+In this section, we describe witness languages meeting the upper bound on the state
+complexity of multiple concatenation of k regular languages over a (k + 1)-letter
+alphabet with a significantly simpler proof than that in [1, Section 4, pp. 266 271].
+We use these witnesses in the next section to describe witness languages over a k-letter
+alphabet. Let us start with the following example.
+Example 10. Let n1 , n2 3. Consider DFAs A1 and A2 over {a1 , a2 } shown in
+Figure 1. The symbol a1 performs the circular shift in A1 , and the identity in A2 .
+Symmetrically, the symbol a2 performs the identity in A1 , and the circular shift in A2 .
+
+8
+
+J. Jir sek, G. Jir skov 
+a2
+
+A1
+
+a2
+
+s1 =1
+
+a1
+
+2
+
+a2
+
+a2
+a1
+
+...
+
+a1
+
+n1 1
+
+a1
+
+f1 =n1
+
+a1
+a1
+
+A2
+
+s2 =1
+
+a1
+a2
+
+2
+
+a1
+
+a1
+a2
+
+...
+
+a2
+
+n2 1
+
+a2
+
+f2 =n2
+
+a2
+Figure 1: DFAs A1 and A2 with all valid states reachable in D(N ).
+
+Construct the NFA N recognizing the language L(A1 )L(A2 ) from the DFAs A1
+and A2 by adding the transitions (f1 , a2 , s2 ) and (f1 1, a1 , s2 ), by making the state f1
+non-final and state s2 non-initial. The NFA N is shown in Figure 2.
+a2
+
+N
+
+a2
+
+s1 =1
+
+a1
+
+2
+
+a2
+a1
+
+...
+
+a1
+
+n1 1
+
+a2
+a1
+
+f1 =n1
+
+a1
+a1
+a1
+
+s2 =1
+
+a2
+a1
+
+a2
+
+2
+
+a1
+
+a1
+a2
+
+...
+
+a2
+
+n2 1
+
+a2
+
+f2 =n2
+
+a2
+Figure 2: The NFA N recognizing the language L(A1 )L(A2 ).
+
+Let us show that each valid state (j, S) is reachable in the subset automaton D(N ).
+The proof is by induction on |S|. The basis, with |S| = 0, holds true since each
+state (j, ) with j n1 1 is reached from the initial state (s1 , ) by aj 1
+1 . Let |S| 1.
+There are three cases to consider.
+Case 1: j = f1 . Then s2 S since (f1 , S) is valid. Since a1 performs
+a1
+the circular shift in A1 , and the identity in A2 , we have (n1 1, S \ {s2 }) 
+(f1 , {s2 } (S \ {s2 })) = (f1 , S), where the leftmost state is reachable by induction.
+
+State Complexity of Multiple Concatenation
+
+9
+
+Case 2: j = s1 . Let m = min S. Then s2 am 1
+(S), and |am 1
+(S)| = |S| since a2
+2
+2
+performs a permutation on the state set of A2 . Since a1 performs the identity on the
+state set of A2 , we have
+am 1
+
+a
+
+1
+2
+(f1 , am 1
+(s1 , am 1
+(S)) 
+(S)) 
+ = (s1 , S),
+2
+2
+
+where the leftmost state is reachable as shown in Case 1.
+aj 1
+
+Case 3: 2 j n1 1. Then we have (s1 , S) 1 (j, S), where the left state is
+considered in Case 2.
+Thus, the two simple symbols a1 and a2 guarantee the reachability of all valid
+states in the subset automaton D(N ). However, since both these symbols perform
+permutations on the state set Q2 of A2 , we have Q2 a1 = Q2 a2 = Q2 . It follows
+that in D(N ), all states (i, Q2 ) are equivalent to the final sink state.
+To guarantee distinguishability, we add one more input symbol b which performs
+the contractions s1 2 and s2 2, and denote the resulting automata A 1 and A 2 ,
+respectively. The NFA N recognizing L(A 1 )L(A 2 ) is shown in Figure 3.
+a2 , b
+
+a2
+
+N 
+
+s1 =1
+
+a1 , b
+
+2
+
+a2 , b
+a1
+
+...
+
+a1
+
+n1 1
+
+a2 , b
+a1
+
+f1 =n1
+
+a1
+a2 , b
+
+a1
+a1 , b
+
+a1
+
+s2 =1
+
+a2 , b
+
+a2
+
+2
+
+a1 , b
+
+a1 , b
+
+...
+
+a2
+
+n2 1
+
+a2
+
+f2 =n2
+
+a2 , b
+Figure 3: The NFA N recognizing the language L(A 1 )L(A 2 ).
+
+As shown above, all valid states (j, S) are reachable in the corresponding subset
+automaton D(N ). To get distinguishability, let us show that each singleton set is
+co-reachable in N . In the reversed automaton (N )R , the initial set is {f2 }, and
+a
+
+a
+
+a
+
+a
+
+a
+
+2
+2
+2
+2
+2
+{f2 } 
+{n2 1} 
+{n2 2} 
+
+{2} 
+{s2 }.
+
+Next, since n1 3, we have
+b
+
+a
+
+a
+
+a
+
+a
+
+1
+1
+1
+1
+{s2 } 
+ {f1 } 
+{n1 1} 
+
+{2} 
+{s1 };
+
+10
+
+J. Jir sek, G. Jir skov 
+b
+
+notice that we need n1 3 to get {s2 } 
+ {f1 }, in the case of n1 = 2 we would
+b
+
+have {s2 } 
+ {f1 , s1 }. Hence each singleton set is co-reachable in N . By Corollary 2,
+all states of the subset automaton D(N ) are pairwise distinguishable.
+
+We use the ideas from the above example to describe witnesses for multiple concatenation over a (k + 1)-letter alphabet. To this aim, let k 2 and ni 3
+for i = 1, 2, . . . , k. Let Σ = {b, a1 , a2 , . . . , ak } be an alphabet consisting of k + 1
+symbols. Define an ni -state DFA Ai = (Qi , Σ, , si , {fi }), where
+ Qi = {1, 2, . . . , ni },
+ si = 1,
+ fi = ni ,
+ ai : (1, 2, . . . , ni ), aj : (1) if j = i, b : (1 2),
+that is, the symbol ai performs the circular shift on Qi , each symbol aj with j = i
+performs the identity, and the symbol b performs a contraction. The DFA Ai is shown
+in Figure 4; here Σ \ {ai } on a loop means that there is a loop in the corresponding
+state on each symbol in Σ \ {ai }, and the same for Σ \ {ai , b}.
+Σ \ {ai , b}
+
+Ai
+
+si =1
+
+Σ \ {ai }
+ai , b
+
+2
+
+Σ \ {ai }
+
+Σ \ {ai }
+ai
+
+...
+
+ai
+
+ni 1
+
+ai
+
+fi =ni
+
+ai
+
+Figure 4: The witness DFA Ai over the (k + 1)-letter alphabet {b, a1 , a2 , . . . , ak }.
+
+First, let us consider the concatenation L(Ai 1 )L(Ai ) where 2 i k. Construct
+an NFA Ni for this concatenation from DFAs Ai 1 and Ai as shown in Figure 5, that
+is, by adding the transitions (fi 1 1, ai 1 , si ) and (fi 1 , σ, si ) with σ Σ \ {ai 1 },
+by making the state fi 1 non-final, and the state si non-initial.
+The next observation is crucial in what follows. It shows that in the subset automaton D(Ni ), each state (si 1 , S) with S Qi and S = is reachable from (si 1 , {si }).
+Moreover, while reaching (si 1 , S) with fi 
+/ S, the state fi is never visited. This
+is a very important property since, later, we do not wish to influence the (i + 1)st
+component of a valid state while setting its ith component.
+Lemma 11. Let 2 i k and Ni be the NFA for the language L(Ai 1 )L(Ai )
+described above. For every non-empty subset S Qi , there exists a string wS over
+the alphabet {ai 1 , ai } such that in the subset automaton D(Ni ), we have
+w
+
+S
+(i) (si 1 , {si }) 
+(si 1 , S);
+
+u
+
+(ii) if fi 
+/ S, u is a prefix of wS , and (si 1 , {si }) 
+ (q, T ), then fi 
+/ T.
+
+State Complexity of Multiple Concatenation
+Σ \ {ai 1 , b} Σ \ {ai 1 }
+
+Ni
+
+si 1
+
+ai 1 , b
+
+Σ \ {ai 1 }
+
+ai 1
+
+2
+
+11
+
+ai 1
+
+...
+
+ni 1 1
+
+Σ \ {ai 1 }
+
+ai 1
+
+fi 1
+
+ai 1
+Σ \ {ai }
+
+ai 1
+
+Σ \ {ai , b}
+
+si
+
+Σ \ {ai }
+
+ai , b
+
+ai
+
+2
+
+Σ \ {ai }
+
+Σ \ {ai }
+
+...
+
+ai
+
+ni 1
+
+ai
+
+fi
+
+ai , b
+Figure 5: The NFA Ni recognizing the language L(Ai 1 )L(A i).
+
+Proof. The proof of both (i) and (ii) is by induction on |S|. The basis, with |S| = 1,
+holds true since we have
+a
+
+a
+
+a
+
+a
+
+i
+i
+i
+i
+(si 1 , {si }) 
+(si 1 , {2}) 
+
+(si 1 , {ni 1}) 
+(si 1 , {fi }),
+
+so, for each j Qi , the state (si 1 , {j}) is reached from (si 1 , {si }) by aj 1
+. Morei
+over, if j = fi , then fi is not visited while reading aj 1
+.
+i
+Let |S| 2. Let m = min S and S = am 1
+(S \ {m}). Then |S | = |S| 1. By
+i
+reading ni 1 times the symbol ai 1 and then the string am 1
+we get
+i
+n
+
+i 1
+ai 1
+
+am 1
+
+i
+(si 1 , S ) (si 1 , {si } S ) 
+ (si 1 , {m} (S \ {m})) = (si 1 , S),
+
+where the leftmost state is reached from (si 1 , {si }) by the string wS by induction,
+ni 1 m 1
+so wS = wS ai 1
+ai
+. Moreover, if fi 
+/ S, then S [2, fi m], so fi 
+/ S .
+
+By induction, the state fi has not been visited while reading wS to reach (si 1 , S )
+from (si 1 , {si }). Since in Ai , the symbols ai 1 and ai perform the identity
+and circular shift, respectively, the state fi is not visited either while reading the
+ni 1 m 1
+string ai 1
+ai
+to reach (si 1 , S) from (si 1 , S ).
+
+Now, construct the NFA N recognizing the concatenation L(A1 )L(A2 ) L(Ak )
+from DFAs A1 , A2 , . . . , Ak as follows: First, for each i = 1, 2, . . . , k 1, add
+the transitions (fi 1, ai , si+1 ) and (fi , σ, si+1 ) with σ Σ \ {ai }. Then, make
+states f1 , f2 , . . . , fk 1 non-final, and states s2 , s3 , . . . , sk non-initial; see Figure 6 for
+an illustration.
+
+12
+
+J. Jir sek, G. Jir skov 
+a2 , a3
+
+N
+
+s1
+
+a2 , a3 , b
+a1 , b
+
+2
+
+a2 , a3 , b
+a1
+
+a1
+a1
+a1 , a3
+
+s2
+
+f1
+a2 , a3 , b
+a1 , a3 , b
+
+a2 , b
+
+2
+
+a1 , a3 , b
+a2
+
+3
+
+a2
+
+a1 , a3 , b
+a2
+
+a2
+a1 , a2
+
+s3
+
+f2
+a1 , a3 , b
+a1 , a2 , b
+
+a1 , a2 , b
+a3 , b
+
+2
+
+a3
+
+f3
+
+a3
+Figure 6: The NFA N for L(A1 )L(A2 )L(A3 ) with n1 = 3, n2 = 4, and n3 = 3.
+
+Theorem 12. Let k 2 and ni 3 for i = 1, 2 . . . , k. Let Ai be the ni -state DFA
+from Figure 4. Let N be the NFA for L(A1 )L(A2 ) L(Ak ) described above. Then all
+valid states are reachable and pairwise distinguishable in the subset automaton D(N ).
+Proof. We first prove reachability. Let q = (j, S2 , S3 , . . . , Sk ) be a valid state.
+If S2 = , then the state q = (j, , , . . . , ) is reached from the initial
+state (s1 , , , . . . , ) by the string aj 1
+1 . Next, let = max{i 2 | Si = }.
+Then q = (j, S2 , S3 , . . . , S , , , . . . , ) where 2 k, Si Qi and Si = 
+for i = 2, 3, . . . , . Since each ai performs the circular shift in Ai and the identity
+n 1
+in Aj with j = i, the string an1 1 a2n2 a 1
+sends the initial state (s1 , , , . . . , ) to
+(s1 , {s2 }, {s3 }, . . . , {s 1 }, {s }, , , . . . , ).
+Now, we are going to set the corresponding components to sets Si , starting with S ,
+continuing with S 1 , S 2 , . . . , and ending with S3 and S2 . By Lemma 11 applied to the NFA N recognizing the language L(A 1 )L(A ), there is a string wS 
+over {a 1 , a } which sends (s 1 , {s }) to (s 1 , S ) in the subset automaton D(N ).
+Moreover, since q is valid, we have f 
+/ S , which means that the state f is not visited
+while reading wS . Since both a 1 and a perform identities on Q1 , Q2 , . . . , Q 2 , in
+the subset automation D(N ) we have
+wS
+
+(s1 , {s2 }, . . . , {s 1 }, {s }, , . . . , ) 
+(s1 , {s2 }, . . . , {s 1 }, S , , . . . , ).
+
+State Complexity of Multiple Concatenation
+
+13
+
+Next, Lemma 11 applied to N 1 gives a string wS 1 over {a 2 , a 1 } which
+sends (s 2 , {s 1 }) to (s 2 , S 1 ) in D(N 1 ), and moreover if f 1 
+/ S 1 ,
+then f 1 is not visited while reading this string. Since both symbols a 2 and a 1
+perform identities on Q1 , Q2 , . . . , Q 3 , as well as on Q , in D(N ) we have
+wS 1
+
+(s1 , {s2 }, . . . , {s 2 }, {s 1 }, S , , . . . , ) (s1 , {s2 }, . . . , {s 2 }, S 1 , S , , . . . , ).
+Now, for i = 2, 3, . . . , 2, let wSi be the string over {ai 1 , ai } given by Lemma 11
+that sends (si 1 , {si }) to (si 1 , Si ) in the NFA Ni for L(Ai 1 )L(Ai ). Moreover,
+fi 
+/ Si implies that the state fi is never visited while reading wSi , which in turn
+implies that si+1 is never added to the (i + 1)th component in such a case. If fi Si
+and i k 1, then the state si+1 is included in Si+1 since the state q is valid, and si+1
+is sent to itself by both ai 1 and ai . Next, there is a loop on both symbols ai 1 and ai
+in the states s1 , s2 , . . . , si 2 , as well as in all states of automata Ai+1 , Ai+2 , . . . , A .
+Set W = wS 2 wS 3 wS3 wS2 . Then in D(N ) we have
+W
+
+(s1 , {s2 }, . . . , {s 2 }, S 1 , S , , . . . , ) (s1 , S2 , . . . , S 2 , S 1 , S , , . . . , ),
+and the resulting state is sent to the state q by the string aj 1
+1 . Hence the valid
+state q = (j, S2 , S3 , . . . , S , , , . . . , ) is reached from the initial state (s1 , , , . . . , )
+n 1
+by the string an1 1 an2 2 a 1
+wS wS 1 wS3 wS2 aj 1
+1 .
+To get distinguishability, let us show that each singleton set is co-reachable in N .
+First, for an example, consider the NFA from Figure 6. In its reversed automaton,
+the initial set is {f3 }, and we have
+a
+
+a
+
+b
+
+a
+
+a
+
+a
+
+b
+
+a
+
+a
+
+3
+3
+2
+2
+2
+1
+1
+{f3 } 
+{2} 
+{s3 } 
+ {f2 } 
+{3} 
+{2} 
+{s2 } 
+ {f1 } 
+{2} 
+{s1 }.
+
+In the general case, the initial set of N R is {fk }. Next, for each i = 1, 2, . . . , k, each
+singleton set {j} such that j Qi is reached from {fi } via a string in a i . Finally, for
+each i = 2, 3, . . . , k, the singleton set {fi 1 } is reached from {si } by b since ni 1 3.
+Thus, for every state q of N , the singleton set {q} is co-reachable in the NFA N . By
+Corollary 2, all states of the subset automaton D(N ) are pairwise distinguishable. 
+Notice that all automata in the previous theorem, as well as witness automata
+from [1], are required to have at least three states. We conclude this section by
+describing the witnesses for multiple concatenation also in the case where some of
+given automata have two states. The idea is to use symbols ak and b to guarantee
+co-reachability of singleton sets in such a way that they perform either the identity
+or (1 2 ni ) in every second automaton. However, then we should
+be careful with reachability. To this aim, let k 2, ni 2 for i = 1, 2, . . . , k,
+and Σ = {b, a1 , a2 , . . . , ak }. Let
+I = {i | 1 i k 1 and i mod 2 = k mod 2}
+J = {i | 1 i k 1 and i mod 2 = k mod 2},
+
+14
+
+J. Jir sek, G. Jir skov 
+
+that is, the set I contains the indexes that have the same parity as k, and the set J
+the others.
+Consider the ni -state DFAs Ai = (Qi , Σ, , si , {fi }), see Figure 7, where we
+have Qi = {1, 2, . . . , ni }, si = 1, fi = ni , and the transitions are as follows:
+if i I, then ai : (1, 2, . . . , ni ), ak : (1 2 ni ), and σ : (1) if σ Σ\{ai , ak },
+if i J, then ai : (1, 2, . . . , ni ), b : (1 2 ni ), and σ : (1) if σ Σ \ {ai , b},
+if i = k, then b : (1, 2, . . . , nk ), ak : (1 2 nk ), and σ : (1) if σ Σ \ {ak , b},
+that is,
+Σ \ {ai , ak }
+
+Ai (i I)
+
+si =1
+
+Σ \ {ai , ak }
+
+ai , ak
+
+2
+
+ai , ak
+
+Σ \ {ai , ak }
+
+...
+
+ai , ak
+
+ni 2
+
+Σ \ {ai , ak }
+
+ai , ak
+
+fi =ni
+
+ak
+
+ai
+Σ \ {ai , b}
+
+Ai (i J)
+
+si =1
+
+Σ \ {ai , b}
+ai , b
+
+2
+
+Σ \ {ai , b}
+
+Σ \ {ai , b}
+ai , b
+
+...
+
+ai , b
+
+ni 2
+
+ai , b
+
+fi =ni
+
+b
+
+ai
+Σ \ {ak , b}
+
+Ak
+
+sk =1
+
+Σ \ {ak , b}
+
+ak , b
+
+2
+
+ak , b
+
+Σ \ {ak , b}
+
+...
+
+ak , b
+
+nk 2
+
+Σ \ {ak , b}
+
+ak , b
+
+fk =nk
+
+ak
+
+b
+Figure 7: The DFAs Ai with i I (top), Ai with i J (middle), and Ak (bottom).
+
+ each ai with 1 i k 1 performs the circular shift on Qi , and the identity
+on Qj with j = i;
+ ak performs the transformation (1 2 3 ni ) on Qi with i I
+or i = k, and the identity on Qi with i J,
+ b performs the transformation (1 2 3 ni ) on Qi with i J, the
+circular shift on Qk , and the identity on Qi with i I.
+
+State Complexity of Multiple Concatenation
+
+15
+
+Construct an NFA N for the language L(A1 )L(A2 ) L(Ak ) from the
+DFAs A1 , A2 , . . . , Ak as follows (see Figure 8 for an illustration):
+For each i = 1, 2, . . . , k 1, add the transitions (fi 1, ai , si+1 ) and (fi , σ, si+1 ) for
+each σ Σ \ {ai }, and moreover, if i I, then add the transition (fi 1, ak , si+1 ),
+and if i J, then add the transition (fi 1, b, si+1 ). The initial state of N is s1 , and
+its unique final state is fk .
+Theorem 13. Let k 2 and ni 2 for i = 1, 2, . . . , k. Let A1 , A2 , . . . , Ak be
+the DFAs shown in Figure 7, and N be the NFA for L(A1 )L(A2 ) L(Ak ) described
+above. Then all valid states are reachable and pairwise distinguishable in D(N ).
+Proof. First, notice that Lemma 11 still holds for automata A1 , A2 , . . . , Ak 1 since
+the transitions on a1 , a2 , . . . , ak 1 are the same. Thus, for each non-empty subset S
+of Qi with i k 1, let wS be the string over {ai 1 , ai } given By Lemma 11.
+Let ({j}, S2 , S3 , . . . , Sk ) be a valid state. If Sk = , then (j, S2 , S3 , . . . , Sk 1 , ) is
+reachable as shown in the proof of Theorem 12.
+Now, let Sk = . Then the state (s1 , {s2 }, {s3 }, . . . , {sk }) is reached from the initial
+nk 1
+state by an1 1 an2 2 ak 1
+. Next, notice that Lemma 11 still holds for Nk even if ak
+fixes fk instead of sending it to sk since the out-transition in fk on ak is not used in
+the proof of the lemma. Hence, there is a string w(Sk ) over {ak 1 , ak } which sends
+the state (sk 1 , {sk }) to (sk 1 , Sk ) in the subset automaton D(Nk ). However, each ak
+sends each state si with i I to si +1, and we must then read the string ui = (ai )ni 1
+to send sQ
+i + 1 back to si while fixing the states in all the remaining components.
+Let u = i I ui . Now, let w (Sk ) be the string obtained from w(Sk ) by inserting u
+after each ak . Since before reading each ak in wSk we have sk 1 in the (k 1)st
+component, the state (s1 , {s2 }, . . . , {sk 1 }, {sk }) is sent to (s1 , {s2 }, . . . , {sk 1 }, Sk )
+by wS k , and then to (j, S2 , S3 , . . . , Sk 1 , Sk ) by wSk 1 wSk 2 wS3 wS2 aj 1
+1 .
+To prove distinguishability, let us show that all singleton sets are co-reachable in
+the NFA N . First, as an example, consider the NFA N from Figure 8, and notice
+that in the reversed automaton N R , we have
+b
+
+a
+
+a
+
+b
+
+a
+
+a
+
+a
+
+a
+
+b
+
+a
+
+a
+
+5
+4
+3
+3
+{f5 } 
+ {s5 } 
+{f4 } 
+{s4 } 
+ {f3 } 
+{2} 
+{s3 }
+5
+2
+1
+1
+
+{f2 } 
+{s2 } 
+ {f1 } 
+{2} 
+{s1 }.
+
+In the general case, the initial set of the reversed automaton N R is {fk }, and each
+set {q} with q Qk is reached from {fk } by a string in b . Next each {fi } with i J
+is reached from {si+1 } by ak , while each {fi } with i I is reached from {si+1 } by b.
+Finally, each {q} with q Qi , where 1 i k 1, is reached from {fi } by a string
+in a i . It follows that all singleton sets are co-reachable in N . By Corollary 2, all
+states of D(N ) are pairwise distinguishable.
+
+5. Matching Lower Bound: k-letter Alphabet
+The aim of this section is to describe witnesses for multiple concatenation over a kletter alphabet. Let us start with the following example.
+
+16
+
+J. Jir sek, G. Jir skov 
+a2 , a3 , a4 , b
+
+b
+
+A1
+
+s1
+
+a5
+
+2
+
+f1
+
+N
+
+a2 , a3 , a4 , b
+a1 , a5
+
+s1
+
+a1 , a3 , a4 , a5
+
+s2
+
+a1 , a3 , a4 , a5 , b
+
+a2 , b
+a1 , a2 , a4 , b
+
+s3
+
+2
+
+f3
+
+a1 , a2 , a4 , b
+a3 , a5
+
+s3
+
+a1 , a2 , a3 , a5
+
+s4
+
+f4
+
+s4
+
+a4 , b
+
+s5
+
+f3
+
+a1 , a2 , a4 , a5 , b
+
+f4
+
+a1 , a2 , a3 , a4 , a5
+
+a1 , a2 , a3 , a4
+
+f5
+
+a3 , a5
+
+a1 , a2 , a3 , a5 , b
+
+a4 , b
+
+s5
+
+a1 , a2 , a4 , a5 , b
+
+a1 , a2 , a3 , a5 , b
+
+a4
+
+A5
+
+2
+a3
+
+a3 , a5
+
+A4
+
+a2 , a3 , a4 , a5 , b
+
+f2
+
+a2
+
+A3
+
+f1
+
+a1 , a3 , a4 , a5 , b
+a2 , b
+
+s2
+
+f2
+
+a1 , a5
+
+a1
+
+a1 , a5
+
+A2
+
+2
+
+a2 , a3 , a4 , a5 , b
+
+a5 , b
+
+f5
+
+b
+Figure 8: The DFAs A1 , A2 , A3 , A4 , A5 : transitions on a5 and b (left) and the NFA N
+for L(A1 )L(A2 )L(A3 )L(A4 )L(A5 ) (right) with n1 = n3 = 3 and n2 = n4 = n5 = 2.
+
+State Complexity of Multiple Concatenation
+
+17
+
+Example 14. Let n1 , n2 1 and A and B be the binary DFAs shown in Figure 9.
+Let us show that the languages L(A) and L(B) are witnesses for concatenation of two
+regular languages.
+b
+
+b
+
+b
+
+b
+b
+A
+
+s1 =1
+
+a
+
+a
+
+2
+
+3
+
+...
+
+a
+
+n1 1
+
+a
+
+f1 =n1
+
+a
+
+b
+
+B
+
+a
+
+s2 =1
+
+a
+
+a, b
+
+2
+
+3
+
+a, b
+
+...
+
+a, b
+
+n2 1
+
+a, b
+
+f2 =n2
+
+a, b
+Figure 9: The binary witnesses for concatenation; n1 , n2 1.
+
+First, let n2 = 1. Then L(B) = {a, b} and the concatenation L(A){a, b} is
+recognized by the minimal n1 -state DFA obtained from A by replacing the transition (f1 , a, s1 ) with the transition (f1 , a, f1 ). An upper bound is n1 by Proposition 8.
+Now, let n1 = 1 and n2 2. Then s1 = f1 . Construct an NFA N for L(A)L(B)
+from the DFAs A and B by adding the transitions (f1 , a, s2 ) and (f1 , b, s2 ), and by
+making the state s1 non-final. Let us show that all valid states (f1 , S) are reachable in D(N ). Since (f1 , S) is valid, we have s2 S. The proof is by induction
+on |S|. The basis, |S| = 1, that is, S = {s2 }, holds true since (f1 , {s2 }) is the initial state. Let |S| 2 and s2 S. Let m = min(S \ {s2 }) and S = S \ {s2 , m}.
+Then abm 2 (S ) [2, n2 m + 1] and
+a
+
+bm 2
+
+(f1 , {s2 } abm 2 (S )) 
+ (f1 , {s2 , 2} bm 2 (S )) (f1 , {s2 , m} S ) = (f1 , S),
+where the leftmost valid state is reachable by induction. This proves the reachability
+of 2n2 1 valid states. All these states are pairwise distinguishable by Lemma 1 since
+all singletons {q}, where q is a state of B, are co-reachable in N . By Proposition 8,
+an upper bound is V2 = 2n2 1 .
+Finally, let n1 , n2 2. Construct an NFA N for L(A)L(B) from the DFAs A and B
+by adding the transitions (f1 1, a, s2 ) and (f1 , b, s2 ), by making the state f1 nonfinal and the state s2 non-initial. Let us show that in the subset automaton D(N ),
+each valid state (j, S) is reachable. The proof is by induction on |S|. The basis,
+with |S| = 0, holds true since each valid state (j, ) is reached from the initial state
+is (s1 , ) by aj 1 . Let |S| 1. There are three cases to consider.
+
+18
+
+J. Jir sek, G. Jir skov 
+
+Case 1: j = f1 . Then s2 S since (f1 , S) is valid. We have
+a
+
+(f1 1, a(S \ {s2 })) 
+ (f1 , {s2 }) (S \ {s2 }) = (f1 , S)
+where the leftmost valid state is reachable by induction.
+Case 2: j = s1 .
+Case 2.a: 2 S. Then s2 a(S) and (s1 , S) is reached from (f1 , a(S)) by a, where
+the latter valid state is considered in Case 1.
+a
+
+bn2
+
+Case 2.b: 2 
+/ S and S = {s2 }. Then we have (f1 , {s2 }) 
+ (s1 , {2}) (s1 , {s2 }),
+where the leftmost state is considered in Case 1.
+Case 2.c: 2 
+/ S and S = {s2 }. Let m = min(S \ {s2 }) and S = S {s2 }.
+m 2
+Then 2 b
+(S \ {s2 }) and (s1 , S) is reached from (s1 , S bm 2 (S \ {s2 })) by bm 2
+where the latter state is considered in Case 2.a.
+Case 3: 2 j n1 1. Then (j, S) is reached from (s1 , aj 1 (S)) by aj 1 , and the
+latter set is considered in Case 2.
+This proves the reachability of (n1 1)2n2 + 2n2 1 states. To get distinguishability,
+let (i, S) and (j, T ) be two distinct valid states. There are two cases to consider.
+Case 1: S = T . The the two states are distinguishable by Lemma 1 since all singletons {q}, where q is a state of B, are co-reachable in N .
+Case 2: S = T and i < j. First, let S = . Since n1 2, the string an1 j sends the
+two states to states that differ in s2 . The resulting states are distinguishable as shown
+in Case 1. Now, let S = . Then the two states are sent to (s1 , {s2 }) and (f1 , {s2 })
+by an1 j bn2 . Let us show that the resulting states are sent to states that differ in s2
+by an1 if s2 an1 = s2 , and by an1 1 ban1 1 otherwise.
+First, notice that both strings an1 and an1 1 ban1 1 send the state f1 to itself in A.
+It follows that (f1 , {s2 }) is sent to a state containing s2 in its second component by
+both these strings.
+Now, let s2 an1 = s2 . Then we have
+an1 1
+
+a
+
+(s1 , {s2 }) (f1 , {s2 , s2 an1 1 }) 
+ (s1 , {s2 a, s2 an1 }),
+where s2 a = s2 since n2 2. Thus, in this case, the string an1 sends the
+state (s1 , {s2 }) to a state which does not have s2 in its second component.
+Finally, let s2 an1 = s2 . Then s2 an1 1 = f2 and since s2 b = f2 b = s2 , we have
+an1 1
+
+b
+
+an1 1
+
+(s1 , {s2 }) (f1 , {s2 , f2 }) 
+ (f1 , {s2 }) (f1 1, {f2 }),
+where f2 = s2 since n2 2. Hence, this time the string an1 1 ban1 1 sends (s1 , {s2 })
+to a state which does not contain s2 in its second component.
+This proves distinguishability, and concludes our proof since by Theorem 6, a
+(known) upper bound is (n1 1)U2 + V2 = (n1 1)2n2 + 2n2 1 in this case.
+
+State Complexity of Multiple Concatenation
+
+19
+
+Hence the above example provides a two-letter witnesses for the concatenation of
+two regular languages (even in the case then automata may have one or two states).
+Therefore, in what follows we assume that k 3.
+We use our previous results to describe witnesses for the concatenation of k
+languages over the k-letter alphabet {b, a1 , a2 , . . . , ak 1 }. The idea is as follows.
+The transitions on input symbols a1 , a2 , . . . , ak 1 in automata A1 , A2 , . . . , Ak 1 are
+the same as in our (k + 1)-letter witnesses from Theorem 12, while Ak 1 and Ak
+over {ak 1 , b} are the same as automata A and B in Example 14. The input symbol b
+performs the transformation ({2, 3, . . . , ni 1} si ) in each Ai except for Ak , and
+it is used to get reachability as well as distinguishability.
+To this aim, let k 3 and Σ = {b, a1 , a2 , . . . , ak 1 } be a k-letter alphabet.
+Let n1 , nk 2 and ni 3 for i = 2, 3, . . . , k 1. For i = 1, 2, . . . , k, define an ni -state
+DFA Ai = (Qi , Σ, , si , {fi }), see Figure 10, where Qi = {1, 2, . . . , ni }, si = 1, fi = ni ,
+and the transitions are as follows:
+ if i k 1, then
+ai : (1, 2, . . . , ni ), b : ({2, 3, . . . , ni 1} si ), and σ : (1) if σ Σ \ {ai , b},
+ if i = k, then
+ak 1 : (1, 2, . . . , nk ), b : (2 3 nk 1), and σ : (1) if σ Σ \ {ak 1 , b}.
+b
+b
+
+b
+
+b
+b
+
+Ai
+(i<k)
+
+si =1
+
+ai
+
+2
+
+ai
+
+3
+
+sk =1
+
+...
+
+ai
+
+ni 1
+
+ai
+
+fi =ni
+
+ai
+
+b
+
+Ak
+
+ai
+
+ak 1
+
+2
+
+ak 1 , b
+
+3
+
+ak 1 , b
+
+...
+
+ak 1 , b
+
+nk 1
+
+ak 1 , b
+
+fk =nk
+
+ak 1 , b
+Figure 10: The DFA Ai with i < k (top): transitions on ai and b, and the DFA Ak
+(bottom): transitions on ak 1 and b; all the remaining symbols in both automata
+perform identities; n1 , nk 2 and ni 3 for i = 2, 3, . . . , k 1.
+
+Construct an NFA N for L(A1 )L(A2 ) L(Ak ) from DFAs A1 , A2 , . . . , Ak by
+adding the transitions (fi 1, ai , si+1 ), (fi , aj , si+1 ) for j = i, and (fi , b, si+1 )
+for i = 1, 2, . . . , k 1; the initial state of N is s1 , and the final state is fk . The
+next theorem shows that all valid states are reachable and pairwise distinguishable
+in D(N ). The proof of reachability is based on our results concerning (k + 1)-letter
+witnesses as well as our binary witnesses from Example 14. The proof of distinguishability is not for free this time.
+
+20
+
+J. Jir sek, G. Jir skov 
+
+Theorem 15. Let k 3, n1 , nk 2, and ni 3 for i = 2, 3, . . . , k 1.
+Let A1 , A2 , . . . , Ak be DFAs shown in Figure 10 over the k-letter alphabet {b, a1 , a2 , . . . , ak 1 }. Let N be the NFA for L(A1 )L(A2 ) L(Ak ) described above.
+Then all valid states are reachable and pairwise distinguishable in D(N ).
+Proof. Consider a valid state q = (j, S2 , . . . , Sk 1 , Sk ). First, let Sk = . Since the
+transitions on a1 , a2 , . . . , ak 1 in A1 , A2 , . . . , Ak 1 are the same as in automata in
+Theorem 12, the valid state (j, S2 , . . . , Sk 1 , ) is reachable exactly the same way as
+in the proof of this theorem.
+Now let Sk = . Notice that the transitions on ak 1 and b in DFAs Ak 1 and Ak
+are the same as those on a and b in DFAs A and B in Example 14. As shown in this
+example, for each S Qk , there is a string wS over {ak 1 , b} which sends (sk 1 , )
+to (sk 1 , S) in the subset automaton for L(Ak 1 )L(Ak ). Since we have a loop on both
+ak 1 and b in all states s1 , s2 , . . . , sk 2 , we reach (s1 , {s2 }, {s3 }, . . . , {sk 2 }, {sk 1 }, S)
+nk 2
+from the initial state by an1 1 an2 2 ak 2
+wS .
+Next, let wSi be the string
+over {ai 2 , ai 1 } given by Lemma 11 which sends (si 1 , {si }) to (si 1 , Si ). Recall that fi 
+/ Si implies that the state fi is not visited while reading wSi . Moreover, a closer look at the proof of the lemma shows that if fi Si then fi is visited for the first time immediately after reading the last ai in wSi . Now, let m
+be the number of occurrences of the symbol ak 1 in the string wSk 1 . Then the
+state (s1 , {s2 }, {s3 }, . . . , {sk 2 }, {sk 1 }, am
+k 1 (Sk )) is reachable as shown above, and
+it is sent to (s1 , {s2 }, {s3 }, . . . , {sk 2 }, Sk 1 , Sk ) by wSk 1 . The resulting state is sent
+to q by the string wSk 2 wSk 3 wS3 wS2 aj 1
+1 .
+To get distinguishability, let p = (S1 , S2 , S3 , . . . , Sk ) and q = (T1 , T2 , T3 , . . . , Tk )
+be two distinct valid states. If Sk = Tk , then p and q are distinguishable by Lemma 1
+since each singleton subset of Qk is co-reachable in N via a string in a k 1 .
+Let Si = Ti for some i with 1 i k 1, and Sj = Tj for j = i + 1, i + 2, . . . , k.
+Let us show that there is a string that sends p and q to two states which differ in si+1 .
+Without loss of generality, we have s Si \ Ti . First, we read the string w = afi i s
+which sends s to fi in Ai and fixes all states in all Aj with j = i to get states
+
+(S1 , S2 , S3 , . . . , Si 1
+, S (Si w), Si+1
+, . . . , Sk )
+
+(T1 , T2 , T3 , . . . , Ti 1
+, T (Ti w), Ti+1
+, . . . , Tk )
+
+where S , T [1, fi s] and fi (Si w) \ (Ti w), that is, the ith components of
+
+the resulting states differ in the state fi . If Si+1
+ = Ti+1
+, then we have the desired
+
+result. Otherwise, since si+1 Si+1 , both Si+1 and Ti+1 are non-empty, which means
+that all S1 , S2 , . . . , Si and all T1 , T2 , . . . , Ti are non-empty. Now, the string b sends
+all states of Qj with 2 j k 1, either to sj or to fj , and then aj b sends fj to sj
+and sj to itself since nj 3. Thus after reading the string b(a2 b)(a3 b) (ai 1 b) and
+if T1 = {f1 }, then also (a1 b), we get states
+
+( {q}, {s2 }, {s3 }, . . . , {si 1 }, S {fi }, Si+1
+, . . . , Sk )
+
+({s1 }, {s2 }, {s3 }, . . . , {si 1 },
+
+{si }
+
+, Ti+1
+, . . . , Tk )
+
+where q {s1 , f1 }, S {si }, and Sj , Tj {sj , fj } for j = i + 1, i + 2, . . . , k 1.
+There are two cases to consider.
+
+State Complexity of Multiple Concatenation
+
+21
+
+Case 1: 1 i k 2. Then 2 i + 1 k 1 and ni+1 3 which means that the
+string ai+1 b sends both fi+1 and si+1 to si+1 . Thus after reading ai+1 b, we get states
+
+( {q}, {s2 }, {s3 }, . . . , {si 1 }, S {fi }, {si+1 }, Si+2
+, . . . , Sk )
+
+({s1 }, {s2 }, {s3 }, . . . , {si 1 },
+
+{si }
+
+, {si+1 }, Ti+2
+, . . . , Tk ).
+
+Finally, the string ai+1 , which performs the identity on Qj with j = i + 1 and the
+circular shift on Qi+1 , sends the resulting states to states which differ in si+1 .
+Case 2: i = k 1. Then the string bnk sends all states of Qk to sk , while it fixes sj
+and fj for j = 1, 2, . . . , k 1. Thus after reading the string bnk we get states
+({q}, {s2 }, . . . , {sk 2 }, S {fk 1 }, {sk }) and ({s1 }, {s2 }, . . . , {sk 2 }, {sk 1 }, {sk }).
+k
+Now, in the same way as in Example 14 we show that either the string ank 1
+or the
+nk 1 nk 1
+string ak 1 bak 1 sends the resulting states to two states which differ in sk .
+
+Since the number of valid states provides an upper bound on the state complexity
+of multiple concatenation, we get our main result.
+Corollary 16. The DFAs A1 , A2 , . . . , Ak shown in Figure 10 defined over a k-letter
+alphabet are witnesses for multiple concatenation of k languages.
+
+We conjecture that k symbols are necessary for describing witnesses for concatenation of k languages. The next observation shows that our conjecture holds for k = 3.
+Theorem 17. The ternary alphabet used to describe witnesses for the concatenation
+of three languages in Theorem 15 is optimal.
+Proof. Let Σ = {a, b} and ni 2 for i = 1, 2, 3. Let us consider binary DFAs
+Ai = (Qi , Σ, , si , {fi }) where Qi = {1, 2, . . . , ni }, si = 1, fi = 1 for i = 1, 2, 3; notice
+that to meet the upper bound for multiple concatenation, each A1 , A2 , . . . , Ak 1 must
+have one final state, and it must be different from the initial state.
+Construct the NFA N for L(A1 )L(A2 )L(A3 ) from DFAs A1 , A2 , A3 as follows:
+for i = 1, 2, each state q Qi and each symbol σ {a, b} such that qσ = fi ,
+add the transition (q, σ, si+1 ); the initial state of N is s1 and its unique final state
+is f3 . Our aim is to show that either some valid state is unreachable in the subset
+automaton D(N ) or some valid states are equivalent to each other.
+Notice that to reach the valid state (s1 , Q2 , {s3 }), we must have an input symbol
+that performs a permutation on Q2 , and to reach the valid state (s1 , {s2 }, Q3 ), we
+must have an input symbol that performs a permutation on Q3 .
+If both input symbols perform a permutation on Q3 , then the valid states (s1 , {s2 }, Q3 ) and (s1 , {2}, Q3 ) are equivalent since all strings are accepted from
+both of them.
+If both input symbols perform a permutation on Q2 , then the valid states (s1 , Q2 , {s3 }) and (2, Q2 , {s3 }) are equivalent since if a string w is accepted by N
+w 
+
+w 
+
+from the state s1 in A1 through a computation s1 s2 f3 with w = w w ,
+w 
+
+w 
+
+then it is accepted through a computation w s2 s2 f3 where w s2 Q2 , so it
+is accepted from (2, Q2 , {s3 }); and vice versa.
+
+22
+
+J. Jir sek, G. Jir skov 
+
+Hence to meet the upper bound, we must have one permutation and one nonpermutation input symbol in both A2 , A3 .
+Next, while reaching the valid state (s1 , Q2 \{f2 }, ), we cannot visit state f2 . This
+means that there must be an input that maps Q2 \ {f2 } onto Q2 \ {f2 }. Without loss
+of generality, let this input be a. Since f2 must be reachable in A2 , there must exist
+a state p in Q2 \ {f2 } with pb = f2 . Moreover, f2 b = f2 because otherwise either f2
+would have loops on both symbols, or both a and b would be non-permutation symbols
+in A2 . We have two cases:
+(1) Let b be a non-permutation symbol in A2 . Then a is a permutation on Q2 ,
+so f2 a = f2 . This situation is depicted in Fig. 11. Moreover, there is a state in Q2 \{f2 }
+with no in-transition on b. Therefore the valid state (s1 , Q2 \ {f2 }, Q3 ) must be
+reached from some valid state on a, and consequently a is a permutation on Q3 .
+Next, since f2 b = f2 , the valid state (s1 , {f2 b}, Q3 ) must be reached from a valid
+state (j, {f2 } S, Q3 ) on b since to get Q3 in the third component, we must visit f2 ,
+and only reading b eliminates the state f2 . It follows that b is a permutation on Q3 .
+Hence both a and b perform permutations on Q3 , thus resulting in a contradiction.
+b
+A2
+
+0
+
+p
+
+a
+
+q
+b
+
+f2
+
+Figure 11: Case 1: a maps Q2 \ {f2 } onto Q2 \ {f2 } and b is not a permutation on Q2 .
+
+(2) Let b be a permutation symbol in A2 . Then a is not a permutation on Q2 ,
+so f2 a = f2 , and therefore f2 
+/ Q2 a, so each state containing f2 in its second component must be reached by b. This situation is illustrated in Fig. 12. It follows that
+every valid state (j, Q2 , {s3 }) must be reached on b, so b is a permutation on Q1 ,
+Next, the valid state (s1 , {f2 }, Q3 ) must be reached on b as well. Therefore each
+state in Q3 \{s3 } has an in-transition on b. Moreover, the state (f1 b, Q2 , {s3 }) must be
+reached by b from a valid state (f1 , Q2 , {s3 } T ); recall that b is a permutation on Q1 .
+This means that s3 b = s3 . Hence b is a permutation on Q3 . Let r Q2 \ {s2 b, f2 }.
+Then the valid state (f1 b, {r}, Q3 ) cannot be reached on b because otherwise it would
+be reached from (f1 , {s2 } S, T ) and would contain s2 b in its second component. It
+follows that a is a permutation on Q3 . Thus both a and b perform a permutation
+in A2 , which is a contradiction.
+
+Notice that all our k-letter witness DFAs from Theorem 15, except for the first
+and last one, are assumed to have at least three states. However, our witnesses over
+a (k + 1)-letter alphabet from Theorem 13 cover also the cases when some of given
+DFAs have two states. Although, we are not able to cover such cases by using just k
+letters, we can do it providing that all automata have two states. We only give the
+main ideas here for this case.
+Let Σ = {b, c, a2 , a3 , . . . ak 1 } be a k-letter alphabet. For i = 1, 2, . . . , k,
+let Ai = (Qi , Σ, si , , fi ) be a two-state DFA with Qi = {1, 2}, si = 1, fi = 2,
+
+State Complexity of Multiple Concatenation
+
+23
+b
+
+A2
+
+p
+
+0
+
+q
+
+a
+
+b
+
+f2
+
+Figure 12: Case 2: a maps Q2 \ {f2 } onto Q2 \ {f2 } and b is a permutation on Q2 .
+
+and the transitions defined as follows (see Figure 13 for an illustration):
+ ai with i = 2, 3, . . . , k 2 performs the cycle on Qi and the identity on Qj
+with j = i;
+ ak 1 performs the cycle on Qk 1 and Qk , and the identity on Q1 , Q2 , . . . , Qk 2 ;
+ b performs the cycle on Q1 , the identity on Qi if i is even, and the contraction (fi si ) on Qi if i 3 is odd;
+ c performs the identity on Qi if i is odd, and the contraction (fi si ) otherwise.
+c
+
+c
+
+a2
+
+b
+A1
+
+s1
+
+f1
+
+A2
+
+s2
+
+c
+
+s3
+
+b
+a3
+
+a4
+f3
+
+A4
+
+c
+
+c
+
+s4
+
+s5
+
+b
+a5
+
+c
+a4
+
+f4
+
+b
+
+b
+
+a5
+A5
+
+f2
+
+b
+
+b
+
+a3
+A3
+
+c
+a2
+
+b
+c
+
+b
+
+b
+
+a5
+f5
+
+A6
+
+s6
+
+c
+a5
+
+f6
+
+Figure 13: Two-state DFAs; k = 6. In each DFA, the remaining symbols perform identities.
+
+Construct an NFA N for L(A1 )L(A2 ) L(Ak ) from the DFAs A1 , A2 , . . . , Ak as
+follows: for each i = 1, 2, . . . , k 1, each q Qi and σ Σ such that q σ = fi in Ai ,
+add the transition (q, σ, si+1 ); the initial state of N is s1 and its final state is fk .
+We prove reachability and distinguishability of states of the subset automaton D(N ) in a similar way as before, but we have take into account that to reach
+a state p = (f1 , T2 , T3 , . . . , Tk ) from a state q = (s1 , S2 , S3 , . . . , Sk ), the symbol b has
+
+24
+
+J. Jir sek, G. Jir skov 
+
+to be read. However, although b sends s1 to f1 , it also sends each non-empty subset Si
+with i 3 and i odd to {si }. Then, we have to carefully return {si } back to Si .
+6. Binary and Ternary Languages
+In this section, we examine the state complexity of multiple concatenation on binary
+and ternary languages. Our aim is to show that in the binary case, the resulting
+complexity is still exponential in n2 , n3 , . . . , nk , and in the ternary case, it is the same
+as in the general case, up to a multiplicative constant depending on k. Let us start
+with the following example.
+Example 18. Let n 3 and N be the NFA shown in Figure 14 that recognizes the
+language of strings over {a, b} which have an a in the (n 1)st position from the end.
+Let us show that each subset S [1, n] with 1 S is reachable in the subset
+automaton D(N ). The proof is by induction on |S|. The basis, with |S| = 1, holds
+true since {1} is the initial state. Let |S| 2 and 1 S. Let m = min(S \ {1}).
+Set S = abm 2 (S \ {1, m}). Then S [2, n m + 1] and |S | = |S| 2. We have
+bs 2
+
+a
+
+{1} S 
+ {1, 2} bs 2 (S \ {1, s}) {1, s} (S \ {1, s}) = S, where the leftmost
+set of size |S| 1 is reachable by induction.
+
+We now use the result from the above example to get a lower bound on the state
+complexity of multiple concatenation on binary languages. The idea is to describe
+binary DFAs in such a way that the NFA for their concatenation would accept, except
+for a finite set, the set of strings having an a in an appropriate position from the end.
+Theorem 19. Let k 3, n1 3, n2 4, and ni 3 for i = 3, 4, . . . , k.
+Let A1 , A2 , . . . , Ak be the binary DFAs shown in Figure 15. Then every DFA for the
+language L(A1 )L(A2 ) L(Ak ) has at least n1 1 + (1/22k 2 ) 2n2 +n3 + +nk states.
+Proof. Construct an NFA for L(A1 )L(A2 ) L(Ak ) from the DFAs A1 , A2 , . . . , Ak
+by adding the transitions (f1 1, b, s2 ), (f1 , a, s2 ), (f1 , b, s2 ), and (fi 1, σ, si+1 )
+for i = 2, 3, . . . , k 1 and σ {a, b}, by making states f1 , f2 , . . . , fk 1 non-final, and
+states s2 , s3 , . . . , sk non-initial. In this NFA, the states fi and fi +1 with 2 i k 1,
+as well as the state fk +1 are dead, so we can omit them. Let N be the resulting NFA;
+see Figure 16 for an illustration.
+In the subset automaton D(N ), each state (j, , , . . . , ) with 1 j f1 1
+is reached from the initial state (s1 , , , . . . , ) by bj 1 , and (f1 , {s2 }, , , . . . , ) is
+reached from (f1 1, , , . . . , ) by b. Starting with the state f1 , the NFA N accepts
+a, b
+
+N
+
+1
+
+a
+
+2
+
+a, b
+
+3
+
+a, b
+
+...
+
+a, b
+
+n 1
+
+a, b
+
+n
+
+Figure 14: A binary NFA N such that every set {1} S is reachable in D(N ).
+
+State Complexity of Multiple Concatenation
+
+25
+
+a, b
+
+a
+
+A1
+
+s1 =1
+
+a, b
+
+a, b
+
+2
+
+3
+
+a, b
+
+...
+
+a, b
+
+n1 2
+
+a, b
+
+n1 1
+
+b
+
+f1 =n1
+a, b
+
+b
+
+A2
+
+a
+
+s2 =1
+
+a, b
+
+2
+
+3
+
+a, b
+
+...
+
+a, b
+
+n2 2
+
+a, b
+
+n2 1
+
+a, b
+
+f2 =n2
+a, b
+
+Ai
+(i>2)
+
+si =1
+
+a, b
+
+a, b
+
+2
+
+3
+
+a, b
+
+...
+
+a, b
+
+ni 2
+
+a, b
+
+ni 1
+
+a, b
+
+fi =ni
+
+Figure 15: Binary DFAs A1 , A2 , and Ai for i = 3, 4, . . . , k meeting the lower bound
+n1 1 + (1/22k 1 )2n2 +n3 + +nk for multiple concatenation.
+
+a, b
+a
+N
+
+s1 =1
+
+a, b
+
+a, b
+
+b
+
+b
+
+s2 =1
+
+2
+
+a
+
+3
+
+b
+
+f1 =4
+a, b
+
+a, b
+2
+
+a, b
+
+3
+
+a, b
+
+4
+
+a, b
+
+a, b
+
+2
+
+a, b
+
+3
+
+a, b
+
+f3 =4
+
+a, b
+
+a, b
+
+2
+
+a, b
+
+6
+
+5
+a, b
+
+a, b
+s4 =1
+
+a, b
+
+a, b
+
+a, b
+s3 =1
+
+f2 =5
+
+3
+
+a, b
+
+f4 =4
+
+a, b
+
+5
+
+Figure 16: A binary NFA for L(A1 )L(A2 )L(A3 )L(A4 ) where n1 = 4, n2 = 6, n3 = n4 = 5.
+
+26
+
+J. Jir sek, G. Jir skov 
+
+all strings having an a in position n2 2+n3 2+ +nk 1 2+nk 1 from the end. As
+shown in Example 18, every state (f1 {s2 } S2 , S3 , . . . , Sk ) with S2 {2, 3, . . . , n2 2},
+Si {1, 2, . . . , ni 2} for i = 3, 4, . . . , k 1, and Sk {1, 2, . . . , nk 1} is reachable.
+This gives n1 1+2n2 3+n3 2+n4 2+ +nk 1 2+nk 1 = n1 1+(1/22k 2 )2n2 +n3 + +nk
+reachable states.
+Moreover, each singleton set is co-reachable in N via a string in a , except for {q}
+where q is a non-final state of A1 . By Lemma 1, the reachable states (i, S2 , S3 , . . . , Sk )
+and (j, T2 , T3 , . . . , Tk ) are distinguishable if they differ in a state of Ai with i 2 or
+in f1 . Next, the states (i, S2 , S3 , . . . , Sk ) and (j, S2 , S3 , . . . , Sk ) with 1 i < j < f1
+are sent to states that differ in f1 by bf1 j .
+
+Our next result shows that a trivial upper bound n1 2n2 +n3 + +nk can be met,
+up to a multiplicative constant depending on k, by the concatenation of k ternary
+languages. Thus, this trivial upper bound is asymptotically tight in the ternary case.
+Theorem 20. Let k 2, n1 3, n2 4, and ni 3 for i = 3, 4, . . . , k. There
+exist ternary DFAs A1 , A2 , . . . , Ak such that every DFA recognizing the concatenation L(A1 )L(A2 ) L(Ak ) has at least (1/22k 2 ) n1 2n2 +n3 + +nk states.
+Proof. Let us add the transitions on symbol c to the binary automata shown in
+Figure 15 as follows: c : (1, 2, . . . , n1 ) in A1 , c : (fi fi + 1) in Ai with 2 i k 1,
+and c : (1) in Ak . Construct the NFA N for L(A1 )L(A2 ) L(Ak ) with omitted dead
+states as in the binary case; see Figure 17 for an illustration. As shown in the proof of
+Theorem 19, the subset automaton D(N ) has (1/22k 2 )2n2 +n3 + +nk reachable states
+of the form (f1 , S2 , S3 , . . . , Sk ). Each such state is sent to the state (j, S2 , S3 , . . . , Sk )
+with 1 j f1 1 by the string cj . Moreover, in the NFA N , each singleton set
+is co-reachable via a string in a c . By Corollary 2, all states of D(N ) are pairwise
+distinguishable. This gives the desired lower bound.
+
+7. Unary Languages
+The upper bound on the state complexity of concatenation of two unary languages
+is n1 n2 , and this upper bound can be met by cyclic unary languages if gcd(n1 , n2 ) = 1
+as shown in [8, Theorems 5.4 and 5.5]. This gives a trivial upper bound n1 n2 nk
+for concatenation of k unary languages. Here we show that a tight upper bound for
+concatenation of k cyclic unary languages is much smaller. Then we continue our
+study by investigating the concatenation of languages of the form a i Yi where Yi is
+a λi -cyclic. In both cases, we provide tight upper bounds. Finally, we consider the
+case, when automata may have final states in their tails.
+Recall that the state set of a unary automaton of size (λ, ) consists of a
+tail q0 , q1 , . . . , q 1 and a cycle p0 , p1 , . . . , pλ 1 (with p0 = q0 if = 0), and its
+transitions are q0 q1 q 1 p0 p1 pλ 1 p0 ; cf. [6].
+Let n1 , n2 , . . . , nk be positive integers with gcd(n1 , n2 , . . . , nk ) = 1.
+Then g(n1 , n2 , . . . , nk ) denotes the Frobenius number, that is, the largest integer
+that cannot be expressed as x1 n1 + x2 n2 + + xk nk for some non-negative integers x1 , x2 , . . . , xk . Let us star with the following observation.
+
+State Complexity of Multiple Concatenation
+
+27
+a, b
+
+c
+a
+N
+
+s1 =1
+
+a, b
+c
+
+c
+
+b
+
+c
+
+s2 =1
+
+a
+
+c
+
+a, b
+c
+
+2
+b
+
+a, b
+
+2
+c
+
+s3 =1
+
+a, b
+
+s4 =1
+
+a, b
+
+c
+a, b
+
+2
+
+b
+c
+
+f1 =4
+
+c
+
+a, b
+
+c
+
+a, b
+
+3
+
+a, b
+
+a, b
+
+3
+
+a, b
+
+a, b
+
+4
+
+f2 =5
+
+a, b
+
+a, b
+c
+
+6
+
+a, b
+
+c
+
+f3 =4
+
+a, b
+c
+
+f4 =4
+
+a, b
+
+5
+
+c
+
+c
+3
+
+c
+
+a, b
+
+c
+
+2
+
+c
+
+3
+
+c
+a, b
+
+5
+
+a, b
+
+Figure 17: A ternary NFA for L(A1 )L(A2 )L(A3 )L(A4 ) where n1 = 4, n2 = 6, n3 = n4 = 5.
+
+Lemma 21. Let n1 , n2 , . . . , nk be positive integers with gcd(n1 , n2 , . . . , nk ) = d.
+Then each number of the form x1 n1 + x2 n2 + + xk nk , with x1 , x2 , . . . , xk 0,
+is a multiple of d. Furthermore, the largest multiple of d that cannot be represented
+as x1 n1 + x2 n2 + + xk nk , with x1 , x2 , . . . , xk 0, is d g( nd1 , nd2 , . . . , ndk ).
+Proof. The first claim follows from the fact that each ni is a multiple of d.
+Since gcd( nd1 , nd2 , . . . , ndk ) = 1, the largest integer that cannot be represented
+as x1 nd1 + x2 nd2 + + xk ndk , with x1 , x2 , . . . , xk 0, is g( nd1 , nd2 , . . . , ndk ). Multiplying by d, we get the second claim.
+
+Let f (n1 , n2 , . . . , nk ) = g(n1 , n2 , . . . , nk ) + n1 + n2 + + nk be the modified
+Frobenius number, that is, the largest integer which is not representable by positive
+integer linear combinations. Using this notation, we have the following result.
+Theorem 22. Let A1 , A2 , . . . , Ak be unary cyclic automata with n1 , n2 , . . . , nk
+states, respectively. Let d = gcd(n1 , n2 , . . . , nk ). Then L(A1 )L(A2 ) L(Ak ) is recognized by a DFA of size (λ, ), where λ = d and = d f ( nd1 , nd2 , . . . , ndk ) k + 1,
+and this upper bound is tight.
+Proof. Denote Li = L(Ai ) and L = L1 L2 Lk . We show that L is recognized
+by a unary DFA of size (λ, ). By [6, Theorem 2], it is enough to show that for
+every m d f ( nd1 , nd2 , . . . , ndk ) k + 1, we have am L if and only if am+d L.
+We can write each language Li as Li = Zi (ani ) where Zi = Li {ax | 0 x < ni };
+cf. [6, Proof of Theorem 8]. Let m d f ( nd1 , nd2 , . . . , ndk ) k + 1.
+If am L, then m = z1 + x1 n1 + z2 + x2 n2 + + zk + xk nk where azi Zi
+
+28
+
+J. Jir sek, G. Jir skov 
+
+and xi 0. Since m d f ( nd1 , nd2 , . . . , ndk ) k + 1, we get
+x1 n1 +x2 n2 + + xk nk d f (
+
+n1 n2
+nk
+, , . . . , ) k + 1 z1 z2 zk 
+d d
+d
+
+n1 n2
+nk
+, , . . . , ) k + 1 (n1 1) (n2 1) (nk 1) =
+d d
+d
+n1 n2
+nk
+d g( , , . . . , ) + 1.
+d d
+d
+
+d f(
+
+Since x1 n1 + x2 n2 + + xk nk is a multiple of d, it follows from Lemma 21
+that x1 n1 +x2 n2 + +xk nk +d = x 1 n1 +x 2 n2 + +x k nk for some x 1 , x 2 , . . . , x k 0.
+Therefore
+m + d = z1 + x 1 n1 + z2 + x 2 n2 + + zk + x k nk ,
+so am+d L.
+Conversely, if am+d L, then m + d = z1 + x1 n1 + z2 + x2 n2 + + zk + xk nk
+where azi Zi and xi 0. Since m d f ( nd1 , nd2 , . . . , ndk ) k + 1, similarly as in
+the previous paragraph, we get
+x1 n1 + x2 n2 + + xk nk d d g(
+
+nk
+n1 n2
+, , . . . , ) + 1,
+d d
+d
+
+and therefore x1 n1 + x2 n2 + + xk nk d = x 1 n1 + x 2 n2 + + x k nk for
+some x 1 , x 2 , . . . , x k 0. Thus m = z1 +x 1 n1 +z2 +x 2 n2 + +zk +x k nk and am L.
+To get tightness, consider unary cyclic languages Li = ani 1 (ani ) recognized by
+unary cyclic ni -state automata. Let L = L1 L2 Lk . As shown above, the language L
+is recognized by a unary DFA A with a tail of length d f ( nd1 , . . . , ndk ) k + 1 and a
+cycle of size d. Next, we have am L if and only if
+m = (n1 1) + (n2 1) + + (nk 1) + x1 n1 + x2 n2 + + xk nk
+for some x1 , x2 , . . . , xk 0. Since x1 n1 + x2 n2 + + xk nk is a multiple of d, the
+cycle of size dn has
+exactly
+one final state, and therefore it is minimal. Furthermore,
+nk
+1 n2
+a string ad f ( d , d ,..., d ) k+ d is in L if and only if
+d f (
+
+n1 n2
+nk
+, , . . . , ) k+ d = (n1 1)+(n2 1)+ +(nk 1)+x1 n1 +x2 n2 + +xk nk
+d d
+d
+
+for some x1 , x2 , . . . , xk 0, which holds if and only if
+d g(
+
+n1 n2
+nk
+, , . . . , ) + d = x1 n1 + x2 n2 + + xk nk .
+d d
+d
+n1
+
+n2
+
+nk
+
+n1
+
+n2
+
+nk
+
+By Lemma 21, it follows that ad f ( d , d ,..., d ) k 
+/ L, while ad f ( d , d ,..., d ) k+d L.
+Hence A is minimal.
+
+By [3, Proposition 2.2], if n1 n2 nk , then g(n1 , n2 , . . . , nk ) n1 nk . This
+gives an upper bound n1 nk /d + n1 + + nk k + 1 + d for concatenation of k cyclic
+languages where n1 n2 nk and d = gcd(n1 , n2 , . . . , nk ). The result of the
+previous theorem can be generalized as follows.
+
+State Complexity of Multiple Concatenation
+
+29
+
+Corollary 23. For i = 1, 2, . . . , Lk , let Li = a i Yi where Yi is λi -cyclic be
+a language recognized by a DFA of size (λi , i ). Let d = gcd(λ1 , λ2 , . . . , λk ).
+Then the language L1 L2 Lk is recognized by a DFA of size (λ, ) where λ = d
+and = 1 + 2 + + k + d f ( λd1 , λd2 , . . . , λdk ) k + 1, and this upper bound is
+tight.
+Proof. The language L1 L2 Lk is a concatenation of the singleton language a 1 + 2 + + k recognized by a DFA of size (1, 1 + 2 + + k + 1) and
+the concatenation of cyclic languages Y1 Y2 Yk . Now the result follows from the
+previous theorem since we can simply merge the final state of the automaton for the
+singleton language with the initial state of the DFA for Y1 Y2 Yk ; cf. [6, Theorem 6].
+The upper bound is met by languages Li = a i +λi 1 (aλi ) .
+
+In the case of concatenation of two languages, the length of the resulting cycle
+may be equal to the least common multiple of the lengths of cycles in given automata
+providing that they have final states in their tails [6, Theorems 10 and 11]. The next
+example shows that in some cases this is the optimal way how to get the maximum
+complexity of concatenation of languages recognized by m-state and n-state unary
+DFAs, respectively.
+Example 24. Given an m-state and n-state unary DFA, their concatenation requires mn states if gcd(m, n) = 1. If gcd(m, n) > 1, then we may try to take DFAs
+with smaller cycles of sizes m i and n j, and inspect the complexity of concatenation
+of languages recognized by automata of sizes (m i, i) and (n j, j).
+As shown in [6, Theorem 11] the minimal DFA for concatenation of the languages {ε} am 1 (am 2 ) and {ε} an 1 (an 2 ) , that are recognized by automata
+of sizes (m 2, 2) and (n 2, 2), with the set of final states {0, m 1} and {0, n 1},
+respectively, has 2 lcm(m 2, n 2) + 3 states. By our computations, the smallest m and n, for which such automata provide the maximum complexity among all
+automata of sizes (m i, i) and (n j, j), are m = 137 712 and n = 127 206.
+Nevertheless, it looks like sometimes it could be helpful to decrease the lengths
+of cycles not by two, but just by one, and setting the final state sets to {0, m 2}
+and {0, n 2}, respectively; our aim is to have a state in both tails, and then, to
+get minimal DFAs, the states m 1 and n 1 have to be non-final. Then, similarly
+as in the proof of [6, Theorem 11] we show that the minimal DFA recognizing the
+concatenation of these two languages has 2 lcm(m 1, n 1) 1 states provided
+that gcd(m 1, n 1) > 1 and neither m 1 nor n 1 is a multiple of the other.
+Our next goal is to find m and n such that the maximum of complexities of concatenation of languages recognized by all automata of sizes (m i, i) and (n j, j) is
+achieved if i = j = 1 and gcd(m 1, n 1) = 2 by the above mentioned languages.
+In such a case, we have 2 lcm(m 1, n 1) 1 = (m 1)(n 1) 1.
+By [6, Theorems 10 and 12], the complexity of concatenation of languages recognized by automata of sizes (m i, i) and (n j, j) is at most (m i)(n j) + i + j
+if gcd(m i, n j) = 1, and at most 2 lcm(m i, n j)+i+j 1 if gcd(m i, n j) > 1.
+In both cases, the resulting complexity is at most (m i)(n j) + i + j. Denote this
+
+30
+
+J. Jir sek, G. Jir skov 
+
+number by ci,j = (m i)(n j) + i + j. The reader may verify that
+ci,j < (m 1)(n 1) 1 for all i, j 1 and (i, j) = (1, 1),
+c0,j < (m 1)(n 1) 1 if j 2 and n + 2 < m,
+ci,0 < (m 1)(n 1) 1 if i 3 and m < 2n 3.
+If follows that the complexity (m 1)(n 1) 1 could possibly be exceeded only by
+automata of sizes (m i, i) and (n j, j) where (i, j) {(0, 0), (0, 1), (1, 0), (2, 0)}.
+Assume that in all of this cases, we have gcd(m i, n j) 3. Then, providing
+that m, n 8, the complexity of the corresponding concatenations in these four cases
+is at most
+2 lcm(m i, n j) + i + j 1 <
+
+2
+2
+(m i)(n j) + i + j mn + 3 < (m 1)(n 1) 1.
+3
+3
+
+Now, let m = 471 and n = 315. Then gcd(m 1, n 1) = 2 and n+2 < m < 2n 3.
+Moreover, we have gcd(471, 315) = 3, gcd(471, 314) = 157, gcd(470, 315) = 5,
+and gcd(469, 315) = 7. This means that the maximum complexity of concatenation of a 471-state and 315-state unary DFA is achieved by automata of sizes (470, 1)
+and (314, 1) recognizing languages {ε} a469 (a470 ) and {ε} a313 (a314 ) , that is, by
+automata that have a final state in their tails.
+
+Motivated by our previous examples, we finally consider the state complexity of the
+concatenation of k languages recognized by unary automata that have final states in
+their tails. While in our previous two theorems, the length of the resulting cycle was
+equal to the greatest common divisor of the lengths of cycles in the given automata,
+here, similarly to the case of concatenation of two languages (cf. [6, Theorems 10, 11]),
+it may be equal to their least common multiple. We cannot obtain a tight upper bound
+here, nevertheless, we provide an example that meets our upper bound.
+Theorem 25. For i = 1, 2, . . . , k, let Ai be a unary DFA of size (λi , i ). For a
+non-empty set I = {i1 , i2 , . . . , i } {1, 2, . . . , k}, let
+dI = gcd(λi1 , λi2 , . . . , λi ),
+λi λi
+λi
+f (I) = f ( 1 , 2 , . . . , ),
+dI dI
+dI
+and set d = 1 and f ( ) = 0. Then the language L(A1 )L(A2 ) L(Ak ) is recognized
+by a DFA of size (λ, ) where
+λ = lcm(λ1 , λ2 , . . . , λk )
+ = max{ 1 + 2 + + k k + 1 + dI f (I) | I {1, 2, . . . , k}}.
+Proof. Let Li = L(Ai ) and L = L(A1 )L(A2 ) L(Ak ). We have Li = Xi a i Yi
+where Xi = L(Ai ) {ax | 0 x < i } and Yi = {ax | a i +x L(A)}. Then
+[
+Y
+Y
+L=
+Xj
+a i Yi .
+I {1,2,...,k} j I
+/
+
+i I
+
+State Complexity of Multiple Concatenation
+
+31
+
+Q
+For eachPI, the language j I
+by a DFA of
+/ Xj is a finite language recognized
+Q
+ i
+size (1, 1 + j I
+( 
+
+1)),
+and
+by
+Corollary
+23,
+the
+language
+a
+Y
+is recognized
+j
+i
+/
+i I
+P
+by a DFA of size (dI , 1 + dI F (I) + i I ( i 1)).
+The concatenation of these two languages is recognized by a DFA of
+size (dI , 1 + 2 + + k k + 1 + dI f (I)); cf. [6, Theorem 6]. Then, the union
+of these concatenations is recognized by a DFA of size (λ, ) by [6, Theorem 4]. 
+Example 26. Consider unary DFAs A1 , A2 , A3 of sizes (12, 2), (20, 2), and (30, 2),
+with F1 = {0, 13}, F2 = {0, 21}, and F3 = {0, 31}.
+We have lcm(12, 20, 30) = 60, 4 f (3, 5) = 6 f (2, 5) = 10 f (2, 3) = 60, and
+2 f (6, 10, 15) = 2 2 f (3, 5, 15) = 2 2 5 f (3, 1, 3) = 2 2 5 3 f (1, 1, 1) = 2 2 5 3 2 = 120.
+The size of the minimal automaton recognizing the language L(A1 )L(A2 )L(A3 )
+is (60, 124) where 124 = 2 + 2 + 2 3 + 1 + max{60, 120}.
+
+The above example shows that our upper bound given by Theorem 25 is met by
+unary automata of sizes (12, 2), (20, 2), (30, 2). The tightness of this upper bound in
+a general case remains open.
+8. Conclusions
+We examined in detail the state complexity of the multiple concatenation of k languages. First, we described witness DFAs A1 , A2 , . . . , Ak over the (k + 1)-letter
+alphabet {b, a1 , a2 , . . . , ak }, in which each ai performs the circular shift in Ai and
+the identity in the other automata, while b performs a contraction. Using symbols a1 , a2 , . . . , ak , we proved the reachability of all valid states in the subset automaton for the concatenation by carefully setting the ith component without changing the
+already set (i + 1)th component. The transitions on b guaranteed the co-reachability
+of all singleton sets in the NFA for concatenation, and therefore we obtained the proof
+of distinguishability of all states in the corresponding subset automaton for free. However, to get co-reachability of singletons, our witness automata were required to have
+at least three states. Nevertheless, we described witness automata over a (k +1)-letter
+alphabet also in the case where some of them have only two states.
+Then we provided special binary witnesses for the concatenation of two languages.
+Using our results concerning witnesses over a (k + 1)-letter alphabet, as well as the
+results for the special binary automata, we described witnesses for the concatenation
+of k languages over a k-letter alphabet. This solves an open problem stated in [1].
+For k = 3, we proved that the ternary alphabet is optimal in the sense that the
+upper bound for the concatenation of three languages cannot be met by any binary
+languages. This provides a partial answer to the second open problem from [1].
+We also considered multiple concatenation on binary and ternary languages, and
+obtained lower bounds n1 1+(1/22k 2 )2n2 +n3 + +nk and (1/22k 2 )n1 2n2 +n3 + +nk ,
+respectively. This shows that the state complexity of multiple concatenation remains
+exponential in n2 , n3 , . . . , nk in the binary case, and that a trivial upper bound can
+be met, up to a multiplicative constant depending on k, by ternary languages.
+
+32
+
+J. Jir sek, G. Jir skov 
+
+Finally, we investigated multiple concatenation on unary languages. We obtained
+a tight upper bound for cyclic languages, and we showed that for k 3, it is much
+smaller than a trivial upper bound n1 n2 nk , which is met by cyclic unary languages
+if k = 2 and gcd(n1 , n2 ) = 1 [8, Theorem 5.4]. We also provided a tight upper bound
+for languages recognized by automata that do not have final states in their tails.
+Some problems remain open. First, our k-letter witnesses require ni 3
+for i = 2, 3, . . . , k 1, while the (2k 1)-letter witnesses in [4, Theorem 5] work
+with ni 2. Is it possible to define k-letter witnesses also in such a case? We can do
+this using k + 1 letters, or with k letters if all automata have two states.
+We proved the optimality of a ternary alphabet for the concatenation of three
+languages. However, we cannot see any generalization of the proof. Is a k-letter
+alphabet for describing witnesses for the concatenation of k languages optimal?
+Next, we provided upper bounds in the case where exactly one automaton has one
+state, and using a binary alphabet we proved that they are tight if k = 2. What is
+the state complexity of multiple concatenation if some languages may be equal to Σ ?
+Finally, in the unary case, we obtained an upper bound for multiple concatenation
+of languages recognized by unary automata that may have final states in their tails.
+The tightness of this upper bound remains open.

@@ -1,0 +1,2271 @@
+GentleHumanoid: Learning Upper-body Compliance for Contact-rich
+Human and Object Interaction
+Qingzhou Lu , Yao Feng , Baiyu Shi, Michael Piseno, Zhenan Bao, C. Karen Liu
+Stanford University
+Project Page: gentle-humanoid.axell.top
+
+arXiv:2511.04679v1 [cs.RO] 6 Nov 2025
+
+(a) Sit-to-stand Support
+
+(b) Handshaking
+
+(d) Balloon Handling
+
+GentleHumanoid
+(c) Shape-aware Hugging
+
+Vanilla Tracking RL
+
+Tracking RL w/ Large Perturbation
+
+Fig. 1: GentleHumanoid learns a universal whole-body control policy with upper-body compliance and tunable force limits.
+It enables: (a) sit-to-stand assistance, where the robot provides support across multiple links (hand, elbow, and shoulder);
+(b) handshaking with a 5 N force limit, allowing the robot s hand to move naturally with the human s; (c) autonomous
+shape-aware hugging, where the robot adapts its posture to the partner s body shape (estimated from camera input) for a
+comfortable embrace; and (d) balloon handling, showing safe object manipulation where baselines fail.
+Abstract Humanoid robots are expected to operate in
+human-centered environments where safe and natural physical
+interaction is essential. However, most recent reinforcement
+learning (RL) policies emphasize rigid tracking and suppress
+external forces. Existing impedance-augmented approaches are
+typically restricted to base or end-effector control and focus
+on resisting extreme forces rather than enabling compliance.
+We introduce GentleHumanoid, a framework that integrates
+impedance control into a whole-body motion tracking policy to
+achieve upper-body compliance. At its core is a unified springbased formulation that models both resistive contacts (restoring
+forces when pressing against surfaces) and guiding contacts
+(pushes or pulls sampled from human motion data). This
+formulation ensures kinematically consistent forces across the
+ Equal contribution. This work was done during Qingzhou Lu s intern-
+
+ship at Stanford University. Qingzhou is now with Tsinghua University.
+
+shoulder, elbow, and wrist, while exposing the policy to diverse
+interaction scenarios. Safety is further supported through taskadjustable force thresholds. We evaluate our approach in both
+simulation and on the Unitree G1 humanoid across tasks requiring different levels of compliance, including gentle hugging,
+sit-to-stand assistance, and safe object manipulation. Compared
+to baselines, our policy consistently reduces peak contact forces
+while maintaining task success, resulting in smoother and more
+natural interactions. These results highlight a step toward
+humanoid robots that can safely and effectively collaborate with
+humans and handle objects in real-world environments.
+
+I. INTRODUCTION
+Safe and compliant physical interaction is essential for
+deploying humanoids in human-centered environments. Reinforcement learning (RL) has recently enabled impressive
+
+whole-body locomotion and manipulation [1] [8]. However,
+most policies emphasize rigid position or velocity tracking
+and treat external forces as disturbances to suppress, which
+limits their applicability to tasks requiring adaptive compliance, such as handling objects. To address this, recent
+works have integrated impedance or admittance control into
+RL [9] [11] or attempted to learn forceful loco-manipulation
+implicitly [12]. However, these approaches are restricted to
+base or end-effector control and typically emphasize resisting
+extreme forces rather than supporting compliant interaction.
+In contrast, interactions such as giving a comforting hug or
+assisting with sit-to-stand support require compliance across
+the entire upper-body kinematic chain, where multiple links
+including shoulders, elbows, and hands may be in contact
+simultaneously. Depending on the scenario, compliance must
+range from gentle yielding (e.g., hugging people or handling
+fragile objects) to firm, supportive assistance (e.g., sit-tostand), while always remaining within safe force thresholds.
+This raises two main challenges: (1) coordinating force
+responses across multiple links of the kinematic chain, and
+(2) adapting to diverse contact scenarios, from gentle touch
+to strong supportive forces.
+We address these challenges with GentleHumanoid, a
+framework that integrates impedance control into a motiontracking policy to achieve whole-body humanoid control with
+upper-body compliance. The humanoid s action is influenced
+by two forces: a driving force for motion tracking, modeled
+as a virtual spring damper system that pulls link positions
+toward target motions, and an interaction force that represents physical contact with humans or objects.
+Since collecting real interaction data is difficult, we simulate interaction forces during RL training. Physics engines
+such as MuJoCo and IsaacGym can generate contact forces at
+colliding surfaces, but these are often noisy, local, and uncoordinated, unlike the smooth multi-joint compliance observed
+in human human interactions. They also only occur when
+collisions arise during rollout, limiting coverage of diverse
+interaction scenarios. To address this, we introduce a unified
+spring-based formulation with two cases: (i) resistive contact,
+when the humanoid presses against a surface, modeled by
+fixing the spring anchor at the initial contact point to generate
+restoring forces; and (ii) guiding contact, when the humanoid
+is pushed or pulled by external agents, modeled by sampling
+spring anchors from upper-body postures in human motion
+datasets. Importantly, sampling from complete postures ensures forces remain coordinated across the kinematic chain
+(e.g., shoulder, elbow, wrist), rather than being applied independently to each link. This method provides kinematically
+consistent and diverse interaction forces, enabling the policy
+to learn robust compliance. To further ensure safety, we apply
+force-thresholding during training, with adjustable limits at
+deployment based on task requirements.
+We evaluate GentleHumanoid against baselines, including
+a vanilla whole-body RL tracking policy and an end-effectorbased force-adaptive policy, in both simulation and on the
+Unitree G1 humanoid. Quantitative tests use commercial
+force gauges and conformable, customized waist-mounted
+
+pressure sensing pads with 40 calibrated capacitive taxels to
+measure contact forces and pressures. Qualitative demonstrations cover scenarios requiring different levels of compliance,
+including gentle hugging, sit-to-stand assistance, and softobject manipulation. We also show an autonomous hugging
+pipeline that integrates our policy with vision-based human
+shape estimation for personalized hugs.
+In summary, the main contributions of this work are:
+ We propose GentleHumanoid, a framework that integrates impedance control with motion tracking to
+achieve whole-body humanoid control with upper-body
+compliance. Central to the framework is a unified formulation of interaction force modeling that covers both
+resistive and guiding contacts, sampling from human
+motion datasets to ensure kinematic consistency and
+capture diverse interaction scenarios.
+ We develop a force-thresholding mechanism that maintains interaction forces within safe limits, enabling
+comfortable and safer physical human robot interaction.
+ We design a hugging evaluation setup with a custom
+pressure-sensing pad tailored for hugging, providing
+reliable measurement of distributed contact forces. We
+validate our approach in both simulation and on the Unitree G1 humanoid, showing safer, smoother, and more
+adaptable performance than baselines across hugging,
+sit-to-stand assistance, and object manipulation.
+II. R ELATED W ORK
+A. Humanoid Whole Body Control
+Whole-body control for humanoid robots is a longstanding challenge in robotics. The difficulty is precipitated
+by high-dimensional dynamics and human-like morphology that introduces inherent instability. Traditional modelbased methods, such as model predictive control (MPC),
+can produce stable behaviors but demand extensive expert
+design and meticulous tuning to balance feasibility and
+computational cost [13] [15]. More recently, learning-based
+methods have alleviated many of the challenges of tedious
+design in model-based methods. In particular, learning from
+human motion data has been successful for producing highly
+dynamic motions with single-skill policies [5] and generalist
+policies [3], [4], [6]. Similar frameworks have also been
+used for whole-body tele-operation [2], [7], [8]. However,
+these approaches often neglect scenarios involving complex
+contact dynamics, which reduces their robustness to external
+disturbances and raises safety concerns in close physical
+interaction with humans.
+B. Force-adaptive Control
+To address the aforementioned issue of robust and safe
+contact, classical force-adaptive methods such as impedance
+and admittance control regulate interaction forces and have
+been extended to whole-body frameworks [15] [17]. More
+recently, RL-based approaches have incorporated impedance
+or admittance control for adaptive contact behaviors [9] [11],
+while others aim to implicitly learn robustness to external
+disturbances and extreme forces [12], [18]. However, these
+
+methods typically focus on end-effector interactions rather
+than interactions that involve other body parts. In tasks
+such as carrying large objects or interacting with a human,
+contact is not restricted to the wrists/hands but may involve
+coordinated force distribution across multiple links, including
+elbows, and shoulders. Our work addresses this gap by
+introducing a framework that models compliance across the
+whole upper body kinematic chain.
+C. Human-humanoid Interaction
+As humanoid robots move closer to deployment in humancentered environments, their ability to interact physically
+with people becomes increasingly important. Towards this
+goal, early works have explored using human-in-the-loop
+strategies and haptic feedback to deliver soft and comfortable contact [19], [20]. More recent efforts have applied
+traditional control methods to assist humans in specific
+tasks such as sit-to-stand transitions [21], [22]. However,
+these approaches are typically tailored to a single scenario,
+and the resulting policies do not generalize across different
+interaction contexts such as both hugging and sit-to-stand
+assistance. Other recent works shift the focus to visionbased criteria, for example, designing policies that enable
+humanoids to consistently avoid human collisions [23]. In
+contrast, our approach proposes a general motion-tracking
+policy capable of handling multiple interaction scenarios. In
+particular, for hugging tasks, we combine the policy with
+visual perception to customize hugging positions for people
+of different body shapes.
+III. M ETHOD
+A. Problem Formulation
+Our goal is to achieve whole-body humanoid control that
+is both robust and safe, enabling humanoids to perform diverse motions while interacting compliantly with humans and
+deformable objects. We frame this as learning a compliant
+motion-tracking policy: the humanoid should follow humanlike movements while adapting its behavior in response to
+interaction forces. Unlike rigid trajectory tracking, humans
+naturally adjust their actions based on contact feedback,
+which motivates our use of impedance-based control. Since
+most physical interactions occur in the upper body, we
+focus on modeling it as a multi-link impedance system with
+keypoints at the shoulders, elbows, and hands. As illustrated
+in Fig. 2, the motion of each link position is influenced by
+the combination of driving forces from target motions and
+interaction forces from humans or objects:
+M x i = fdrive,i + finteract,i ,
+
+(1)
+
+where xi is the position of link i, x i is acceleration, and M
+is a scalar virtual mass (kg) per link. We set M as 0.1 kg
+in our reference dynamics model. The driving force fdrive,i
+is a virtual spring damper term from classical impedance
+control, pulling the link position toward its target motion, and
+finteract,i captures forces arising from interactions with the
+environment, including humans and objects. In the following
+sections, we detail the formulation of each force component.
+
+For clarity, we introduce the index i once and omit it
+henceforth. All link positions x and velocities x are 3D
+Cartesian quantities expressed in the robot s root frame.
+B. Impedance-Based Driving Force from Target Motion
+Following prior work [10], [15], we generate driving
+forces from the target motion to pull each link position
+toward its target trajectory. The force is modeled as a virtual
+spring damper system:
+fdrive = Kp (xtar xcur ) + Kd (vtar vcur ) ,
+
+(2)
+
+where xcur , vcur are the current link position and velocity,
+and xtar , vtar are the corresponding target link position and
+velocity from the target motion. The gains Kp and Kd
+denote the impedance stiffness and damping, respectively,
+controlling how strongly the link position tracks its target.
+To ensure stable and smooth
+p behavior, we set the damping to
+the critical value, Kd = 2 M Kp . All x and v terms above
+denote 3D Cartesian link states (in the root frame), while the
+policy produces actions in joint space that are tracked by lowlevel joint PD controllers. The RL policy learns to coordinate
+these compliant forces across multiple joints, mapping them
+into joint-level actions that balance stability and adaptability
+in whole-body control.
+C. Interaction Force Modeling
+When no interaction occurs, the driving force alone
+enables the humanoid to follow target motions. In real
+scenarios, however, physical contact introduces additional
+interaction forces across multiple links, often correlated in
+direction and magnitude. To capture these effects, we design
+a unified interaction force model that accounts for both multilink coupling and force diversities. We distinguish two cases:
+Resistive contact: Forces generated when the humanoid
+itself presses against a human or object.
+Guiding contact: Forces applied by an external agent,
+such as a human pushing or pulling the humanoid s arm.
+Both cases are modeled using the same spring formulation
+with a consistent anchor terminology:
+
+finteract = Kspring xanchor xcur ,
+(3)
+where Kspring is the stiffness, xcur is the current link position,
+and the spring anchor xanchor is defined as
+
+ xcur (t0 ), resistive contact,
+xanchor =
+(4)
+ x
+guiding contact.
+sample ,
+Here, xcur (t0 ) is the link position at the moment of initial
+contact (fixing a virtual spring anchor), xsample is a link position sampled from a dataset posture, representing an external
+agent steering the humanoid toward a new configuration.
+This formulation provides a unified framework: Resistive
+contact yields restoring forces that resist deviations from the
+contact point, while Guiding contact yields guiding forces
+that pull the humanoid toward externally defined postures.
+Posture samples are drawn from real human motion data,
+ensuring that the guiding forces are kinematically valid and
+
+(a) Reference Dynamics
+
+(c) Deployment
+HRI Motion
+
+Contact
+
+Hugging
+Planner
+
+timestep
+
+Vision
+
+Driving
+Force
+
+Interaction
+Force
+
+Hugging Motion
+
+Motion Target
+Current Pos
+Anchor Pos
+
+GentleHumanoid Policy
+Proprioception
+
+Privileged Obs
+
+(b) Training
+Reward
+
+Safe & Compliant Interactions
+
+Policy
+
+Target Motion
+Action
+
+Simulator
+
+Fig. 2: Overview framework. (a) Reference dynamics: impedance-based dynamics integrate driving forces (for motion
+tracking) and interaction forces (for compliant contact), producing reference link (on the shoulders, elbows and hands)
+positions and velocities. (b) Training: the policy receives proprioception, privileged observations, and target motions, and
+is optimized using rewards that compare simulated states (xsim , x sim ) to reference dynamics (xref , x ref ). (c) Deployment:
+the trained GentleHumanoid policy is applied to real-world tasks, including vision-based autonomous hugging and other
+human robot interaction scenarios, enabling safe and compliant behaviors such as hugging, sit-to-stand assistance, and
+handling large deformable objects.
+
+D. Safety-Aware Force Thresholding
+In Equation 2, the driving force grows proportionally with
+tracking error. Without limitation, large deviations from the
+target motion can result in unbounded forces, potentially
+exceeding safe interaction levels. To prevent this, we introduce an adaptive force thresholding mechanism that caps the
+
+Right Shoulder Link
+
+Right Elbow Link
+
+0.200
+
+Right Hand Link
+0.16
+
+0.7
+0.175
+0.6
+
+0.14
+
+0.150
+
+0.5
+
+Density
+
+correspond to plausible upper-body movements. Specifically,
+we precompute posture distributions from motion dataset,
+during training, select postures close to the current multi-link
+positions. From these, a target position is randomly sampled
+and used as the spring anchor to generate guiding forces.
+To further increase interaction diversity, we randomize
+both stiffness and the active links. The stiffness is sampled
+as Kspring U(5, 250). Active-contact sets are chosen with
+the following probabilities: 40% no external force; 15% both
+arms (all 6 links) under force; 30% a single arm (left or
+right; its 3 links) under force (15% each arm); and 15%
+only a single link under force. Anchors and selections are
+resampled every 5 seconds with a short transition window
+to ensure continuity. This exposes the policy to a broad
+range of interaction dynamics, enabling it to learn robust
+compliance while preserving consistency along the kinematic
+chain. As a result, the model can simulate diverse external
+force directions and magnitudes; Figure 3 visualizes the
+resulting distribution, showing that forces span a wide range
+of directions on the sphere with magnitudes from 0 to 25 N.
+
+0.4
+
+0.12
+
+0.125
+
+0.10
+
+0.100
+
+0.08
+
+0.3
+
+0.075
+
+0.06
+
+0.2
+
+0.050
+
+0.04
+
+0.1
+
+0.025
+
+0.0
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+Force magnitude & direction
+
+0.000
+
+0.02
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+Force magnitude & direction
+
+0.00
+
+0
+
+5
+
+10
+
+15
+
+20
+
+25
+
+Force magnitude & direction
+
+Fig. 3: Interaction force distributions across upper-body
+links. Probability densities of force magnitudes are shown
+for the right shoulder (left), right elbow (middle), and right
+hand (right). Insets (top right) illustrate the corresponding
+force directions on a sphere.
+
+maximum allowable force applied by the robot.
+We define a range of force thresholds and sample a
+piecewise-constant value τsafe during training: F1 τsafe 
+F2 . The threshold is resampled every 5 seconds, encouraging
+the policy to remain robust across a range of safety limits.
+The current threshold is also provided to the policy as part
+of the observation. Here, F1 and F2 define the range for the
+maximal allowable force the robot should apply in various
+tasks. When the driving force exceeds the threshold, we
+apply a scaling mechanism:
+
+τsafe
+fdrive limited = min 1.0,
+ fdrive ,
+(5)
+ fdrive 
+
+compliance. The threshold directly tunes compliance: lower
+values yield softer, safer behavior for gentle interactions
+like hugging, while higher values allow firmer support for
+tasks such as sit-to-stand assistance, all while maintaining
+safety bounds. The choice of exact threshold depends on the
+application. Since our focus is humanoid interaction with
+humans and fragile objects (e.g., balloons), we set F1 = 5 N
+and F2 = 15 N. These values are benchmarked against both
+ISO/TS 15066 [24] safety ceilings and comfort studies. In
+the extreme case of a minimal 0.5 0.5 cm contact area
+(0.25 cm2 ), 15 N corresponds to 60 N/cm2 , still below
+ISO/TS 15066 pain-onset limits for torso and arms (e.g.,
+back/shoulder: 160 N/cm2 , chest: 120 N/cm2 ). For more realistic hugging contacts of 16 cm2 , this range corresponds
+to 3 9 kPa, consistent with measurements of children s hugs
+(soft hugs < 7 kPa, strong hugs 18 kPa) [25] and
+rehabilitation studies recommending pressures 13 kPa for
+comfort [26]. Thus, our thresholds remain well below ISO
+ceilings while lying in a comfort-oriented band.
+E. RL-based Control Policy
+Formally, we consider a humanoid robot at time t with
+observation ot containing its proprioception and a target
+motion sequence mtar . The policy π(at | ot ) outputs joint
+position targets at at 50 Hz for low-level PD tracking,
+enabling the humanoid to follow the target motion while
+exhibiting compliant responses to interaction forces finteract .
+To incorporate the impedance-based reference dynamics,
+we simulate the model using semi-implicit Euler integration,
+with a fixed time step of 0.005 s:
+fdrive +finteract
+ref
+,
+x ref
+t+1 = x t + t 
+M
+
+(6)
+
+ref
+ref
+xref
+t+1 = xt + t x t+1 .
+
+(7)
+
+Where t is the integration step size, and xref
+t denotes the
+link position in the reference dynamics model, which we
+distinguish from the actual robot link position xsim in the
+simulator. The objective is to guide the robot to follow the
+impedance rules encoded in the reference dynamics. At each
+timestep, velocities and positions are updated according to
+the net driving and interaction forces, with semi-implicit
+Euler ensuring numerical stability.
+This impedance-based reference dynamics system specifies the compliant behavior the policy is trained to reproduce.
+We compute xref via the above integration and use it in the
+link-position tracking rewards (details in Reward Design).
+During training, the RL agent observes ot and outputs at
+such that the resulting behavior aligns with this dynamics
+model. In effect, the policy learns to track target motions
+while adapting to stochastic interaction forces, yielding stable, compliant whole-body control across diverse scenarios.
+1) Teacher-Student Architecture: We employ a two-stage
+teacher student training framework for sim-to-real transfer.
+We adopt the same teacher-student architecture and training
+procedure from prior work [10], and train both policies with
+PPO [27]. The student policy observes only information
+available during real-world deployment:
+ot = (τsafe , mtar , ω, g, qthist , at 3:t 1 ) ,
+
+where τsafe represents the current force-safety limit, that
+can be changed by use during deployment; mtar contains
+target motion information including future root poses and
+target joint position; ω is the root angular velocity; and
+g is gravity expressed in the robot s root frame (projected
+gravity). qthist provide joint-position history, and at 3:t 1
+contains the recent action history.
+The teacher policy additionally receives comprehensive
+privileged information:
+ref
+sim
+opriv
+= (xref
+t
+t , x t , finteract , finteract , ht , τt 1 , ecum ) ,
+ref
+where xref
+t and x t are the integrated link positions and
+velocities from the impedance-based reference dynamics
+(Eq. 7); finteract denotes the interaction force predicted by
+sim
+the reference dynamics, while finteract
+is the actual interaction
+force measured in simulation. Ideally, finteract should closely
+sim
+. ht represents link heights relative to the
+match finteract
+ground; τt 1 are the previous joint torques; and ecum denotes
+the cumulative tracking error.
+Both policies output joint position targets at R29 which
+are tracked by low-level PD controllers.
+2) Motion Datasets: We use diverse human motion to
+train our policy, covering data for both human-human
+and human-object interactions datasets. Specifically, we use
+GMR [28] to retarget the AMASS [29], InterX [30], and
+LAFAN [31] datasets, and filter out some high-dynamic motions that do not conform to interaction scenarios, ultimately
+obtaining approximately 25 hours of dataset with a sampling
+frequency of 50Hz.
+3) Reward Design: Following prior work on whole-body
+humanoid control [2], [8], we adapt rewards for motion
+tracking and locomotion stability, as summarized in Table I,
+to encourage accurate motion tracking and stable balance.
+In GentleHumanoid, we additionally design a compliance
+reward composed of three terms:
+Reference Dynamics Tracking. We encourage the robot
+to follow the compliant reference dynamics by minimizing
+the discrepancy between the actual link state in simulation
+sim
+ref
+ref
+(xsim
+t , x t ) and the reference state (xt , x t ) from Eq. 7:
+
+ x sim x ref
+ xsim xref
+t 2
+t 2
++ exp t
+.
+rdyn = exp t
+σx
+σv
+
+Exponential kernels provide smooth gradients, with σx and
+σv controlling sensitivity.
+Reference Force Tracking. To align predicted interaction
+forces with actual forces measured in simulation, we penalize
+the discrepancy between finteract from the reference dynamics
+sim
+and finteract
+from the environment:
+
+sim
+ finteract finteract
+ 2
+rforce = exp 
+.
+σf
+This term complements position tracking by explicitly
+regulating force magnitudes, which is crucial for enforcing
+safe maximum force thresholds.
+Unsafe Force Penalty. To further discourage unsafe behaviors, we penalize interaction forces that exceed the safety
+
+margin τsafe , in addition to the driving force thresholding in
+Eq. 5:
+rpen = I( finteract > τsafe + δtol ) .
+
+rcompliance = wdyn rdyn + wforce rforce + wpen rpen .
+The weights for each term along with those for motion
+tracking and locomotion stability are provided in Table I.
+TABLE I: Reward Terms and Weights.
+Reward
+
+Vanilla-RL
+
+Extreme-RL
+
+Right Elbow Link
+
+20
+
+Right Shoulder Link
+15
+
+15
+10
+5
+0
+
+Force (N)
+
+20
+
+Force (N)
+
+Force (N)
+
+Here, δtol is a tolerance margin that allows minor deviations beyond τsafe without triggering large penalties. This
+prevents the policy from becoming overly conservative while
+still discouraging forces that are clearly unsafe. In practice,
+we set δtol as 10 N based on empirical observations.
+The overall compliance reward is a weighted sum of these
+terms:
+
+GentleHumanoid
+Right Hand Link
+15
+10
+5
+0
+0
+
+2
+
+4
+
+6
+
+8
+
+10
+
+10
+
+5
+
+0
+0
+
+2
+
+Time (s)
+
+4
+
+6
+
+8
+
+10
+
+0
+
+2
+
+Time (s)
+
+4
+
+6
+
+8
+
+10
+
+Time (s)
+
+Fig. 4: Forces applied by different upper-body links under
+external interaction. Force profiles over time are shown for
+the right hand (left), right elbow (middle), and right shoulder
+(right). Compared to baselines (Vanilla-RL and ExtremeRL), GentleHumanoid maintains lower and more stable force
+levels across all links, showing safer and more compliant
+responses during contact.
+ !"#$ =10N
+
+ !"#$ =15N
+
+Weight
+ !"#$ =5N
+
+Compliance
+Reference Dynamics Tracking
+Reference Force Tracking
+Unsafe Force Penalty
+
+2.0
+2.0
+6.0
+
+GentleHumanoid with different force limits
+
+Motion Tracking
+Root Tracking
+Joint Tracking
+
+0.5
+1.0
+Vanilla-RL
+
+Locomotion Stability
+Survival
+Feet Air Time
+Impact Force
+Slip Penalty
+Action Rate
+Joint Velocity
+Joint Limit
+
+5.0
+10.0
+4.0
+2.0
+0.1
+5.0e-4
+1.0
+
+Extreme-RL
+
+Fig. 5: Comparison of interaction forces across policies. Top:
+GentleHumanoid with tunable force limits, which maintains
+safe interaction by keeping contact forces within specified
+thresholds across different postures. Bottom: baseline methods, Vanilla-RL and Extreme-RL, exhibit less consistent
+compliance, with higher peak forces or oscillatory responses.
+Force gauge readings (N) are highlighted for clarity.
+
+IV. E XPERIMENTS
+We conduct both simulation and real-world experiments to
+evaluate the effectiveness of GentleHumanoid. We compare
+against two baselines that adopt different training strategies:
+Vanilla-RL: an RL-based motion tracking policy trained
+without force perturbations, representative of prior wholebody tracking approaches; Extreme-RL: an RL-based motion tracking policy trained with maximum 30 N end-effector
+force perturbations, representative of prior force-adaptive
+methods.
+A. Simulation Results
+We first benchmark against baselines in simulation using
+a hugging motion. To evaluate compliance, we simulate
+an external pulling force that attempts to move the robot
+away from its hugging posture, mimicking a human trying
+to break free from an embrace. As shown in Figure 4,
+our method consistently maintains lower and more stable
+interaction forces across the hand, elbow, and shoulder
+links. At the hand, GentleHumanoid stabilizes around 10
+N, whereas Vanilla-RL settles above 20 N and ExtremeRL exceeds 13 N. Similar trends are observed at the elbow
+and shoulder: while baselines quickly saturate at 15 20 N
+
+with rigid responses, GentleHumanoid remains bounded near
+7 10 N. These results show that our method adapts smoothly
+to external interaction, yielding compliant motions, while
+baselines remain overly stiff and exert higher peak forces.
+B. Real-World Experiments
+We deploy our whole-body control policy on the Unitree
+G1 humanoid to evaluate compliance in real-world interactions. Three reference scenarios are considered:
+1) Static pose with external force. We first test compliance by applying external forces at the wrist while the robot s
+base remains static. Ideally, the arm should yield softly, moving with the external force instead of resisting rigidly. Forces
+are applied using a handheld force gauge (Mark-10, M510), which also records peak values. As shown in Figure 5,
+both baselines resist stiffly: rather than letting the arm move,
+the torso shifts, often leading to imbalance. Extreme-RL is
+particularly rigid, requiring a peak force of 51.14 N, while
+Vanilla-RL requires 24.59 N. In contrast, GentleHumanoid
+responds smoothly and consistently, requiring much lower
+forces to reposition the arm while maintaining balance. A
+
+C. More Applications
+GentleHumanoid enables applications where compliance
+is critical. We integrate our policy with a locomotion teleoperation framework for the Unitree G1, allowing users to
+control walking and trigger pre-defined reference motions
+such as hugging, sit-to-stand assistance, and object handling.
+Demonstrations of joystick-based control are provided in the
+supplementary video. While this work focuses on locomotion teleoperation, extending GentleHumanoid to full-body
+teleoperation such as TWIST [8] is an important direction
+for future work. The inherent compliance of our method
+ensures safe interactions even during teleoperation under
+direct physical contact, making it particularly promising
+
+Hugging
+in right position
+
+Hugging with
+misalignment
+
+Sensor Pad
+Real-time Pressure
+Visualization
+
+Extreme-RL
+
+Hugging with misalignment
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+0
+
+0
+
+8
+
+0
+
+0
+
+1
+
+0
+
+0
+
+0
+
+0
+
+1
+
+3
+
+4
+
+2
+
+0
+
+0
+
+0
+
+0
+
+6
+
+16
+
+8
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+0
+
+0
+
+1
+
+2
+
+0
+
+17
+
+9
+
+0
+
+0
+
+0
+
+0
+
+50
+
+6
+
+6
+
+0
+
+0
+
+0
+
+1
+
+0
+
+0
+
+0
+
+28
+
+5
+
+5
+
+0
+
+30
+
+7
+
+1
+
+1
+
+1
+
+3
+
+45
+
+9
+
+8
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+111
+
+5
+
+3
+
+0
+
+11
+
+1
+
+1
+
+1
+
+0
+
+8
+
+34
+
+41
+
+4
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+19
+
+26
+
+37
+
+2
+
+0
+
+0
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+15
+
+10
+
+5
+
+0
+
+0
+
+6
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+4
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+7
+
+4
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+2
+
+1
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+15
+
+20
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+4
+
+4
+
+0
+
+0
+
+0
+
+0
+
+38
+
+13
+
+17
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+11
+
+0
+
+16
+
+1
+
+0
+
+0
+
+0
+
+1
+
+3
+
+11
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+7
+
+12
+
+2
+
+4
+
+1
+
+2
+
+5
+
+1
+
+0
+
+0
+
+0
+
+1
+
+8
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+9
+
+8
+
+16
+
+2
+
+0
+
+0
+
+4
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+208
+
+61
+
+8
+
+3
+
+1
+
+0
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+2
+
+0
+
+10
+
+0
+
+0
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+7
+
+13
+
+0
+
+1
+
+4
+
+7
+
+23
+
+1
+
+0
+
+1
+
+4
+
+11
+
+12
+
+0
+
+4
+
+2
+
+2
+
+0
+
+0
+
+0
+
+2
+
+27
+
+6
+
+0
+
+0
+
+0
+
+19
+
+11
+
+0
+
+0
+
+62
+
+0
+
+2
+
+11
+
+25
+
+4
+
+1
+
+0
+
+0
+
+4
+
+2
+
+52
+
+7
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+5
+
+5
+
+0
+
+2
+
+3
+
+64
+
+4
+
+0
+
+0
+
+0
+
+22
+
+6
+
+83
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+0
+
+2
+
+2
+
+6
+
+15
+
+0
+
+0
+
+0
+
+2
+
+17
+
+8
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+2
+
+0
+
+0
+
+16
+
+417
+
+10
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+0
+
+0
+
+2
+
+19
+
+5
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+4
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+4
+
+551
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+14
+
+16
+
+GentleHumanoid
+
+Vanilla-RL
+
+Hugging in right position
+
+350
+
+300
+
+250
+
+200
+
+150
+
+100
+
+50
+
+0
+
+Extreme-RL
+
+Hugging with misalignment
+30
+
+25
+
+25
+
+Peak Force (N)
+
+30
+
+20
+15
+10
+5
+0
+
+400
+
+Pressure (kPa)
+
+Vanilla-RL
+
+GentleHumanoid
+
+Hugging in right position
+
+Force (N)
+
+key observation is that GentleHumanoid provides postureinvariant compliance: the same external force suffices to
+modulate arm position across different configurations. Moreover, compliance level matches the user-specified force limit.
+For example, when set to 10 N, the robot maintains balance
+around that threshold across postures, with effective ranges
+between 5 15 N. This uniform, predictable response arises
+from our formulation, which regulates compliance through
+virtual spring damper dynamics and safety thresholds rather
+than raw joint mechanics. As a result, human interaction feels
+safer and more consistent than with baselines.
+2) Hugging a mannequin. We next evaluate hugging performance under two conditions. In the first, the mannequin
+is properly aligned with the robot, and the G1 executes a
+hugging motion. In the second, the mannequin is deliberately misaligned to assess safety under imperfect contact.
+Pressure-sensing pads attached to the mannequin measure
+contact forces. We set τsafe as 10 N in GentleHumanoid to
+compare with baselines. For sensor calibration, a motorized
+stage with a PDMS applicator was used to map normalized
+sensor values to ground-truth pressures measured by a force
+gauge. Under localized contact, we approximate the effective
+contact area of each texel as 6 mm 6 mm and compute
+forces from the corresponding pressure values recorded in the
+pad. The evaluation setups and results are shown in Figure 6,
+GentleHumanoid maintains bounded and stable forces even
+under misalignment, whereas the baselines Vanilla-RL and
+Extreme-RL generate higher, less predictable forces or fail
+to sustain the motion.
+3) Handling deformable objects. Finally, we test the
+ability to handle fragile objects such as balloons. The challenge is to maintain contact forces within a safe range:
+insufficient force fails to stabilize the object, while excessive
+force causes deformation or collapse. For this experiment,
+the force threshold in GentleHumanoid is set to 5 N. As
+shown in Figure 1(d), GentleHumanoid successfully holds
+the balloon without damage, whereas both baselines apply
+excessive pressure, eventually squeezing the balloon until the
+G1 loses balance and drops it.
+Across all scenarios, GentleHumanoid consistently reduced peak interaction forces compared to baselines, resulting in safer and smoother contact.
+
+20
+15
+10
+5
+
+0
+
+2
+
+4
+
+6
+
+8
+
+Time (s)
+
+10
+
+12
+
+14
+
+16
+
+0
+
+0
+
+2
+
+4
+
+6
+
+8
+
+Time (s)
+
+10
+
+12
+
+Fig. 6: Evaluation of hugging interactions with and without
+misalignment. Top: experimental setup with custom pressuresensing pads and real-time pressure visualization. Middle:
+pressure maps of peak force frames for different controllers
+under correct hugging alignment (left) and misalignment
+(right). GentleHumanoid maintains moderate contact pressures, while baselines produce localized high-pressure peaks,
+especially under Vanilla-RL. Bottom: Force profiles over
+time, where GentleHumanoid maintains bounded and stable
+forces, while baselines exhibit increasing or unstable peaks.
+
+for healthcare and assistive scenarios where caregivers or
+operators remotely guide humanoid motions.
+We also develop an autonomous, shape-aware pipeline
+for personalized hugging. The human s location and height
+are obtained using a motion-capture system with markers
+placed on a hat, while an additional RGB camera mounted
+on the G1 s head provides input for single-image human
+shape estimation, as shown in Figure 1(c). From this image,
+we reconstruct a personalized body mesh using an existing
+human mesh estimation method [32] and scale it to the
+subject s true height. Waist points are then extracted from
+the mesh to optimize the humanoid s hugging motion by
+aligning its hands with these target locations. This allows the
+G1 to adapt its hugging posture to individuals of different
+body shapes in a fully autonomous manner. Experiments
+
+with participants of varying heights and builds show that the
+pipeline generates stable and comfortable hugging motions.
+V. D ISCUSSION AND L IMITATIONS
+Our study shows that GentleHumanoid enables upper-body
+compliance in humanoid robots. By integrating impedance
+control into whole-body motion tracking and training with
+a unified spring-based formulation, the policy generates
+coordinated responses across multiple links and reduces peak
+contact forces compared to baselines. Demonstrations in
+hugging, sit-to-stand assistance, and object handling highlight its ability to adapt compliance across diverse scenarios,
+underscoring its potential for human-centered interaction.
+Several limitations remain. First, we use human motion
+data to maintain kinematic consistency across links, but the
+dataset itself constrains the force distribution. For instance,
+forces applied to the shoulder are relatively small due to
+limited variation in the recorded motions. Incorporating
+more diverse motion datasets, such as dancing, could further
+improve coverage. Second, our interaction modeling relies on
+simulated spring forces, which provide structured coverage
+and kinematic consistency but do not fully capture the
+complexity of real human contact, such as frictional effects or
+the viscoelastic properties of human tissue. Third, although
+the safety-aware policy constrains interaction forces, realworld experiments reveal occasional overshoots of 1 3 N
+due to sim-to-real discrepancies. Additional tactile sensing
+may be necessary for more precise force regulation. Finally,
+human localization and height are currently obtained from
+a motion capture system. Replacing this with a visionbased pipeline would improve autonomy and practicality,
+particularly in long-horizon tasks. Future work will focus
+on integrating richer sensing, combining general perception
+and reasoning systems such as vision language models,
+and extending evaluations to long-horizon interactions where
+the humanoid must adapt its motion dynamically to human
+partners behaviors.
+VI. ACKNOWLEDGMENT
+We would like to thank Haoyang Weng, Botian Xu,
+Haochen Shi, Sirui Chen, Ken Wang, Yanjie Ze, Joao Pedro Araujo, Yufei Ye and Takara Everest Truong for their
+valuable discussions. We are also grateful to Yu Sun for
+assistance with motion capture from video and to Jiaxin Lu
+for support with the motion dataset. We further thank the
+Unitree team for their timely and reliable hardware support.
+R EFERENCES
+[1] D. J. Agravante, A. Cherubini, A. Sherikov, P.-B. Wieber, and
+A. Kheddar, Human-humanoid collaborative carrying, IEEE Transactions on Robotics, vol. 35, no. 4, pp. 833 846, 2019. 2
+[2] Z. Fu, Q. Zhao, Q. Wu, G. Wetzstein, and C. Finn, Humanplus:
+Humanoid shadowing and imitation from humans, in Conference on
+Robot Learning (CoRL), 2024. 2, 5
+[3] M. Ji, X. Peng, F. Liu, J. Li, G. Yang, X. Cheng, and X. Wang,
+ Exbody2: Advanced expressive humanoid whole-body control, arXiv
+preprint arXiv:2412.13196, 2024. 2
+[4] Z. Chen, M. Ji, X. Cheng, X. Peng, X. B. Peng, and X. Wang,
+ Gmt: General motion tracking for humanoid whole-body control, 
+arXiv:2506.14770, 2025. 2
+
+[5] T. He, J. Gao, W. Xiao, Y. Zhang, Z. Wang, J. Wang, Z. Luo, G. He,
+N. Sobanbab, C. Pan et al., Asap: Aligning simulation and real-world
+physics for learning agile humanoid whole-body skills, arXiv preprint
+arXiv:2502.01143, 2025. 2
+[6] Q. Liao, T. E. Truong, X. Huang, G. Tevet, K. Sreenath, and C. K. Liu,
+ Beyondmimic: From motion tracking to versatile humanoid control
+via guided diffusion, 2025. 2
+[7] T. He, Z. Luo, X. He, W. Xiao, C. Zhang, W. Zhang, K. Kitani,
+C. Liu, and G. Shi, Omnih2o: Universal and dexterous humanto-humanoid whole-body teleoperation and learning, arXiv preprint
+arXiv:2406.08858, 2024. 2
+[8] Y. Ze, Z. Chen, J. P. Arau jo, Z. ang Cao, X. B. Peng, J. Wu, and
+C. K. Liu, Twist: Teleoperated whole-body imitation system, arXiv
+preprint arXiv:2505.02833, 2025. 2, 5, 7
+[9] T. Portela, G. B. Margolis, Y. Ji, and P. Agrawal, Learning force control for legged manipulation, in 2024 IEEE International Conference
+on Robotics and Automation (ICRA). IEEE, 2024, pp. 15 366 15 372.
+2
+[10] B. Xu, H. Weng, Q. Lu, Y. Gao, and H. Xu, Facet: Force-adaptive
+control via impedance reference tracking for legged robots, arXiv
+preprint arXiv:2505.06883, 2025. 2, 3, 5
+[11] P. Zhi, P. Li, J. Yin, B. Jia, and S. Huang, Learning unified force
+and position control for legged loco-manipulation, arXiv preprint
+arXiv:2505.20829, 2025. 2
+[12] Y. Zhang, Y. Yuan, P. Gurunath, T. He, S. Omidshafiei, A.-a. Aghamohammadi, M. Vazquez-Chanlatte, L. Pedersen, and G. Shi, Falcon:
+Learning force-adaptive humanoid loco-manipulation, arXiv preprint
+arXiv:2505.06776, 2025. 2
+[13] M. Murooka, K. Chappellet, A. Tanguy, M. Benallegue, I. Kumagai, M. Morisawa, F. Kanehiro, and A. Kheddar, Humanoid locomanipulations pattern generation and stabilization control, IEEE
+Robotics and Automation Letters, vol. 6, no. 3, pp. 5597 5604, 2021.
+2
+[14] E. Dantec, R. Budhiraja, A. Roig, T. Lembono, G. Saurel, O. Stasse,
+P. Fernbach, S. Tonneau, S. Vijayakumar, S. Calinon et al., Whole
+body model predictive control with a memory of motion: Experiments
+on a torque-controlled talos, in 2021 IEEE International Conference
+on Robotics and Automation (ICRA). IEEE, 2021, pp. 8202 8208. 2
+[15] M. Sombolestan and Q. Nguyen, Adaptive force-based control of
+dynamic legged locomotion over uneven terrain, IEEE Transactions
+on Robotics, 2024. 2, 3
+[16] , Hierarchical adaptive loco-manipulation control for quadruped
+robots, arXiv preprint arXiv:2209.13145, 2022. 2
+[17] A. Rigo, M. Hu, S. K. Gupta, and Q. Nguyen, Hierarchical
+optimization-based control for whole-body loco-manipulation of heavy
+objects, in 2024 IEEE International Conference on Robotics and
+Automation (ICRA). IEEE, 2024, pp. 15 322 15 328. 2
+[18] N. Fey, G. B. Margolis, M. Peticco, and P. Agrawal, Bridging
+the sim-to-real gap for athletic loco-manipulation, arXiv preprint
+arXiv:2502.10894, 2025. 2
+[19] T. Mukai, S. Hirano, H. Nakashima, Y. Kato, Y. Sakaida, S. Guo, and
+S. Hosoe, Development of a nursing-care assistant robot riba that can
+lift a human in its arms, in 2010 IEEE/RSJ International Conference
+on Intelligent Robots and Systems, 2010, pp. 5996 6001. 3
+[20] A. E. Block, Huggiebot: An interactive hugging robot with visual
+and haptic perception, Ph.D. dissertation, ETH Zurich, 2021. 3
+[21] A. Bolotnikova, S. Courtois, and A. Kheddar, Adaptive task-space
+force control for humanoid-to-human assistance, IEEE Robotics and
+Automation Letters, vol. 6, no. 3, pp. 5705 5712, 2021. 3
+[22] H. Lefe vre, T. Chaki, T. Kawakami, A. Tanguy, T. Yoshiike, and
+A. Kheddar, Humanoid-human sit-to-stand-to-sit assistance, IEEE
+Robotics and Automation Letters, 2024. 3
+[23] Y. Sun, R. Chen, K. S. Yun, Y. Fang, S. Jung, F. Li, B. Li, W. Zhao,
+and C. Liu, Spark: A modular benchmark for humanoid robot safety, 
+arXiv preprint arXiv:2502.03132, 2025. 3
+[24] International Organization for Standardization, Robots and robotic
+devices - collaborative robots, International Organization for Standardization, Tech. Rep. ISO/TS 15066:2016(E), 2016. 5
+[25] J. Kim, A. Alspach, I. Leite, and K. Yamane, Study of children s
+hugging for interactive robot design, in 2016 25th IEEE International
+Symposium on Robot and Human Interactive Communication (ROMAN). IEEE, 2016, pp. 557 561. 5
+[26] Y. Nam, S. Yang, J. Kim, B. Koo, S. Song, and Y. Kim, Quantification of comfort for the development of binding parts in a standing
+rehabilitation robot, Sensors, vol. 23, no. 4, p. 2206, 2023. 5
+
+[27] J. Schulman, F. Wolski, P. Dhariwal, A. Radford, and
+O. Klimov, Proximal policy optimization algorithms, CoRR,
+vol. abs/1707.06347, 2017. 5
+[28] Y. Ze, J. P. Arau jo, J. Wu, and C. K. Liu, Gmr: General motion
+retargeting, 2025, gitHub repository. 5
+[29] N. Mahmood, N. Ghorbani, N. F. Troje, G. Pons-Moll, and M. J.
+Black, AMASS: Archive of motion capture as surface shapes, in
+International Conference on Computer Vision, Oct. 2019, pp. 5442 
+5451. 5
+[30] L. Xu, X. Lv, Y. Yan, Y. Jin, G. Wu, Y. Xu, L. Qiao, X. Zhu, J. Liu,
+R. Zhang et al., Inter-x: Towards versatile human-human interaction
+analysis, arXiv preprint arXiv:2312.16051, 2023. 5
+[31] F. G. Harvey, M. Yurick, D. Nowrouzezahrai, and C. J. Pal, Robust
+motion in-betweening, CoRR, vol. abs/2102.04942, 2021. 5
+[32] M. J. Black, P. Patel, J. Tesch, and J. Yang, BEDLAM: A synthetic
+dataset of bodies exhibiting detailed lifelike animated motion, in
+Proceedings IEEE/CVF Conf. on Computer Vision and Pattern Recognition (CVPR), Jun. 2023, pp. 8726 8737. 7, 10
+[33] Y. Wang, Y. Sun, P. Patel, K. Daniilidis, M. J. Black, and M. Kocabas,
+ Prompthmr: Promptable human mesh recovery, in Proceedings of
+the Computer Vision and Pattern Recognition Conference, 2025, pp.
+1148 1159. 11
+
+A PPENDIX
+
+B. Reference Dynamics Integration
+
+A. External Force Application Logic
+We apply interaction forces at a subset of upper-body
+links (shoulders, wrists, hands). The procedure runs every
+simulation step and consists of: (i) selecting which links are
+currently active and their interaction spring gains, (ii) updating an anchor (spring origin), (iii) computing interaction
+forces in the robot root frame and integrating the compliant
+reference, and (iv) applying forces/torques in the simulator.
+1) Activation and Gain Scheduling: An active link is a
+force-application point that is enabled in the current interval;
+we denote the active set by a binary mask m {0, 1}M over
+the M candidate links. At the beginning of an interval we
+sample one of five modes (no-force, all-links, left-only, rightonly, or a random partial subset) to determine m. For every
+active link we assign an interaction spring gain Kspring (t) that
+varies smoothly over time (piecewise-linear in discrete steps).
+Gains may gently increase, hold, and then decrease back to
+zero at the end of the interval.
+In parallel, a force safety threshold τsafe (t) is adjusted
+smoothly within a bounded range and later used for clamping
+and reward shaping.
+2) Anchor (Interaction Spring Origin) Update: Each active link maintains an anchor o(t) in the robot root frame.
+We use two behaviors consistent with the two interaction
+types introduced: (1) Resistive contact: the anchor remains
+at its previously established location (relative to the root),
+modeling a resisting load at the current contact site; (2)
+Guiding contact: the anchor is smoothly moved toward
+a newly sampled surface point. In both cases the updates
+are smooth, avoiding discontinuities when the active set or
+targets change.
+3) One-Sided Projection: We model contact as one-sided:
+interaction forces only act when the link compresses toward
+the anchor along the intended direction of interaction; when
+the link moves away (i.e., leaves the contact side), the
+interaction force drops to zero. Practically, we compute the
+displacement from the link to the anchor, take only its
+component along the intended direction. This prevents nonphysical pull-back in free space and emulates real unilateral
+contacts.
+4) Application in the Simulator: Forces are applied in
+world coordinates at the active links. To prevent excessive
+overall disturbance, we bound the net wrench about the torso:
+we sum all per-link forces/torques, and if the totals exceed
+preset limits, we inject an opposite residual on the torso.
+TABLE II: External Force Application Parameters.
+Parameter
+
+Symbol
+
+Typical value / range
+
+Max per-link force cap
+Safety threshold (per link)
+Net force limit (about torso)
+Net torque limit (about torso)
+Interaction spring gain
+
+Fmax
+τsafe (t)
+τF
+τM
+Kspring (t)
+
+30 N
+5 15 N (default 10 N)
+30 N
+20 N m
+5 250
+
+All reference quantities are expressed in the robot root
+tar
+frame. Let xt , x t be the current link state and xtar
+t , x t the
+target state. The reference dynamics used in this work are
+tar
+M x t = fdrive (xtar
+t , x t , xt , x t ) + finteract ( ) D x t . (8)
+
+The driving and interaction forces follow the definitions in
+the method, and D x t is an additional damping term for
+stability. We integrate this system with explicit Euler using a
+small fixed number of substeps per simulator step (four substeps in our implementation), and clip acceleration/velocity
+at each step.
+TABLE III: Reference Dynamics and Integration Parameters.
+Parameter
+
+Symbol
+
+Value
+
+Virtual mass
+Integration damping
+Tracking stiffness
+Tracking damping
+Time step
+Substeps per simulator step
+Velocity clip
+Acceleration clip
+
+M
+D
+Kp
+Kd
+ t
+Nsub
+ x max
+ x max
+
+0.1 kg
+2.0
+Derived
+from Kp = τsafe /0.05
+p
+2 M Kp
+Same as simulation dt = 0.02s
+4
+4 m/s
+1000 m/s2
+
+C. Autonomous Hugging Pipeline
+For a comfortable hugging experience, ensuring both
+safety and an appropriate hugging position is essential.
+While our compliant RL policy enforces force limits for
+safe contact, achieving comfort requires adapting the hugging
+posture to the person s body shape. To accomplish this, we
+first estimate the human body shape using BEDLAM [32],
+and rescale it according to the subject s absolute height
+obtained from motion capture. We then extract the waist
+position, denoted as x , as the target contact point.
+Next, we optimize the default upper-body motion of G1 so
+that selected robot links reach the SMPL-derived waist targets while the torso stays properly oriented in the horizontal
+plane. We optimize upper-body joint angles q and a planar
+floating base r = (x, y, ψ) with fixed height z = z0 . Let
+p (q, r) be the forward-kinematics position of link , {bk }
+the target points on the waist, and Πxy the xy-projection.
+The objective is
+X
+2
+min
+w k p (q, r) bk
+q, r
+
+( ,k) S
+
+2
++ wt Πxy ptorso (q, r) + δ f (ψ) Πxy (bfront )
++ λreg q q0 2 .
+Here S collects the link target pairs (e.g., hands to backwaist, elbows to opposite-side waist), w k and wt weight
+their relative importance, δ 5 cm is a small forward offset
+for the torso, and f (ψ) = [cos ψ, sin ψ, 0] denotes the
+heading. The regularizer q q0 2 keeps the solution close to
+a neutral upper-body pose. The optimized motion sequence
+is then updated as a personalized reference motion for the
+specific individual.
+
+After obtaining the target posture and contact locations,
+the robot must first stand in the proper place. We train a
+locomotion policy that get the robot human relative pose
+from motion-capture markers and directly commands joint
+targets to walk to a stance directly in front of the person, with
+a 10 cm standoff and frontal alignment. Once this condition
+is met, control switches to the GentleHumanoid policy to
+execute the hug.
+D. Video to Humanoid
+We use a phone to record monocular RGB videos, and
+apply PromptHMR [33] to estimate the corresponding human
+motion as an SMPL-X motion sequence. The estimated
+motion is then retargeted to the G1 humanoid using GMR.
+Finally, we execute the retargeted motion using our trained
+policy. As shown in the supplementary video, our method
+remains robust and compliant even when the estimated
+reference motions are noisy (e.g., with foot skating). It
+successfully handles interactions with various objects such
+as pillows, balloons, and baskets of different sizes and
+deformabilities.

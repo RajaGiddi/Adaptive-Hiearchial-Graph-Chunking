@@ -1,0 +1,199 @@
+arXiv:2511.04361v1 [q-fin.CP] 6 Nov 2025
+
+Causal Regime Detection in Energy Markets With
+Augmented Time Series Structural Causal Models
+
+Dennis Thumm
+Max-Planck-Institute for Intelligent Systems
+Tuebingen, Germany
+dennis.thumm@tuebingen.mpg.de
+Asian Institute for Digital Finance
+National University of Singapore
+Singapore
+dennis.thumm@u.nus.edu
+
+Abstract
+Energy markets exhibit complex causal relationships between weather patterns,
+generation technologies, and price formation, with regime changes occurring continuously rather than at discrete break points. Current approaches model electricity
+prices without explicit causal interpretation or counterfactual reasoning capabilities. We introduce Augmented Time Series Causal Models (ATSCM) for energy
+markets, extending counterfactual reasoning frameworks to multivariate temporal
+data with learned causal structure. Our approach models energy systems through
+interpretable factors (weather, generation mix, demand patterns), rich grid dynamics, and observable market variables. We integrate neural causal discovery to
+learn time-varying causal graphs without requiring ground truth DAGs. Applied
+to real-world electricity price data, ATSCM enables novel counterfactual queries
+such as "What would prices be under different renewable generation scenarios?".
+
+Workshop on Causality for Impact (EurIPS 2025).
+
+1
+
+Introduction
+
+Energy markets exhibit intricate causal relationships between weather conditions, generation technologies, grid constraints, and price formation. Unlike traditional financial markets, electricity cannot
+be stored economically, creating immediate causal dependencies between supply, demand, and pricing
+[10]. Current electricity price forecasting methods focus on prediction accuracy without providing
+causal interpretation or counterfactual reasoning capabilities [3].
+Recent advances in counterfactual reasoning for high-dimensional data through Augmented Structural
+Causal Models (ASCM) enable principled causal inference in complex domains [5, 6]. However,
+these frameworks assume static causal structures and cannot handle the temporal dependencies and
+regime changes inherent in energy systems.
+We bridge this gap by introducing Augmented Time Series Causal Models (ATSCM) for energy
+markets, enabling counterfactual reasoning about alternative weather patterns, generation scenarios,
+and policy interventions. Our key contributions include:
+ A theoretical framework extending ASCM to multivariate temporal data with learned causal
+structure
+ A neural architecture modeling interpretable energy factors, complex grid dynamics, and
+market observations
+ Integration of causal discovery for time-varying DAG learning without ground truth requirements
+ Empirical validation on real electricity market data with interpretable counterfactual capabilities
+
+2
+
+Related Work
+
+Causal Inference in Financial Markets. Causal data science has been applied to financial stress testing and risk management [2, 8]. However, energy markets present unique challenges due to physical
+constraints, storage limitations, and renewable intermittency that require specialized treatment.
+Electricity Price Forecasting. Traditional approaches focus on statistical methods (ARIMA, VAR)
+or machine learning models (LSTM, gradient boosting) for price prediction [3, 10]. While achieving
+good predictive performance, these methods lack explicit causal interpretation and cannot answer
+counterfactual queries.
+Counterfactual Reasoning. ASCM frameworks [5, 6] enable counterfactual reasoning in highdimensional spaces but assume static causal structures. Time series causal methods like TNCM-VAE
+[9], SCIGAN [1] and Causal Transformer [4] address temporal dynamics but do not handle regime
+changes in learned causal graphs.
+
+3
+
+Problem Formalization
+
+3.1
+
+Energy Market Causal Structure
+
+Consider multivariate electricity market time series vt Rd capturing weather, generation, consumption, and pricing variables. Unlike structural breaks with discrete timing, energy markets exhibit
+continuous causal regime changes driven by weather patterns, policy shifts, renewable intermittency,
+and cross-border flows.
+Let Gt represent the time-varying directed acyclic graph (DAG) encoding causal relationships at time
+t. A causal regime change [] occurs when:
+Gt = Gt 1 or M(t) = M(t 1)
+where M(t) represents the causal mechanisms (functional relationships and noise distributions)
+governing the DAG at time t, also known as Structural Causal Model (SCM) [7].
+2
+
+3.2
+
+ATSCM for Energy Markets
+
+We extend ASCM [5, 6] to temporal energy data through a three-level generative hierarchy with
+learned causal structure:
+Definition 3.1 (Energy Market ATSCM) An Energy Market ATSCM is a tuple Mt
+ U t , {W t , It , Vt }, F t , P (U t ), G t where:
+
+=
+
+1. W t RdW are interpretable energy factors:
+W t = {weathert , generation_mixt , demand_patternt , market_regimet }
+2. It RdI is a rich energy dynamics state capturing complex grid interactions, cross-border
+flows, merit order effects, and storage dynamics
+3. Vt RdV represents observable market variables (prices, consumption, generation,
+weather measurements)
+4. G t is the learned time-varying causal graph over {W t , It , Vt }
+t
+, G t ), It = fI (W t , It 1 , UIt , G t ), Vt =
+5. Temporal evolution: W t = fW (W t 1 , It 1 , UW
+fV (It , UVt )
+
+This hierarchy enables modeling clear causal pathways (Weather Renewable Generation Net
+Load Price) while capturing complex interactions through learned temporal dynamics.
+3.3
+
+Counterfactual Energy Scenarios
+
+ATSCM enables novel counterfactual reasoning about energy markets:
+Definition 3.2 (Energy Counterfactual Query) Given observed market data v1:T and intervention
+do(Wτ :T = w ) on energy factors from time τ , the energy counterfactual query is:
+P (Vτ :T = v |V1:T = v1:T , do(Wτ :T = w ))
+This answers questions like: "What would electricity prices be if wind generation were 30% higher?"
+or "How would a nuclear plant shutdown affect cross-border electricity flows?"
+
+4
+
+Methodology
+
+4.1
+
+Neural Architecture
+
+Our ATSCM architecture implements the three-level hierarchy for energy markets:
+Level 1 - Energy Factors (W t ).
+
+Domain-specific interpretable components:
+
+t
+
+W = {weathert , generationt , demandt , markett } R27
+
+(1)
+
+where weather factors include temperature, wind, and precipitation; generation factors capture nuclear,
+renewable, and conventional capacity; demand factors model consumption patterns and residual load;
+and market factors include commodity returns and cross-border exchanges.
+Level 2 - Rich Energy Dynamics (It ).
+
+High-dimensional state capturing:
+
+It = gI (W t , It 1 , UIt , G t ; θI )
+
+(2)
+
+This encodes merit order dynamics, grid constraints, renewable intermittency effects, storage optimization, and cross-country coupling mechanisms that determine price formation but are not directly
+observable.
+3
+
+Level 3 - Market Observations (Vt ).
+
+Observable electricity market variables:
+
+t
+
+V = gV (It , UVt ; θV ) R35
+
+(3)
+
+Including consumption, generation by source, weather measurements, commodity prices, and the
+target electricity price variations.
+4.2
+
+Causal Discovery Integration
+
+Since ground truth causal graphs are unavailable in energy markets, we integrate neural causal
+discovery:
+G t = fdiscovery (V1:t , W 1:t ; θdisc )
+
+(4)
+
+using a differentiable DAG learning approach with temporal consistency constraints. The discovered
+graphs encode domain knowledge (weather influences renewables, generation affects prices) while
+learning time-varying relationships.
+4.3
+
+Training Objective
+
+Our objective combines reconstruction, causal consistency, counterfactual realism, and causal discovery:
+L = Lrecon + λ1 Lcausal + λ2 Lcounterfactual + λ3 Ldiscovery
+
+(5)
+
+where Ldiscovery enforces DAG constraints, sparsity, and temporal stability of learned causal structures.
+
+5
+
+Conclusion
+
+We introduced ATSCM for energy markets, the first framework enabling counterfactual reasoning
+about electricity price formation with learned causal structure. Our approach successfully models
+complex energy systems through interpretable factors while achieving competitive forecasting performance. The framework opens new possibilities for energy scenario analysis, policy evaluation, and
+risk management through principled counterfactual reasoning.
+Future work includes empirical validation, extending to higher-frequency data, incorporating additional market mechanisms (auctions, reserves), and applications to renewable energy integration and
+grid stability analysis.
+
+4

@@ -1,0 +1,3360 @@
+arXiv:2511.04603v1 [math.AT] 6 Nov 2025
+
+Analyzing the topological structure of composite
+dynamical systems
+Michael Robinson
+Michael L. Szulczewski
+James T. Thorson
+September 2025
+
+Abstract
+This chapter explores dynamical structural equation models (DSEMs)
+and their nonlinear generalizations into sheaves of dynamical systems. It
+demonstrates these two disciplines on part of the food web in the Bering
+Sea. The translation from DSEMs to sheaves passes through a formal
+construction borrowed from electronics called a netlist that specifies how
+data route through a system. A sheaf can be considered a formal hypothesis about how variables interact, that then specifies how observations
+can be tested for consistency, how missing data can be inferred, and how
+uncertainty about the observations can be quantified. Sheaf modeling
+provides a coherent mathematical framework for studying the interaction
+of various dynamical subsystems that together determine a larger system.
+
+Contents
+1 Introduction
+1.1 Related work . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.2 Contributions . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.3 Chapter outline . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+2
+3
+4
+5
+
+2 Dynamical modeling of ecosystems
+2.1 DSEM background and motivation . . . . . . . . . . . . . . . . .
+2.2 Ecological background and the DSEM system for the Bering Sea
+
+5
+5
+7
+
+ Approved for Public Release by The MITRE Corporation; Distribution Unlimited. Public
+Release Case Number 25-2751. The author s affiliation with The MITRE Corporation is
+provided for identification purposes only, and is not intended to convey or imply MITRE s
+concurrence with, or support for, the positions, opinions, or viewpoints expressed by the
+author. 2025 The MITRE Corporation. ALL RIGHTS RESERVED.
+
+1
+
+3 Sheaf encodings of composite systems
+3.1 Netlists . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.2 Sheaves and cosheaves . . . . . . . . . . . . . . . . . . . . . . . .
+3.3 The netlist sheaf . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.4 Sheaves modeling autoregressive timeseries . . . . . . . . . . . .
+
+8
+11
+14
+18
+25
+
+4 Sheaf encoding of the Bering Sea
+
+28
+
+5 The topology of subsystems
+33
+5.1 Dynamical systems . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+5.2 The cosheaf endomorphism of invariant sets . . . . . . . . . . . . 35
+5.3 Subsystem decomposition sheaf . . . . . . . . . . . . . . . . . . . 37
+6 Subsystems of the Bering Sea system
+
+49
+
+7 Conclusion
+
+50
+
+1
+
+Introduction
+
+Ecologists often study systems on spatial and temporal scales that cannot be
+experimentally manipulated (ecosystem processes are distributed across continents, and arise from evolutionary dynamics over millennia), and for which
+extrapolating the results of experiments at fine space-time scales is challenging
+[48]. These systems are also challenging to study because observational data
+can be noisy and sporadic. A third challenge is the presence of complex, causal
+relationships between system variables that can change over time.
+Understanding the dynamics of these kind of large composite models is much
+easier reductively. Roughly speaking, a subsystem is a collection of state variables that makes sense as an independent dynamical system (Definition 20).
+Subsystems can be isolated for a variety of reasons, in addition to spatial or temporal separation. Regardless of the reason for the isolation, there is a canonical
+way to write a dynamical system in terms of its subsystems. This subsystem decomposition is a convenient way to explore dynamical summaries of the original
+model (Section 5).
+This chapter explores dynamical structural equation models (DSEMs) and
+their nonlinear generalizations via a topologically motivated translation into
+sheaves of dynamical systems (Sections 3 and 5). Sheaves are a strict generalization of DSEMs into nonlinear models, which they losslessly represent (Theorem 6). The translation of DSEMs into sheaves follows a clear graphical recipe,
+which allows handling observations in three ways: (1) as individual observations, (2) as individual timeseries, and (3) as collections of dynamically related
+timeseries.
+The translation from DSEMs to sheaves passes through a formal construction
+borrowed from electronics called a netlist that specifies how data route through a
+system. Because the netlist and sheaf methodology is explicit and graphical, we
+include several illustrative examples (Figures 3 and 5). One real-world example
+2
+
+involves part of the food web in the Bering Sea (Figure 1; Sections 2.2, 4, and
+6).
+Sheaves provide many advantages to a modeler. They enable exploring the
+impact of uncertainty in various ways. They support inference of missing or
+erroneous data, including system parameters and coefficients (Section 3). They
+also enable forecasts and retrocasts through the same interface, namely consistency radius optimization (Section 4).
+Sheaves also highlight the importance of the original DSEM in model summarization. Using the sheaf of subsystems, Corollary 21 shows that the subsystems
+of a DSEM can be read off its associated graph. This is applied to the Bering
+Sea ecosystem model in Section 6.
+
+1.1
+
+Related work
+
+The challenges in modeling ecological systems have motivated interest in structural causal models (SCMs) [31]. SCMs can be fit to observational data in space
+and time, and can decompose the total effect of one variable on another via a
+combination of direct and indirect effects [16, 5]. Recently, SCMs have been
+adapted to the analysis of ecological time series via DSEMs [47].
+The key idea behind SCMs is that systems can be understood by decomposing them into coherent subsystems. The idea of reducing systems into subsystems has a long history, with general mathematical descriptions of composite
+systems given by the field of cybernetics, for which Heylighen and Joslyn [17]
+and Ashby [6] are good introductions. Beyond cybernetics, the study of subsystems of dynamical models [50] has occurred in many fields, including manufacturing and operations research [49, 45, 21], design [2], statistical physics [51],
+mathematical systems [9], biology [26], and chemistry [18].
+Although algorithmic and systematic decomposition of systems into subsystems have become common since the dawn of cybernetics, it remains challenging. Maier et al. [27] laments, Even though abstraction is frequently mentioned
+with regards to modeling and simulation, formal definitions are harder to find. 
+One challenge is that decompositions are often not unique: for example, one may
+choose to group state variables based on constraints rather than functional units
+[8, 24]. These choices are important because they drive the usefulness of the
+decomposition [27]. For example, overlapping, rather than disjoint, subsystem
+decompositions are useful for analyzing stability of an entire system [40, 4].
+We argue that a properly general and formal definition of a subsystem
+decomposition must support overlappingness, non-uniqueness, and ambiguous
+granularity. Because the collection of all subsystems forms a mathematical sheaf
+(Definition 21), this implies that seeking disjoint, unambiguous subsystems (as
+is often done) is fraught.
+Aspects of the formalism we introduce in this chapter are not entirely novel.
+For instance, Hirono et al. [18] defines a CRN morphism that is a special case
+of our Definition 20. Additionally, the sheaf of subsystems is based upon a
+clear graphical representation, which is well known in the analysis of software
+
+3
+
+[29, 1]. Moreover, Abadi and Lamport [1] uses the term refinement mapping,
+which evokes the analogous term from sheaves (Definition 7).
+Roughly dual to the notion of a subsystem is that of an invariant set of a
+dynamical system (our Definition 20 makes this a true duality). Invariant sets
+are widely used in dynamical systems [44], where they generalize equilibrium
+sets and attractors. For linear systems, duality between invariant sets and
+subsystems is immediate and useful. For instance, the design structure matrix
+[43] yields invariant sets, giving a clear duality to subsystems.
+Finally, we note that the discipline of modeling a system s state via a decomposition into subsystems of state equations is explained in detail in Robinson
+[34, Sec. 5], and is specialized to subsystem graphs in Kearney et al. [22]. In
+Kearney et al. [22], the dynamics are specified locally and are much easier to
+specify due to the fact that the system is given a graph structure.
+
+1.2
+
+Contributions
+
+This chapter provides an introduction to the discipline of modeling and analyzing a composite system using the language and tools of topology, centered
+around sheaves. Sheaf modeling provides a coherent mathematical framework
+for studying the complicated interaction of various dynamical subsystems that
+together determine a larger system. The guiding principles of sheaf modeling
+are that
+ a sheaf represents a hypothesis about how variables will interact (Definition 10),
+ a non-global assignment represents the observations collected on the variables in its support (Definition 8),
+ minimizing consistency radius estimates values of the variables and parameters that were not observed (Definition 11), and
+ the minimal consistency radius is a measure of the consistency between
+the observations and the hypothesis.
+This chapter shows that when a dynamical system is described by a linear
+system, there are three sheaves that provide increasingly granular data about
+the interactions between variables:
+1. the sheaf of subsystems (Definition 21),
+2. the netlist sheaf with timeseries as stalks (Definition 13), and
+3. the netlist sheaf with additional stalks for individual observations (Definition 14).
+
+4
+
+1.3
+
+Chapter outline
+
+Section 2 describes a model of a food web in the Bering Sea, which we use to
+illustrate the use of sheaves. This system is large enough to exhibit interesting
+structures, and corresponding observational data [47] are available. Additionally, we present a graphical causal modeling discipline called dynamical structural equation modeling that serves as an entry point into the more sophisticated
+(but admittedly less familiar) topological sheaf models. As is later shown in Section 3, sheaves are a strict generalization of DSEMs. Sheaves can be nonlinear,
+whereas DSEMs are linear.
+Section 3 constructs sheaves that model composite systems, and develops
+the main inferential tool, consistency radius minimization. Section 3 is selfcontained, as all of the mathematical background necessary to understand the
+constructions is introduced as it is needed. Small concrete examples of the
+construction and use of sheaf models are presented to build intuition as well.
+In Section 4, we revisit the ecological model from Section 2 using the sheaf
+tools from Section 3. The interface between observational data, sheaves, and
+their inference tools is explored in detail. Moreover, we compare differences
+between the DSEM and sheaf approaches in detail.
+Section 5 introduces the idea of a general topological dynamical system, and
+shows that every dynamical system induces a sheaf of subsystems and a cosheaf
+of invariant sets, which form a dual pair. We prove that under appropriate conditions, the subsystems of a DSEM can be read off rather directly (Corollary
+21). This provides theoretical justification for why DSEMs are a useful way to
+describe a composite linear system by way of its subsystems.
+Section 6 revisits the ecological model from Section 2 once again. Because
+the model satisfies the hypothesis of Corollary 21, we are able to present a clear
+representation of all the subsystems present in the model.
+Finally, Section 7 concludes the chapter with practical advice for modelers
+and a brief discussion of future research work.
+
+2
+
+Dynamical modeling of ecosystems
+
+This section begins with a brief recount of modeling linear dynamical systems
+according to an underlying graph structure, and then presents a representative
+ecosystem model that will be revisited several times in the chapter.
+
+2.1
+
+DSEM background and motivation
+
+Definition 1. Given a set of variables X = {x1 , . . . , xJ }, and a set Y = {t1 <
+ < tT } of real valued time lags, a dynamic structural equation model (DSEM)
+consists of an edge-labeled directed graph G with vertices X Y and edges E
+such that
+Causality The presence of an edge (xj1 , tk1 ) (xj2 , tk2 ) implies that tk1 tk2 ,
+and
+5
+
+Linearity Each edge (xj1 , tk1 ) (xj2 , tk2 ) is labeled with a real number γj1 ,k1 ,j2 ,k2
+called the path coefficient for that edge.
+The absence of an edge in the graph is assumed to be equivalent to assigning a
+path coefficient of 0. For brevity, we write a vertex (xj , tk ) simply as xj,k .
+The variables in a DSEM are to be interpreted as C 1 (R) functions, which
+are continuous timeseries. A directed edge xi,j xi ,j is to be interpreted as
+specifying that a change in xi causes a proportional (linear) change in xi after
+a lag of (tj tj ), with magnitude controlled by the associated path coefficient
+γi,j,i ,j . Under this interpretation, a DSEM implies that a first order system of
+linear differential equations governs the values of the variables:
+J
+T
+dxk (τ t ) X X
+=
+γk, ,i,j xi (τ tj ).
+dτ
+i=1 j=1
+
+(1)
+
+In what follows, we will refer to solutions of Equation 1 as solutions to the
+DSEM.
+In the use of Equation (1) with observational data, there are two kinds of
+errors that need to be considered: exogenous errors and measurement errors.
+Exogenous errors accumulate, which means that an error in the value of a variable xk at given time τ impacts the value of xk at all later times. As a result,
+there is a dependence between the exogenous errors of xk at different times. In
+contrast, measurement errors at different times are assumed to be independent.
+Exogenous errors will be represented by an additive term, ϵk, , resulting in
+T
+J
+dxk (τ t ) X X
+γk, ,i,j xi (τ tj ) + ϵk, (τ ).
+=
+dτ
+i=1 j=1
+
+(2)
+
+We can approximate the solution to Equation (2) using the one-step backwards Euler method with time step h,
+dxk (τ t )
+1
+ (xk (τ t ) xk (τ t h)) ,
+dτ
+h
+so that Equation (2) becomes a system of M = T J linear algebraic equations,
+xk (τ t ) xk (τ t h) + h
+
+J X
+T
+X
+i=1 j=1
+
+γk, ,i,j xi (τ tj ) + hϵk, (τ ).
+
+(3)
+
+If we fix a value of τ and organize the set of values {xk (τ t )} into a vector
+X of length M ), Equation (3) can be compactly written in matrix form as
+X PX + E,
+
+(4)
+
+where the entries of the M M path coefficient matrix P contain both the path
+coefficients from the DSEM (scaled by h) and the additional nonzero entries due
+6
+
+the xk (τ t h) terms. In what follows, we will take h = 1, so that the path
+coefficients in the DSEM appear unchanged as elements of the matrix P.
+To obtain the path coefficient matrix P from observations of X, we assume
+the exogenous errors follow a multivariate normal distribution with variance V,
+namely
+E MVN(0, V),
+where E is the length M vector containing errors ϵtj .
+Equation (4) can then be re-arranged to yield a Gaussian Markov random
+field,
+X MVN(0, Q 1 )
+T
+
+Q = (id P )V
+
+ 1
+
+(5)
+(id P),
+
+(6)
+
+where id is the identity matrix. The path coefficient matrix P can be obtained
+from the Cholesky decomposition of Q. The necessary calculations can be efficiently evaluated using sparse libraries, such as Eigen and CHOLMOD [11], and we
+use Template Model Builder [25] to incorporate automatic differentiation and
+implement the Laplace approximation [39] to marginalize across random effects.
+Now we address measurement errors. Assume the distribution of measurement errors of the variable xk is given by a distribution fj parameterized by θj
+at time tj . (If one does not wish to model measurement errors explicitly, so that
+measurement errors are entirely captured by the exogenous error term, this is
+obtained by choosing fj so that it has probability 1 at xk,j .) Let us write yk,j
+for the observation of the variable xk,j . We therefore can express the mean of
+the distribution of yk,j through a link function gj , via
+
+yk,j fj gj 1 ( j + xk,j ), θj ,
+where j is the true mean.
+The clearest way to obtain the required sparsity in solving for P is to assume
+additionally that the measurement errors for a given variable do not depend on
+time tj . Let G be the J J matrix that is diagonal, and whose diagonal terms
+are given by the link functions gj . With this in hand, V takes the form
+V = id T T GGT ,
+
+(7)
+
+where is the Kronecker product. This implies that V is block diagonal, and
+is thereby efficient to invert.
+
+2.2
+
+Ecological background and the DSEM system for the
+Bering Sea
+
+To demonstrate the use of sheaves for dynamical systems, we make a sheaf
+from a DSEM for ecological mechanisms linking regional oceanography (winter sea ice extent) to first-winter survival of juvenile Alaska pollock (Gadus
+chalcogrammus) in the eastern and northern Bering Sea [47]. The model starts
+7
+
+by specifying that abundance of age-0 pollock Rt (termed age-0 recruitment )
+can be predicted from the biomass of spawning females St in a given year t:
+Rt = St eα βSt +ϵt
+
+(8)
+
+α
+
+where e is the maximum expected recruits per spawning biomass, β is the expected density-dependent decrease in recruits per spawning biomass as biomass
+increases, and ϵt is additional process error representing unmodeled variation
+in recruitment. This Ricker stock-recruit model [33] has been used for over
+70 years to represent density-dependent changes in juvenile survival, and as the
+basis for defining biological reference points that are used worldwide to identify
+sustainable levels of fishing mortality [42]. The Ricker model is expected to
+arise for species where adult abundance directly impacts juvenile survival for
+example, due to cannibalism or interference competition [15]. Alaska pollock
+are cannibalistic, so the Ricker model has theoretical justification. Usefully, the
+Ricker model can be linearized as:
+
+Rt
+= α βSt + ϵt
+(9)
+log
+St
+and a DSEM can be used to elaborate the mechanisms that contribute to process
+errors ϵt based on prior ecological hypotheses.
+The DSEM we translate into a sheaf was previously developed by Thorson
+et al. [47]. It specifies that variable winter sea ice formation (SeaIce) drives
+residual variation in log-recruits per spawning biomass (Survival ) via two paths,
+mediated by sea-ice impacts on either copepod abundance (Copepod ) or krill
+abundance (Krill ), and resulting consumption by juvenile pollock. See Table
+1 and 2 for more details on the variables and mechanisms in the model. The
+DSEM includes a first-order autoregressive term for each variable, to allow the
+model to correct for bias that can arise when correlating variables that follow
+an autoregressive process (summarized in [28]). This first-order autoregression
+can also be interpreted to represent Gompertz density-dependence and therefore
+has some scientific interest [23], although it is not further discussed here.
+
+3
+
+Sheaf encodings of composite systems
+
+In this section, we explain how to construct a netlist sheaf whose global sections
+correspond bijectively to the solutions of a DSEM. This is performed in two
+main steps: (1) the DSEM is translated into a netlist, and (2) the netlist is
+translated into the netlist sheaf. Since the machinery of sheaves is not in wide
+usage, Section 3.2 provides the necessary background.
+With the machinery and the translation in place, Theorem 6 establishes that
+the two representations, the DSEM and the netlist sheaf, are equivalent. The
+global sections of the netlist sheaf are in bijective correspondence with solutions
+to the DSEM. Moreover, a process called consistency radius minimization in
+the sheaf finds approximate solutions to the DSEM, and this process is robust
+to perturbations.
+8
+
+Table 1: Variables that describe Alaska pollock recruitment used in the DSEM
+and sheaf. All except Spawners are transformed by the natural logarithm and
+then centered (i.e., subtracted by their mean) prior to analysis. Timeseries of
+the variables are taken from [47].
+Name
+SeaIce
+
+Description
+Average spatial extent (km2 ) of sea ice in the Bering Sea
+from Oct.15 to Dec.15 the preceding year, from the National
+Snow and Ice Center s Sea Ice Index, Version 3 [14]
+
+ColdPool
+
+Spatial extent (km2 ) of waters with temperatures 2 C
+near the seafloor, interpolated from measurements by the
+eastern Bering Sea bottom trawl survey and compiled in Rpackage coldpool [37]
+
+Spawners
+
+Female spawning biomass (in units of 106 kg) for Alaska pollock in the eastern and northern Bering Sea, estimated by
+the age-structured stock assessment model used for management [20]
+
+Survival
+
+Age-0 recruits per spawning biomass (103 count/kg), calculated as age-1 abundance the following year (109 count)
+estimated by the age-structured stock assessment model [20]
+divided by Spawners
+
+Copepods
+
+Density of 2 mm copepods (count/m3 ) from the Bering
+Sea middle shelf [38], averaged across samples obtained during the fall mooring cruise along the 70 isobath from Sept.
+to early Oct. [12] (calculated by Dave Kimmel, pers. comm.)
+
+Krill
+
+Index of euphausiid abundance (count/m3 ) [32] obtained
+from backscatter measured during a summer acoustic-trawl
+survey in the eastern Bering Sea and converted to abundance
+using a target-strength model [41]
+
+DietCopepods
+
+Biomass of copepods divided by total prey biomass in juvenile stomach samples (kg/kg), calculated from a fall surfacetrawl survey in the eastern Bering Sea [30]. For each surface
+trawl, total catch of juvenile pollock is weighed, individual
+pollock are subsampled, and stomach contents for subsampled individuals are identified to species and weighed. The
+diet index is calculated as the average across subsampled
+stomachs, weighted by the catch of juvenile pollock in the associated surface trawl sample (calculated by Alex Andrews,
+pers. comm.).
+
+DietKrill
+
+Same as DietCopepods, but for euphausiids (krill)
+9
+
+Table 2: List of path coefficients connecting variables (defined in Table 1),
+supporting ecological hypotheses, and hypothesized sign for the path used in
+the DSEM case study. We also include a first-order autoregressive term for
+each variable (i.e., 8 AR1 coefficients, not shown here) for reasons discussed in
+Section 2.2.
+Path
+SeaIce ColdP ool
+
+Ecological hypothesis and evidence
+Sea ice formation (SeaIce) causes
+variation in summer cold-pool extent
+(ColdPool )
+
+Sign
++
+
+ColdP ool Copepods
+
+Warmer
+water
+temperatures
+(ColdPool ) result in higher copepod metabolism and therefore earlier
+onset of winter diapause, resulting in
+a decrease in fall copepod abundance
+(Copepods) [10]
+
++
+
+ColdP ool Krill
+
+Water temperatures (ColdPool ) might
+affect krill overwinter survival, affecting summer krill abundance (Krill )
+
+?
+
+Copepods DietCopepods
+
+Increased copepod abundance will result in them being a higher proportion of age-0 fall stomach contents
+(DietCopepods), due to pollock being hypothesized to be a relative nonselective predator
+
++
+
+Krill DietKrill
+
+Same as Copepods DietCopepods
+but for krill
+
++
+
+DietCopepods Survival
+
+Increased fraction of fall diet from
+copepods (Copepods) will increase energy reserves and subsequent survival of age-0 over their first winter
+(Survival ) [19]
+
++
+
+DietKrill Survival
+
+Same as DietCopepods Survival,
+but for krill
+
++
+
+Spawners Survival
+
+Increased
+spawning
+(Spawners) will cause a
+dependent decrease in
+(Survival ) [15]
+
+10
+
+biomass
+densitysurvival
+
+SeaIce
+
+out
+
+ColdPool
+
+f
+ n
+
+ColdPool
+
+in
+
+Copepods_block
+out
+
+Krill_block
+out
+
+Copepods
+
+Krill
+
+Krill
+
+in
+
+Copepods_block
+
+Krill_block
+
+in
+
+DietCope_block
+Diet_Cop
+
+Diet_Krill
+
+Spawners
+
+out
+
+Diet_Cop
+Survival
+
+in_copepods
+
+out
+
+Spawners
+
+out
+
+Diet_Cop
+in_copepods
+
+in_spawners
+
+Diet_Krill
+
+Spawners
+
+in_krill
+
+Survival_block
+
+in_spawners
+
+g2
+
+g1
+
+ n
+
+id
+ n
+h
+
+id
+ n
+k
+ n
+
+ n
+pr1
+
+pr2
+n
+
+n
+
+Survival
+
+m
+ n
+
+(b)
+
+(c)
+
+(d)
+
+out
+
+ n
+
+ n
+
+Survival
+
+out
+
+(a)
+
+in
+
+DietKrill_block
+
+DietCope_block
+
+out
+
+Diet_Krill
+in_krill
+
+Survival_block
+
+Krill
+
+in
+
+in
+
+DietKrill_block
+
+ n
+
+out
+
+Copepods
+
+id
+
+id
+
+in
+in
+
+out
+
+Copepods
+
+ n
+
+ColdPool_block
+
+out
+
+ColdPool
+
+id
+
+in
+
+ColdPool_block
+SeaIce
+
+ n
+
+SeaIce
+
+in
+
+n
+
+ n
+pr3
+
+Figure 1: (a) The DSEM model for part of a food web in the Bering Sea [46], (b)
+its wiring hypergraph, (c) its netlist graph, and (d) its sheaf diagram. The arrows in each subfigure have different meanings: in (a) they denote causal, linear
+relationships (Sec. 2.1); in (c), they point from netlist parts to nets (Sec. 3.1);
+and in (d), they denote restriction functions (Sec. 3.2). While the DSEM also
+estimates a first-order autoregressive term for each variable (not shown in (a)
+to simplify presentation), there is no autoregressive structure assumed in the
+sheaf model. This remedied in Section 3.4.
+Throughout this section, we refer to Figure 1 for intuition. Figure 1(a) shows
+the DSEM for part of the food web in the Bering Sea. The DSEM-to-netlist
+translation, described in Section 3.1, results in Figure 1(b). Figure 1(c) shows a
+different representation of the netlist that is more expedient for the construction
+of the netlist sheaf. Proposition 3 establishes that the two representations of
+netlists (Figures 1(b) (c)) determine each other, so we may use whichever is
+more convenient. Finally, the netlist-to-sheaf translation, described in Section 3,
+results in Figure 1(d). Section 3.4 shows how to encode autoregressive timeseries
+models as netlist sheaves, which ultimately makes handling missing data both
+transparent and automatic within the netlist sheaf.
+
+3.1
+
+Netlists
+
+The term netlist appears to have entered the technical lexicon in the early
+days of computing, when IBM started to automate the wiring of mainframe
+back planes [3]. Since that time, the term netlist has been in wide usage but
+often without a precise definition. In order to formalize the concept, we say
+that a netlist describes a system of parts interconnected with nets, which carry
+time-varying signals (briefly, variables).
+Each variable consists of the specification of a set of possible values for a
+net. In this chapter, the values for a variable in a net are initially assumed to be
+continuous timeseries, usually of the form C 1 (R). We will also consider sampled
+timeseries of the form Rn , where n is the length of the timeseries. In Section
+3.4, we show how to handle missing values in such a timeseries.
+Each part has a number of ports, to which connections can be made. Each
+port is either an output, which means that it determines the value of the variable
+11
+
+Part 2 (capacitor)
+Net 1
+
+in
+
+out
+
+Net 2
+in
+
+out
+
+Part 1
+(Battery)
+
+Part 3 (resistor)
+in
+
+out
+
+Net 3
+
+Figure 2: A netlist for an electric circuit, described in Example 1.
+of a net connected to it, or an input, which means that it does not determine
+the value of the variable of a net connected to it.
+Each net specifies that a collection of distinct ports on a pair of parts (which
+need not be distinct) are connected, with the requirement that not more than
+one of these ports be an output. Finally, each part specifies an input-output
+function for each output port. The domain of an input-output function is from
+the product of the set of its input variables, and its codomain (range) is the set
+of output variables at the output port.
+This formulation leaves open the possibility of nets that are not attached
+to any output ports, which are called external inputs, and nets which are not
+attached to any input ports, which are called external outputs. Clearly each
+external output must attach to exactly one port, which must be an output port.
+Example 1. Figure 2 shows an electrical circuit with three parts: a battery,
+a capacitor, and a resistor. These parts are connected to each other by three
+nets:
+1. Connecting the positive (output) port of the battery to the input port of
+the capacitor,
+2. Connecting the output port of the capacitor to the input port of the
+resistor, and
+3. Connecting the output port of the resistor to the input port of the battery.
+The values of the variables on the nets specify electrical currents flowing along
+them. We note that the labeling ports as input and output in this kind of
+circuit is arbitrary, since the electrical current can flow in either direction along
+a net. The input-output functions simply recount classical Ohm s law for each
+of the parts in the circuit. This circuit contains no external inputs nor external
+outputs.
+A DSEM graph can be translated into a netlist via the following construction.
+Definition 2. Given a DSEM, its corresponding netlist is given by the following
+recipe:
+ each DSEM variable (node) becomes a net,
+12
+
+ each DSEM variable with more than one input becomes a part,
+ each net is connected to input ports via its out-neighbors,
+ each net is connected to output ports via matching the name of the net
+to the part with the same name (if any exist), and
+ the part s input-output function is collected from the matrix block in
+Equation (4) corresponding to the input and output variables.
+There are two combinatorial structures associated to a netlist, the wiring
+hypergraph and the netlist graph.
+Definition 3. The wiring hypergraph of a netlist is a vertex- and edge-labeled
+partition-directed multi-hypergraph that has a vertex for each part and an hyperedge for each net.
+The label on each vertex is simply the name of the part corresponding to
+that vertex.
+The vertices within a hyperedge correspond to the parts connected to the
+corresponding net. The label on each hyperedge is an ordered triple, consisting
+of the inputs port of the net (if any), the output port of the net (if any), and the
+variable name of the net. The partition direction of each hyperedge separates
+the output port from the input ports; either of these may be empty.
+Because the labeling on the wiring hypergraph is complicated, we represent
+it with a standard visual grammar borrowed from electronics. Each part is
+represented by a rectangle with its label in the center of the rectangle. Each
+net is drawn as a path (with right-angle bends as needed) to connect the corresponding parts. If a net has more than two ports, the path is drawn as a tree
+structure. The label of the variable of the net is shown next to the path, but
+the name of the net s input and output ports are shown inside the connected
+parts rectangles, around the edge of the rectangle. The input-output functions
+are not shown explicitly.
+Figure 1(b) shows the wiring hypergraph for the netlist constructed using
+Definition 2 for the Bering Sea DSEM. Notice that the net ColdPool corresponds
+to a hyperedge of size 3 in the wiring hypergraph, because it is connected to
+one output port and two input ports.
+Proposition 1. The solutions to a DSEM are in bijective correspondence with
+labelings of the nets with values of variables that are consistent with the netlist s
+input-output functions.
+Proof. The solutions to the DSEM are characterized by Equation (4), which is
+a matrix block assembly of everything that is needed to construct the netlist.
+Assume we have a set of variables for all nets that are consistent with the
+input-output functions. As noted above, each variable takes values in a set of
+the form C 1 (R). On the other hand, each input-output function was constructed
+from a matrix block in Equation (4). Because all of the DSEM variables appear
+as nets in the netlist, all such matrix blocks appear as input-output functions
+13
+
+somewhere in the netlist. This means that Equation (4) is satisfied by construction.
+Assume that we have a solution to Equation (4). Definition 2 constructed
+the input-output function from the subblock of Equation (4), so there is nothing
+further to prove.
+The wiring hypergraph is closely related to the DSEM, but for constructing
+the netlist sheaf in Section 3, it is more convenient to use another combinatorial
+representation.
+Definition 4. The netlist graph is a vertex- and edge-labeled directed graph
+that has a vertex for each part, a vertex for each variable, and two edges for
+each net. The label on a vertex is simply the name of the corresponding part
+or variable. The two edges for each net are defined as follows. The first edge is
+labeled with the input port of the net, and leads from that corresponding part
+to the net. The second edge is labeled with the output port of the net, and
+leads from that corresponding part to the net.
+Figure 1(c) shows the netlist graph for the Bering Sea example.
+Corollary 2. The netlist graph is a directed acyclic graph, and induces a preorder on the set of parts and variables. In the preorder, each variable is above
+the parts to which it is connected.
+Proposition 3. The netlist graph is the incidence bipartite graph of the wiring
+hypergraph, whose edges are labeled by projecting out the first and second components of the labels of the hyperedges. Consequently, the netlist graph and the
+wiring hypergraph determine each other fully.
+As we will see, the correspondence between the wiring hypergraph and the
+netlist graph is convenient. Although Proposition 1 showed that the wiring
+hypergraph is most closely related to the DSEM, we will later show that the
+netlist graph is most closely related to the netlist sheaf (Theorem 6).
+
+3.2
+
+Sheaves and cosheaves
+
+Sheaves and cosheaves are topological constructions that allow one to study the
+local consistency structure of a model. In the case of a DSEM, locality is useful
+because variables that are near one another in the graph are likely to be related.
+This nearness can be most easily formalized by using the netlist graph defined
+in the previous section.
+Since the netlist graph is a directed acyclic graph, it naturally induces a
+pre-ordered set on the vertices. That is, if a b in a directed graph, we define
+a b. When the graph is directed and acyclic, generalizing to paths within
+the graph results in a relation that is reflexive and transitive. Pre-ordered
+sets have a natural notion of neighborhoods, hence a natural topology.
+A topological space is a mathematical formalism that captures the notion of
+ neighborhoods. 
+14
+
+Definition 5. A topology on an arbitrary set X is a collection T of subsets of
+X satisfying the following four axioms:
+Empty set The empty set is an element of T ,
+Whole set The set X is an element of T ,
+Finite intersection If U and V are elements of T , then U V is an element
+of T , and
+Arbitrary union If U T then U is an element of T .
+The ordered pair (X, T ) is called a topological space.
+Often, rather than specifying T directly, we specify a collection of subsets U
+of X that generate the topology, which is the smallest topology (in the sense of
+inclusion) that contains U.
+The following are elementary examples of topological spaces,
+Discrete topology For any set X, let T be the power set of X,
+Trivial topology For any set X, let T = { , X},
+Euclidean topology For X = R, the usual topology T is generated by the set
+of open intervals (a, b) for a < b R.
+Additionally, there is a powerful combinatorial theory of topological spaces
+(X, T ) in which the topology T is a finite set [7]. For our purposes, the most
+interesting of these finite topological spaces are those that arise naturally from
+a pre-ordered set, given by the definition below.
+Definition 6. Suppose that (P, ) is a pre-ordered set, which is to say that
+ is a reflexive and transitive relation. The Alexandrov topology Alex(P, ) on
+(P, ) is the topology generated by all subsets of P of the form Ux = {x y :
+y P }.
+The idea of sheaves and cosheaves is that each open set an element of the
+a topology is associated with a set of values, called the stalk (for sheaves) or
+costalk (for cosheaves).
+Definition 7. Suppose (X, T ) is a topological space. A presheaf S of sets on
+(X, T ) consists of the following specification:
+1. For each open set U T , a set S(U ), called the stalk at U ,
+2. For each pair of open sets U V , there is a function S(U V ) : S(V ) 
+S(U ), called a restriction function (or just a restriction), such that
+3. For each triple U V W of open sets, S(U W ) = S(U V ) S(V 
+W ) and
+4. S(U U ) is the identity function.
+15
+
+Dually, a precosheaf C of sets on (X, T ) consists of the opposite specification:
+1. For each open set U T , a set C(U ), called the costalk at U ,
+2. For each pair of open sets U V , there is a function C(U V ) : C(U ) 
+C(V ), called an extension function (or just a extension), such that
+3. For each triple U V W of open sets, C(U W ) = C(V W ) C(U 
+V ) and
+4. C(U U ) is the identity function.
+If for every U T there is a pseudometric dU on the (co)stalk at U , and each
+restriction (or extension) is continuous with respect to the corresponding pseudometrics, we call the entire collection of data a pre(co)sheaf of pseudometric
+spaces.
+As Definition 7 makes clear, pre(co)sheaves on a topological space are only
+sensitive to the poset of open sets, and not to the points in those open sets. In
+our context, the set of values should be interpreted as the set of values that a
+collection of variables in a DSEM can take.
+Definition 8. Suppose S is a presheaf on a topological space (X,QT ). An assignment a supported on U T is an element of the direct product, U U S(U ).
+The direct product is in general not the direct sum, since the topology
+may be infinite! For this reason, dually, if C is a precosheaf on (X, T ), then a
+coassignment supported on U T is an element of
+!
+G
+C(U ) .
+U U
+
+If U = T , we usually say that the (co)assignment is global.
+(Co)assignments may or may not be consistent with their pre(co)sheaf structure. When they are fully consistent, we highlight this fact by calling them
+(co)sections.
+Definition 9. A global section of a presheaf S on a topological space (X, T ) is a
+global assignment s such that for all open V U then S(V U ) (s(U )) = s(V ).
+Dually, a global cosection of a precosheaf C on a topological space is a global
+coassignment c of the disjoint union under an equivalence,
+
+G
+C(X) = 
+C(U ) / ,
+U open
+
+where is the equivalence relation generated by c1 c2 whenever c1 C(U1 ),
+c2 C(U2 ), with U1 U2 , and (C(U1 U2 )) (c1 ) = c2 .
+Local (co)sections are defined similarly, but refers to some collection U of
+open sets.
+16
+
+Intuitively, a (co)section corresponds to data that is fully consistent with the
+hypothesis posed by a (co)sheaf.
+The set of global sections of a presheaf on a topological space may be quite
+different from S(X). It is for this reason that when studying presheaves over
+topological spaces, an additional gluing axiom is included to remove this distinction. A similar axiom applies for cosheaves.
+Definition 10. Let P be a presheaf on the topological space (X, T ). We call
+P a sheaf on (X, T ) if for every open set U T and every collection of open
+sets U T with U = U , then P(U ) is isomorphic to the space of sections over
+the set of elements U.
+Dually, a precosheaf C is a cosheaf on (X, T ) if for every open set U T
+and every collection of open sets U T with U = U, then C(U ) is isomorphic
+to the space of cosections over the set of elements U .
+For the time being, we will focus on sheaves. Cosheaves will reappear in
+Section 5.
+Given that most assignments are not sections, it is useful to be able to
+measure how far away an assignment is from being a section. When we have
+pseuodmetrics on the stalks, one useful estimate of that distance is the consistency radius.
+Definition 11. If S is a presheaf of pseudometric spaces on a topological space
+(X, T ) and a is a global assignment, the p-norm consistency radius of a is the
+quantity
+ 1/p
+
+cS (a) := 
+
+X
+
+X
+
+U T , V T :V U
+
+p
+
+(dV (a(V ), S(V U )a(U ))) 
+
+,
+
+(10)
+
+where p 1.
+In all of our examples, p = 2 is used. A subtle point is that the relative
+weight of each of the different terms in Equation (10) is implicitly carried by the
+pseudometrics dV . For instance, if x, y Rn , a weighted form of the Euclidean
+pseudometric could be written
+dV (x, y) = αV
+
+n
+X
+k=1
+
+!1/p
+p
+
+|xk yk |
+
+,
+
+where αV > 0 is a constant that weighs the importance of the value in the stalk
+on V in the overall consistency radius. In some cases, for instance if different
+units of measure are involved, the correct choice of αV is clear. In others, the
+αV is a nuisance parameter that needs to be explored by the modeler.
+Corollary 4. If s is a global section of a presheaf S of pseudometric spaces,
+then cS (s) = 0.
+
+17
+
+Consistency radius is stable under perturbations, which means that it can
+be reliably estimated.
+Theorem 5. [35, Thm. 1] Consistency radius is a continuous real-valued function of the assignment.
+We will often need to consider local assignments as well. A natural definition
+is to define the consistency radius of a local assignment to be the consistency
+radius of the best extension of the local assignment to a global one.
+Definition 12. [35, Def. 16] If S is a presheaf of pseudometric spaces on a
+topological space (X, T ) and a is an assignment supported on U T , then its
+consistency radius is
+(
+)
+Y
+S(U ) such that b(U ) = a(U ) if U U .
+cS (a; U) := min cS (b) : b 
+U T
+
+We will use the phrase minimizing the consistency radius of a as a shorthand
+for finding the global assignment
+(
+)
+Y
+b := argmin cS (b) : b 
+S(U ) such that b(U ) = a(U ) if U U .
+U T
+
+As the rest of this chapter shows, minimizing the consistency radius of a
+given local assignment is the primary tool for sheaf-based inference.
+
+3.3
+
+The netlist sheaf
+
+The key result of this section is that inference for a DSEM corresponds to
+consistency radius minimization. In general, it is enabled by Definition 2 that
+translates a DSEM into a netlist, and Definition 13 that translates a netlist into
+a sheaf, in such a way that solutions correspond to global sections (Theorem 6).
+In order to motivate the construction, and to explain some of its subtleties,
+we delay the formal construction (Definition 13) until after we have discussed
+two examples. The first example represents a classic linear regression problem
+first as a SEM (which is not dynamical), then as a netlist, and finally as a sheaf.
+This progression is summarized in Figure 3.
+Before delving into the details, let us consider the meaning of the arrows
+shown in Figure 3. The arrows in each of the frames of Figure 3 mean different
+things. In the SEM the arrows have a causal interpretation: the value of x
+determines that of y. This interpretation carries over into the netlist, where
+ports are either inputs or outputs.
+In the sheaf diagram the arrows are functions between the stalks. Since
+the stalks represent the set of possible values for each variable, the functions
+represented by the arrows will be used to extract data stored on the ports and
+place them on the nets regardless of whether they are inputs or outputs. There
+is no intuitive issue with the outputs. An output variable is determined by the
+18
+
+Constraints
+
+x
+
+x
+
+m b x
+
+x
+
+m b
+
+pr1
+
+x
+
+ n
+
+pr2
+
+pr3
+
+y = mx + b
+
+y = mx + b
+
+y
+
+y
+
+y
+
+y
+
+y
+
+ n
+
+(a)
+
+(b)
+
+(c)
+
+(d)
+
+n
+
+f
+
+Assignment support
+
+Figure 3: A linear regression problem as (a) a SEM, (b) a netlist with hardcoded
+coefficients, (c) a netlist with coefficients exposed as inputs, and (d) a sheaf. To
+solve the linear regression problem, the partial assignment supported on the
+darkest shaded region is supplied by the observations, and then the assignment
+is extended to the remaining stalks. Finally, the copies of m, b, and x that
+should be constrained so that they are identical are shown by the three lighter
+shadings.
+data within the part it is attached to. However, for an input, the only thing the
+arrow does is extract the corresponding port s value unmodified. This seems
+paradoxical! The point is that when two parts are connected to each other on
+a net, they both have a claim on what the value of the variable should be. If
+the values correspond to a global section of the sheaf, this is the assertion that
+both claims on that variable agree, namely the variable produced by the output
+of one port is the same as the variable that reaches the input port attached to
+the same net.
+Beginning the example in earnest, suppose that (x1 , y1 ), . . . , (xn , yn ) are n
+points in the plane R2 . As a modeling choice, we suppose that the x values can
+be used to predict the y values, or alternatively that x is an explantory variable
+and y is a response variable. If we assert that the model should be linear, we
+are assuming
+y b + mx,
+where b and m are parameters to be found. To express this modeling assumption
+graphically, we write an arrow x y, yielding the SEM graph in Figure 3(a).
+The netlist for the problem represents the same information as in the SEM.
+As shown in Figure 3(b), the netlist consists of two variables (x and y), and one
+part (the linear equation that predicts y from x).
+The prediction process depends on the two parameters b and m, which can
+also be considered as inputs. This change results in a netlist with four variables
+(x, y, b, and m) and the same part as before, shown in Figure 3(c).
+The sheaf representation of the same system is shown in Figure 3(d). It is
+considerably more explicit about variable type information. The stalk over m
+and b is R, since each of these parameters takes a real value. On the other hand,
+19
+
+the stalk over x and y is Rn , since they are each a sequence of n real values. The
+stalk over the single part is the set of its inputs, namely R R Rn , corresponding
+to m, b, and x, respectively. The restriction maps from the part to the inputs
+are all projection maps, which select the different inputs. Explicitly,
+pr1 (m, b, (x1 , . . . , xn )) = m,
+pr2 (m, b, (x1 , . . . , xn )) = b,
+and
+pr3 (m, b, (x1 , . . . , xn )) = (x1 , . . . , xn ).
+The remaining restriction map f shown in Figure 3(d) performs the prediction
+process, and is given by
+(y1 , . . . , yn ) = f (m, b, (x1 , . . . , xn )) = (mx1 + b, . . . , mxn + b).
+
+(11)
+
+The function f applies the common coefficients (b and m) to each of the input
+values xk to yield the corresponding output values yk .
+The space of global assignments for the sheaf shown in Figure 3(d) is given
+by the product of all of the stalks. This means there are two copies of m, b, and
+x in the space of global assignments, one for the value of the variable and one
+as a component of the part. A typical global assignment a is of the form
+
+a := m, b, (x1 , . . . , xn ), (y1 , . . . , yn ), m,
+e eb, (f
+x1 , . . . , x
+fn ) ,
+(12)
+where we have listed the four variables first followed by the part. The consistency radius of this assignment is
+c(a) =
+
+p
+
+p
+
+|m
+e m| + |eb b| +
+
+n
+X
+k=1
+
+p
+
+|f
+xk xk | +
+
+n
+X
+k=1
+
+!1/p
+p
+
+|b + mf
+x k yk |
+
+(13)
+
+for a given p. In what follows, we will take p = 2, so as to agree with classical
+linear regression.
+The problem of classical linear regression seeks real numbers m and b minimizing the last term in Equation (13). Therefore, minimizing consistency radius
+subject to the constraint that each pair of copies of m, b, and x is equal, and
+that only m and b are allowed to vary will recover linear regression from the
+sheaf. These copies are identified in the lighter shaded regions in Figure 3(d).
+To follow the paradigm of consistency radius minimization, we specify a local
+assignment to the variables x and y, and then extend the assignment to a global
+one. The support of the local assignment is expressed by the darkest shaded
+region in Figure 3(d). Notice that the nets have no higher elements in the partial
+order shown in Figure 3, so the support of this assignment is U = {{x}, {y}}.
+Explicitly, we start with a non-global assignment supported on U,
+( , , (x1 , . . . , xn ), (y1 , . . . , yn ), ) ,
+20
+
+(14)
+
+where the dashes indicate stalks outside the support of the assignment. If we
+seek a global assignment g such that
+g = argmin {c(b) : g(U ) = a(U ) for U U},
+this means that we wish to find the entries in the assignment in Equation (12)
+that are marked with the dashes in Equation (14), namely
+m,
+e eb, m, b, and (f
+x1 , . . . , x
+fn ).
+Minimizing consistency radius is therefore given by the problem
+argmin m,
+e e
+b,m,b,(x1 ,...,xn )
+
+|m
+e m|2 + |eb b|2 +
+
+n
+X
+k=1
+
+|f
+xk xk |2 +
+
+n
+X
+k=1
+
+!1/2
+|b + mf
+x k y k |2
+
+But since both m
+e and m, and eb and b are being minimized, the consistency
+radius reduces to
+!1/2
+n
+n
+X
+X
+2
+2
+argmin m,b,(x1 ,...,xn )
+|f
+xk xk | +
+|b + mf
+x k yk |
+.
+k=1
+
+k=1
+
+This permits the values of the variables x and y to differ from their copies,
+subject to a penalty. Instead of least squares regression, this problem is what
+is usually called total least squares; see Figure 4. After minimization, the differences between each of the copies
+|f
+xk xk |
+expresses the uncertainty of their values if the model is to be taken as a given.
+To obtain classical least squares regression, we must constrain x
+fk = xk for
+all k. The global assignment we seek is of the form
+g = (m, b, (x1 , . . . , xn ), (y1 , . . . , yn ), (m, b, (x1 , . . . , xn ))) ,
+so that the consistency radius minimization problem subject to this constraint
+becomes
+!1/2
+n
+X
+2
+argmin m,b
+|b + mxk yk |
+.
+k=1
+
+Consistency radius minimization unifies several different inference tasks in
+Figure 3, depending on the support of the initial assignment:
+Forward prediction Choose an assignment supported on x, b, and m, of the
+form
+(m, b, (x1 , . . . , xn ), , ) .
+Consistency radius minimization will infer the values for y. Because the
+above assignment extends to a global section, namely,
+(m, b, (x1 , . . . , xn ), (b + mx1 , . . . , b + mxn ), (m, b, (x1 , . . . , xn ))) ,
+consistency radius minimization does not require constraints in this case.
+21
+
+.
+
+y
+
+y1
+
+y = mx + b
+b + mx~1
+unconstrained
+consistency
+radius
+
+b + mx1
+constrained
+consistency
+radius
+
+x
+x1
+
+x~1
+
+Figure 4: Geometric meanings of the terms contributing to consistency radius
+in Equation 13.
+Backward prediction Choose an assignment supported on y and b, and m,
+of the form
+(m, b, , (y1 , . . . , yn ), ) .
+Consistency radius minimization will infer the values for x. If m = 0, this
+always results in a global section,
+
+(m, b, ((y1 b)/m, . . . , (yn b)/m, (y1 , . . . , yn ), (m, b, ((y1 b)/m, . . . , (yn b)/m)) ,
+so consistency radius minimization does not require constraints. If m = 0
+then the minimizers of consistency radius all have the same consistency
+radius, and are assignments of the form
+(0, b, (x1 , . . . , xn , (y1 , . . . , yn ), (0, b, (x1 , . . . , xn ))) .
+Noting that the two copies of the x variable are always identical, applying
+constraints does not change the result.
+Regression (model fitting) (Details above, included for completeness here.)
+Choose an assignment supported on x and y, of the form
+( , , (x1 , . . . , xn ), (y1 , . . . , yn ), ) .
+Consistency radius minimization will infer the values for b and m. As
+noted above, without constraints consistency radius minimization solves
+total least squares, while constraints are necessary to recover classical
+regression.
+22
+
+Constraints
+
+pr1
+
+...
+
+pr3
+
+pr2
+
+prn+2
+
+f1 f2
+
+n
+
+Assignment support
+
+fn
+
+... 
+
+Figure 5: Modification to the sheaf in Figure 3(d) to allow for missing data.
+Hybrid versions of the above problems can also be addressed.
+Assignments are populated stalk-wise, so the sheaf in Figure 3(d) explicitly
+requires that we have access to all of the n data points, since the stalks for x
+and y are each Rn . If there is missing data, a different sheaf construction is
+possible, in which each separate component of x and y is given its own stalk.
+Figure 5 shows the resulting construction.
+The fk restriction maps appearing in Figure 5 are the individual components
+of the f restriction map in Figure 3(d), namely given Equation (11),
+yk = fk (m, b, (x1 , . . . , xn )) = mxk + b.
+The set of global assignments for the sheaf in Figure 3(d) is the same as
+that for the sheaf in Figure 5, but its components are delineated differently. A
+typical global assignment a for the sheaf in Figure 5 is given by
+
+a := m, b, x1 , . . . , xn , y1 , . . . , yn , m,
+e eb, x
+f1 , . . . , x
+fn ,
+where the main difference between the above and Equation (12) is in the placement of parentheses. The consistency radius for a global assignment in both
+sheaves is given by exactly the same formula. As in the previous sheaf, we can
+express the linear regression problem as a consistency radius minimization problem, in which a local assignment supported on the xk and yk variables (shown
+by the darkest shaded regions in Figure 5) is extended to a global assignment,
+subject to the constraint that each of the copies of the duplicated variables are
+identical (shown by the three lighter shaded regions in Figure 5). But now, if
+there is a missing xk or yk value, this can simply be excluded from the support
+of the initial assignment, leaving the specification of the task as a consistency
+radius minimization unchanged.
+Feedback connections are easily represented in all of the frameworks under
+consideration. Moreover, depending on the set of variables that are permissible,
+the resulting sheaf will or will not have global sections (Definition 9).
+23
+
+X
+
+x
+
+x
+out
+
+f
+
+g
+
+g
+
+id
+
+X
+
+X
+
+id
+
+f
+
+in
+
+g
+
+f
+
+in
+
+out
+
+y
+
+y
+
+X
+
+(a)
+
+(b)
+
+(c)
+
+Figure 6: Feedback connections can be handled: (a) a (D)SEM model with
+feedback, (b) its netlist, (c) its sheaf representation.
+Consider the setting shown in Figure 6:
+X = R, f (x) = x, g(x) = x (Linear SEM) global sections occur whenever the
+two variables have the same value.
+X = R, f (x) = x, g(x) = x (Linear SEM) the only global section is for both
+variables to be 0.
+X = R, f (x) = 1 x, g(x) = x (Affine, nonlinear SEM) The only global section is for both variables to take the value 1/2.
+X = Z, f (x) = 1 x, g(x) = x (Discrete values) No global sections exist.
+Feedback will play an important role in defining a sheaf to model autoregressive timeseries in Section 3.4.
+With the preliminary intuition established by the previous two examples, we
+are now in a position to discuss the general translation algorithm.
+Definition 13. If we have a netlist N , we build the netlist sheaf on the Alexandrov topology of the preorder of its netlist graph of N . The stalk on each net
+is the set of variables for that net. The stalk on each part is the product of
+its input ports. The restriction from a part to a net along an input port is the
+projection function for the corresponding variable set. The restriction from a
+part to a net along an output port is the function that computes the output
+variable from the set of input variables.
+It is often useful to have individual observations on their own stalks, like we
+did in Figure 5. The following modification to Definition 13 allows for missing
+data in general.
+Definition 14. Starting with a netlist sheaf as defined in Definition 13, add
+an additional element to the preorder of the netlist graph for each observation
+of each variable. These elements are located above their respective variables in
+the preorder. The restriction map from each variable to each observation is the
+projection that selects the corresponding observation from its parent timeseries.
+24
+
+x1, ... xn
+S
+in
+
+a1, ... ak
+
+coef
+
+LCF(k)
+
+pr2
+k
+
+ S
+
+out
+
+yn = a1 xn-1 + a2 xn-2 + ... ak xn-k
+
+(a)
+
+pr1
+
+ k
+
+S
+(b)
+
+Figure 7: A linear causal filter LCF(k) with a sliding window size k as (a) netlist
+wiring hypergraph and (b) netlist sheaf.
+Theorem 6. Variable values on the netlist correspond bijectively to DSEM
+solutions and to global sections.
+Proof. (see also [34][Prop. 6]) There is a direct correspondence between the
+values of variables on the nets and the nodes in the DSEM. If these are values
+correspond to a solution, then they directly imply consistency with the restriction maps.
+Moreover, according to [35, Thm. 1] there is stability in consistency radius
+when we perturb away from a consistent set of variables. This is classical in the
+case of the linear regression example, because the linear regression coefficients
+m and b are stable with respect to perturbations in the data variables x and y.
+
+3.4
+
+Sheaves modeling autoregressive timeseries
+
+Autoregressive timeseries are sequences . . . , x0 , x1 , . . . that obey an equation of
+the form
+xn = a1 xn 1 + a2 xn 2 + + ak xn k ,
+for some fixed a1 , . . . , ak . We say that such a sequence is AR(k) autoregressive.
+Autoregressive timeseries can be modeled using the graphical framework being
+developed in this chapter by the use of feedback connections.
+It is easiest to see how the construction of autoregressive timeseries works by
+starting with a one-step delayed Linear Causal Filter with sliding window size k
+(which we write as LCF(k) for short in diagrams). Like the linear regression
+example from the previous section, a variable x is considered an explanatory
+variable that predicts the values of a response variable y. This prediction is
+given by
+yn = a1 xn 1 + a2 xn 2 + + ak xn k
+where the a1 , . . . ak are constants.
+We can realize this equation as a netlist with an input for x, an input for a,
+and an output for y shown in Figure 7(a). Using Definition 13, we obtain the
+25
+
+... x1, ... xn
+
+s
+
+out
+
+in
+
+identity
+
+LCF(k)
+
+coef
+
+a1, ... ak
+
+out
+
+in
+
+id
+
+pr2
+
+s
+
+ k s
+
+id
+xn = a1 xn-1 + a2 xn-2 + ... ak xn-k
+
+s
+
+(a)
+
+(b)
+
+pr1
+
+ k
+
+Figure 8: A (a) netlist and (b) a sheaf that encodes an autoregressive timeseries.
+netlist sheaf shown in Figure 7(b), where S is the set of infinite sequences of
+real numbers.
+To handle autoregressive timeseries, we merely need to consider the pair of
+equations
+(
+yn = a1 xn 1 + a2 xn 2 + + ak xn k ,
+xn = yn .
+This is implemented as a netlist with two parts and a feedback connection,
+as shown in Figure 8(a), where again S is the set of infinite sequences of real
+numbers. The linear causal filter part is the same as before, but the identity
+part implements the second equation above. Error terms are not explicitly
+mentioned, because they are accounted for in the consistency radius calculation
+(Equation (10)).
+The associated netlist sheaf is shown in Figure 8(b). Again, consistency
+radius measures how well the data x fit the model given with coefficients a.
+Following a theme already present in the linear regression example, there is
+duplication of data in the sheaf model. Indeed, the values of x are effectively
+duplicated in four places: the x and y = x variables, and in the two parts.
+Once again, if we consider an assignment supported on the two variables (with
+the same values on each!), minimizing consistency radius will infer the values
+of the a coefficients. Once again, if we run an unconstrained optimization, this
+assumes that some uncertainty is permitted in the values of x.
+When the timeseries are finite in length, the equation defining an AR(k)
+sequence cannot represent any of the first k time steps. Therefore, instead of
+the identity part in Figure 8, the sheaf for an AR(k) sequence of length n must
+crop off the first k components of the vector in the stalk, resulting in a sequence
+of length n k. The resulting construction is shown in Figure 9, where we note
+that a slight abuse of definition occurs in Figure 9(a) because the two outputs
+are connected to each other. While this means that the netlist is not valid as
+such, the sheaf constructed in Figure 9(b) correctly represents an autoregressive
+sequence. Global sections of the sheaf in Figure 9(b) are precisely the AR(k)
+sequences of length n.
+
+26
+
+x1, ... xn
+ n
+in
+
+in
+
+crop
+
+LCF(k)
+
+a1, ... ak
+
+coef
+
+out
+
+out
+
+id
+
+pr2
+
+ n
+
+ k n
+
+prk..n
+xn = a1 xn-1 + a2 xn-2 + ... ak xn-k
+
+ n-k
+
+(a)
+
+(b)
+
+pr1
+
+ k
+
+Figure 9: A (a) netlist and (b) a sheaf that encodes an autoregressive timeseries.
+
+ n
+
+in
+
+ k n
+
+DietCope_lag
+
+Copepods
+in
+
+pr2
+
+out
+
+id
+
+crop
+
+ n
+h
+
+DietCope_block
+out
+
+LCF(k)
+prk..n
+
+ n - k
+
+ n
+
+Diet_Cop
+(a)
+
+(b)
+
+Figure 10: Modification to Figure 1(d) to support autoregressive timeseries,
+shown for the Copepods variable: (a) netlist wiring hypergraph, (b) sheaf diagram. This modification is performed for each variable in Figure 1 resulting in
+Figure 13.
+
+27
+
+Autoregressive sequences can be modeled in the sheaf shown in Figure 1(d),
+our ecological example. All that is needed is a modification to each variable in
+the netlist to ensure that each variable is an autoregressive sequence. Specifically, each of the input variables for each of the parts in the netlist shown in
+Figure 1(b) must be duplicated to represent a lagged copy of the variable, and
+there must be a new part added for each variable to perform the autoregression
+itself. As in Figure 9, each original variable gets wired to the input of the corresponding LCF part. The duplicated (lagged) input on each preexisting part
+is cropped to be only the most recent samples (since the timeseries is finite),
+and then that is what is attached to the output port of the LCF part. The
+transformation that is required for the Copepods variable is shown in Figure 10.
+
+4
+
+Sheaf encoding of the Bering Sea
+
+We now return to the ecological DSEM example introduced in Section 2.2, and
+refer the reader to Figure 1. The reader is directed to [36] for the software that
+generates the sheaf results presented in this section.
+The DSEM is shown in Figure 1(a), its corresponding netlist wiring hypergraph is shown in Figure 1(b), its netlist graph is shown in Figure 1(c), and its
+netlist sheaf is shown in Figure 1(d).
+The netlist sheaf in Figure 1(d) does not express the path coefficients as
+variables, as they are instead hard coded within each part. Nevertheless,
+if the path coefficients are known (for instance, they can be taken from [46]),
+then the sheaf model can be used to predict the values of each of the variables,
+starting from SeaIce and Spawners. If we apply the modification to the sheaf
+to require AR(1) timeseries so that missing data values are interpolated, and
+use the path coefficients stated in [46] (see Table 3), the resulting timeseries are
+shown in Figure 11.
+The DSEM was constrained to fit the measurements exactly, whereas the
+sheaf had no such constraints applied. Where the sheaf differs from the measurements, the extent of that difference is a measure of the uncertainty in the
+value of the variable at the given time. This uncertainty is composed of both
+the measurement and exogenous errors; the sheaf model does not distinguish
+between the types of error. Moreover, where there are no measurements available (especially for the earlier measurements), the DSEM reports the expected
+mean. The sheaf predictions are typically close to these mean values. Nevertheless, there is close agreement throughout. This is not unexpected, because
+both the sheaf and the DSEM approach are approximations to the same DSEM
+solution. There are some differences on the behavior of the earlier inferred data,
+because many of the observations are missing there. In these regions, the sheaf
+tends to yield somewhat less variable predictions than the DSEM (except in the
+case of the Krill variable).
+As noted earlier, we will compute consistency radius using the Euclidean p =
+2 norm. Lacking other information, we chose to weight the terms in Equation
+(10) equally. The consistency radius of the assignment after minimization is
+
+28
+
+SeaIce
+
+ColdPool
+ln (ColdPool ) [ln(km2 )]
+
+ln (SeaIce) [ln(km2 )]
+
+1
+0.5
+0.0
+ 0.5
+ 1.0
+
+0
+ 1
+ 2
+
+2018 ColdPool
+
+ 3
+
+DietCopepods
+ln (DietCopepods) [ ]
+
+3
+
+ln (Copepods) [ln(count/m )]
+
+Copepods
+2.5
+0.0
+ 2.5
+ 5.0
+
+1
+0
+ 1
+ 2
+
+DietKrill
+
+3
+
+ln (Krill ) [ln(count/m )]
+
+Krill
+ln (DietKrill ) [ ]
+
+0.5
+0.0
+ 0.5
+
+2016 Krill
+
+ 1.0
+
+0.5
+0.0
+ 0.5
+ 1.0
+
+Spawners
+
+Survival
+ln (Survival ) [103 count/kg]
+
+Spawners[106 kg]
+
+4
+3
+2
+1
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+2010
+
+2020
+
+measurement
+
+2
+1
+0
+ 1
+ 2
+1960
+
+DSEM
+
+1970
+
+1980
+
+1990
+
+2000
+
+2010
+
+2020
+
+sheaf
+
+Figure 11: Comparison between the DSEM output and the sheaf with hardcoded path coefficients shown in Figure 1(d) and AR(2) timeseries. The DSEM
+was constrained to fit the measurements exactly, whereas the sheaf had no such
+constraints applied.
+
+29
+
+Copepods_pc
+
+Copepods
+
+ n
+pr2
+
+pc
+
+in
+
+DietCope_block
+
+pr1
+
+out
+
+Diet_Cop
+
+ n
+g~1
+ n
+
+(a)
+
+(b)
+
+Figure 12: Modification to the netlist to include path coefficients and constants
+as an input.
+11.9. Since this is not zero, this means that the fit between the data and the
+model is not perfect. While the DSEM fits the data for maximum likelihood,
+the sheaf fits for minimum inconsistency. This difference in optimization task
+results in the observed differences between the sheaf and the DSEM.
+Taking a cue from Figure 3 in the previous section, we can break out path
+coefficients as separate variables so that they can be adjusted or estimated.
+Figure 12 shows how one of the parts in the netlist shown in Figure 1(b) can
+be modified so that its path coefficients are inputs. To handle missing data, we
+apply Definition 14 to the netlist sheaf, which results in Figure 13.
+Using the sheaf shown in Figure 13, we can infer the path coefficients and
+autoregressive coefficients by consistency radius minimization. Specifically, we
+construct an assignment supported only on the values of the variables that correspond to observations present in the data. Then, when we minimize consistency
+radius, the values of the path coefficients, autoregressive coefficients, and any
+missing observations will be inferred. The resulting global assignment has a
+complete timeseries no missing observations for each variable as well as path
+coefficients and autoregressive coefficients. Because the approach explained in
+Section 2.1 uses a different strategy for approximating solutions to the problem
+posed by the DSEM, the inferred path coefficients and missing observations will
+be somewhat different from those inferred by the sheaf.
+There are some differences between the sheaf and the measurement data.
+The contributions to consistency radius are not uniformly distributed over the
+sheaf. Some of the inconsistency is due to disagreements between the measurements and the DSEM graph model, and some of the inconsistency is due to
+the fact that the measurements are not AR(1) timeseries. This is visually apparent in Figure 13, where it is shown that the two largest contributors to the
+consistency radius are
+1. the autoregression cell for Copepods (labeled Copepods lagvar ), and
+2. the year 2018 observations of ColdPool (labeled 2018 ColdPool ).
+The second of these is easier to interpret. We should suspect that the 2018
+observation of ColdPool is an outlier (in the L2 sense) from what was expected
+30
+
+SeaIce
+SeaIce_lag
+SeaIce_lagvar
+
+ColdPool_block
+
+ColdPool_lagvar
+
+SeaIce_pc
+
+ColdPool_lag
+ColdPool
+
+2018_ColdPool
+
+ColdPool_Copepods_pc
+
+ColdPool_Krill_pc
+Krill_block
+
+Copepods_block
+
+2016_Krill
+Copepods
+
+Krill
+Copepods_lag
+
+Copepods_pc
+DietCopepods_block
+
+Copepods_lagvar
+
+Krill_lag
+
+Krill_pc
+DietKrill_block
+
+Krill_lagvar
+
+DietCopepods
+
+Spawners
+
+DietKrill
+DietCopepods_pc DietKrill_pc
+
+DietCopepods_lag
+
+DietKrill_lag
+Spawners_pc
+
+DietCopepods_lagvar
+
+Spawners_lag
+
+DietKrill_lagvar
+Spawners_lagvar
+
+Survival_block
+
+Survival
+
+cells
+
+restrictions
+projection map
+other function (see text)
+
+inferred variable (shown in Fig.11)
+observed variable highlighted in Fig.11
+pseudometric not present
+pseudometric present
+
+0
+2
+4
+consistency radius contribution
+
+Figure 13: The full sheaf for the DSEM described in Section 2.2. Its structure
+reflects the hexagonal backbone shown in the diagrams in Fig. 1. The black cells
+represent inferred variables, with the variable names shown in italics. Variable
+names that are also bold correspond to variables plotted in Fig. 11. White cells
+represent variables that are observed. All observed variables except for two are
+not labeled for clarity. The two that are labeled have their names in white italics
+with black backgrounds. These variables exhibit relatively large contributions
+to the consistency radius and are highlighted in Fig. 11.
+31
+
+Source
+
+Target
+
+SeaIce
+ColdPool
+ColdPool
+Copepods
+ColdPool
+Krill
+Copepods
+DietCopepods
+Krill
+DietKrill
+DietCopepods
+Survival
+DietKrill
+Survival
+Spawners
+Survival
+Consistency radius
+Runtime (s)
+
+DSEM [46]
+AR(1)
+0.6
+1.79
+0.18
+0.29
+0.06
+0.15
+0.13
+ 0.59
+11.9
+2
+
+none
+1.68
+4.45
+0.44
+0.32
+0.52
+ 0.50
+7.56
+ 0.82
+6.60
+2848
+
+Sheaf
+AR(1) AR(2)
+1.81
+1.78
+4.38
+4.47
+0.38
+0.41
+0.35
+0.36
+0.70
+0.65
+ 0.12 0.05
+5.29
+7.19
+ 0.65 0.55
+9.48
+9.03
+2637
+2679
+
+AR(10)
+1.74
+4.17
+0.39
+0.34
+0.56
+ 0.32
+5.63
+ 0.74
+7.93
+2907
+
+Table 3: Comparison between path coefficients estimated from the DSEM and
+the sheaf
+from the model, and that these differences may have propagated into other parts
+of the model. This probably explains why the 2018 observations of Krill and
+DietKrill are substantially different from the sheaf predictions in Figure 11.
+We should interpret the largest contributor to consistency radius as suggesting that the Copepods variable is not well represented by an AR(1) timeseries.
+Notice that the Copepods observations contribute equally to consistency radius,
+since the small white diamonds encircling the Copepods variable are about the
+same size. This suggests that it is simply that the assumption of Copepods
+being represented by an AR(1) timeseries is faulty, rather than any particularly
+bad observation.
+Table 3 shows the path coefficients inferred by the DSEM (using maximum
+likelihood as explained in Section 2.2) and by the sheaf (using minimum consistency radius). Table 4 shows the autoregressive coefficients estimated by
+the sheaf for the AR(1) and AR(2) cases. (The AR(10) case is not shown for
+space considerations.) The DSEM-derived path coefficients were obtained using
+the assumption of AR(1) timeseries. Several different sheaves were constructed
+with autoregressive sequences of different window sizes. As a consequence of
+the construction of consistency radius, minimizing consistency radius infers the
+following information: (1) missing observations in any variable, (2) all path
+coefficients, and (3) autoregressive coefficients for each variable.
+There is broad agreement about the values of the path coefficients between
+the sheaves with different autoregressive window sizes, and some agreement
+between the DSEM and the sheaves. Since the DSEM does not natively imply
+a consistency radius, the consistency radius shown for the DSEM is that for
+the sheaf using AR(1) timeseries and the hard-coded path coefficients as shown.
+Because the consistency radius minimization process on that sheaf cannot adjust
+the path coefficients it can only adjust the missing observation values and the
+autoregressive coefficients the consistency radius is notably higher in this case.
+Some caution in comparing consistency radius across the columns of Table
+
+32
+
+Variable
+ColdPool
+SeaIce
+Copepods
+Krill
+Spawners
+DietCopepods
+DietKrill
+
+AR(1)
+lag 1
+0.582
+0.361
+0.828
+0.692
+1.01
+0.886
+0.060
+
+AR(2)
+lag 1
+lag 2
+0.480
+0.202
+0.287
+0.190
+1.16
+-0.442
+0.308
+0.411
+1.78
+-0.768
+1.68
+-0.924
+0.0596 0.0445
+
+Table 4: Autoregressive cofficients estimated by the sheaf for AR(1) and AR(2)
+models.
+3 is needed. The number of terms in the consistency radius is the same for
+each of the sheaves in all but the non-autoregressive case (the fourth column
+from the left). This is because the autoregressive coefficients and timeseries
+are bundled as shown in Figure 9. Naturally enough, the non-autoregressive
+sheaf s consistency radius contains no terms pertaining to the autoregressive
+coefficients, and so is expected to be smaller than the others. The sheaf column
+listed as none means that no autoregressive timeseries assumptions were applied. Because with no autoregressive assumptions in play, the resulting sheaf
+diagram is smaller, consequently the consistency radius is smaller. Interestingly,
+the consistency radius is smallest for the AR(10) case, which suggests that more
+flexibility in the autoregressive coefficients leads to somewhat better prediction
+accuracy in the measurement data.
+Runtimes shown in Table 3 are representative when run on an Intel Core
+Ultra 7 155U at 1.4 GHz with 32 GB RAM. The process was not memory limited
+and consumes less than 500 MB RAM. The sheaf runs roughly 1500 times slower
+than the DSEM. This is because the DSEM solves a sparse linear problem, while
+the sheaf methodology supports fully nonlinear, non-convex problems. The
+sheaf software does not attempt to detect whether the problem is linear, so the
+consistency radius minimization is always performed as a nonlinear, non-convex
+optimization problem.
+
+5
+
+The topology of subsystems
+
+Classically, dynamical systems have been studied using the structure of invariant
+sets. These are subsets of the space of variable values that are preserved by the
+action of the dynamical system. This section shows that invariant sets are one
+half of a duality pair. We can take two different perspectives of a multi-scale
+dynamical system: invariant sets (which lead to cosheaves) versus subsystems
+(which lead to sheaves).
+We will establish that a dynamical system induces a cosheaf of invariant
+sets. The cosheaf of invariant sets breaks the global state of the system into
+different regimes of behavior, which are parameterized by the open sets of the
+33
+
+base space topology. Conversely, there is also a sheaf of subsystems that splits
+the variables into nested collections that each act independently.
+We will formalize the topology of subsystems as a finite topological space, by
+using the Alexandrov topology for a specific preorder (Definition 6). Each subsystem corresponds to a preorder element, with composite subsystems hooked
+together according to the preorder. The preorder relation decomposes composite subsystems into their component pieces. Intuitively, moving up in the
+preorder yields more abstracted high-level systems. This is not entirely compatible with all system decompositions in the literature, so caution is advised!
+(The intuition of the presentation here is compatible with Kearney et al. [22],
+where the system is modeled as a graph. In Kearney et al. [22], vertices are the
+loci of state variables, and are above edges in the preorder constructed in that
+paper. Our presentation is also compatible with Steward [43], after transitive
+closure.)
+
+5.1
+
+Dynamical systems
+
+Definition 15. A dynamical system is a continuous bijection f : S S. The
+set S in this case is called the set of states of the dynamical system.
+It is a classical fact that for a fixed timestep, the solutions to a smooth first
+order differential equation of the form (1) induce a dynamical system [44]. As
+a consequence, the DSEM, netlist, and sheaf models of the previous sections
+represent dynamical systems.
+Definition 16. For a dynamical system f : S S, a subset V S is called
+an invariant set if
+f (V ) V.
+Corollary 7. If V is an invariant set of f : S S, then f restricts to a
+function f : V V .
+Definition 17. Suppose that A B. The inclusion is the function i : A B
+is a function such that i(x) = x for every x A. Notice that (i|A) i = i.
+Dually, a projection is a function p : B A such that p p = p and
+p|A = id A .
+Proposition 8. Suppose that U and V are two invariant sets for a dynamical
+system f : S S and that U V . Then the following diagram
+U
+
+f
+
+i
+
+V
+
+f
+
+/U
+
+/V
+
+i 
+
+commutes, where i and i are appropriate inclusion maps, which is to say that
+f i = i f.
+34
+
+Proof. Suppose that x U . Since U is an invariant set, f (U ) U . However,
+since U V , x V . Therefore, f (x) V because V is also an invariant set.
+Definition 18. The category Dyn of dynamical systems has as its objects
+dynamical systems. Each morphism of Dyn is a commutative diagram of the
+form
+f1
+/ S1
+S1
+g
+
+g
+
+S2
+
+f2
+
+/ S2
+
+Composition of morphisms is given by composing the g functions.
+Proposition 9. Isomorphisms in Dyn are conjugacy classes of dynamical systems.
+
+5.2
+
+The cosheaf endomorphism of invariant sets
+
+The state space of a dynamical system can be decomposed as the (non-disjoint)
+union of all its invariant sets. This collection of invariant sets of a dynamical
+system is also partially ordered by subset inclusion, which means that the collection of invariant sets can be given an Alexandrov topology. A cosheaf can be
+defined to capture the relationship between an invariant set and the invariant
+sets that contain it. To this end, the cosheaf identifies duplicate points within
+these invariant sets with each other.
+We begin by observing that the invariance of a collection of subsets with
+respect to a dynamical system is not necessary to define a cosheaf; it can be
+constructed generally.
+Lemma 10. Suppose that U 2X is an arbitrary collection of subsets of a set
+X. Consider the inclusion partial order on U, given by U V whenever U V .
+Define the following precosheaf CU on the Alexandrov topology of the inclusion
+partial order (U , ):
+1. CU (U ) = U
+2. CU (U V ) = CU (U V ) : U V via the inclusion map.
+Then CU is a cosheaf of sets on the Alexandrov topology of the inclusion partial
+order (U, ).
+Proof. Suppose that V U, and that V U is a collection of subsets with
+V = V. We need to establish that the space of global cosections on V is
+identical to CU (V ) = V . The space of global cosections on V is
+!
+!
+G
+G
+[
+CU (W ) / =
+W / =
+W = V = V,
+W V
+
+W V
+
+W V
+
+since the equivalence identifies points that agree on overlaps.
+35
+
+The above cosheaf construction is functorial, which means that it is compatible with transformations of the underlying sets. In order to establish functoriality, we need to formalize these transformations by defining the class of
+morphisms for sheaves and cosheaves.
+Definition 19. Suppose that R is a sheaf on (X, TX ), S is a sheaf on (Y, TY ),
+and that f : (X, TX ) (Y, TY ) is a continuous function. A sheaf morphism
+m : R S is a collection of maps mU : R(f 1 (U )) S(U ) for each U TY
+such that the following diagram commutes whenever U, V TY and U V ,
+R(f 1 (V ))
+R(f 1 (U ) f 1 (V ))
+
+mV
+
+/ S(V )
+S(U V )
+
+R(f 1 (U )) mU / S(U )
+
+Dually, if R is a cosheaf on (X, TX ), and S is a cosheaf on (Y, TY ), a cosheaf
+morphism m : R S is a collection of maps mU : R(f 1 (U )) S(U ) such
+that the following diagram commutes whenever U, V TY and U V ,
+R(f 1 (V ))
+O
+
+mV
+
+/ S(V )
+O
+
+R(f 1 (U ) f 1 (V ))
+
+S(U V )
+
+R(f 1 (U ))
+
+mU
+
+/ S(U )
+
+With the definition of morphisms in hand, we can now establish that the
+cosheaf construction in Lemma 10 is functorial.
+Lemma 11. There is a functor Top CoShv that takes a topological space
+(X, T ) to a cosheaf C(X,T ) of sets on (X, T ) via C(X,T ) (U ) := U and C(X,T ) (U 
+V ) is the inclusion U , V .
+Proof. First, we observe that Lemma 10 establishes that C(X,T ) is a well-defined
+cosheaf on (X, T ).
+Suppose that f : (X, TX ) (Y, TY ) is a continuous map. This lifts to
+a cosheaf morphism F : C(X,TX ) C(Y,TY ) . Suppose that U V are two
+open sets in Y . Then we have that f 1 (U ) f 1 (V ) are two open sets in X.
+Therefore, the following diagram commutes
+C(X,TX ) (f 1 (U )) = f 1 (U )
+
+FU :=f |U
+
+C(X,TX ) (f 1 (U ) f 1 (V ))
+
+C(X,TX ) (f 1 (V )) = f 1 (V )
+
+/ C(Y,T ) (U ) = U
+C(Y,TY ) (U V )
+
+FV :=f |V
+
+/ C(Y,T ) (V ) = V
+Y
+
+which establishes definitions for the component maps of F , and therefore that
+F is a cosheaf morphism.
+36
+
+Now suppose that we have two continuous maps f : (X, TX ) (Y, TY ) and
+g : (Y, TY ) (Z, TZ ). We must show that the corresponding composition of
+cosheaf morphisms G F is the equal to the one induced by (g f ). This follows
+immediately because the components maps of the cosheaf morphism G F are
+simply restrictions of the composition (g f ).
+Suppose that f : S S is a dynamical system. The invariant sets of f are
+indeed a collection of subsets, which are partially ordered by inclusion. Therefore, Lemma 10 establishes that there is a well-defined cosheaf S of invariant
+sets of f .
+Proposition 12. A dynamical system f : S S induces an morphism m :
+S S on the cosheaf of invariant sets, and for which the induced map on
+global cosections is mS = f .
+Proof. Suppose that U is an invariant set of f . Let mU : U U be the
+restriction of f to U . If U V are two invariant sets, then Proposition 8
+implies that
+U
+
+mU =f
+
+/U
+
+i
+
+V
+
+mV =f
+
+/V
+
+i
+
+commutes, where i is the inclusion map. It is immediate that this is exactly
+the condition that the m maps are the components of a cosheaf morphism.
+Moreover, since S is itself an invariant set, the proof is complete.
+
+5.3
+
+Subsystem decomposition sheaf
+
+Rather than carving up the state space into different regimes of behavior, we
+can instead carve it into non-interacting collections of variables. In this way, we
+arrive at the subsystem sheaf instead of the invariant set cosheaf. The global
+sections combine variables together into vectors, whereas global cosections paste
+subsets of values together.
+Dualizing the condition for an invariant set yields the condition for a subsystem. Suppose that f : S S is a bijection and that U S is an invariant
+set for f . If i : U S is the inclusion map, then the diagram at left below
+commutes:
+f
+f
+/S
+/S
+SO
+S
+O
+i
+
+U
+
+p
+
+i
+
+f |U
+
+B
+
+/U
+
+p
+
+g
+
+/B
+
+Dually, the diagram at right above captures the situation where B is a subsystem
+of f .
+
+37
+
+Definition 20. If f : S S is a dynamical system, a subsystem is a pair (g, p)
+consisting of a dynamical system g : B B and a surjection p : S B such
+that p f = g p. We will call p the subsystem projection. When p is clear from
+context, we will often say g is a subsystem of f .
+We can think of the function g as a dynamical system in its own right.
+The idea of a subsystem is neatly compatible with the DSEM construction.
+As will be shown later in Corollary 21, when the DSEM graph is acyclic, the
+subsystems can be read off directly. For the moment, a few examples will
+build the necessary intuition.
+Example 2. Consider the DSEM with two variables A and B, given by the
+graph with one edge A B. The variable A is a subsystem on its own, whereas
+B cannot be a subsystem on its own because its value cannot be predicted from
+B alone. As a result, there are two nested subsystems: {A} and {A B}.
+To see this explicitly, suppose that the values of A are given by the timeseries
+{an } and the values of B are given by the timeseries {bn }, with the prediction
+of B from A given by the formula
+bn+1 = β(an , an 1 , . . . ).
+The dynamical system implied by this DSEM is represented by shifting the
+timeseries by one timestep. Specifically, the dynamical system is given by the
+function f : A B A B given by
+f (. . . ,an , an 1 , . . . , . . . , bn , bn 1 , . . . )
+= (. . . , an+1 , an , . . . , . . . , β(an , an 1 , . . . ), β(an 1 , an 2 , . . . ), . . . ).
+Because of this formula, it should be clear that {B} cannot be a subsystem
+because the values of the {bn } timeseries depend on the values of {an }. Under
+a projection that removes the {an } from the domain, the values of {bn } cannot
+be determined.
+The subsystem {A} arises using the subsystem projection p : A B A,
+namely
+p(. . . , an , an 1 , . . . , . . . , bn , bn 1 , . . . ) = (. . . , an+1 , an , . . . ).
+The subsystem dynamical map g : A A is simply
+g(. . . , an , an 1 , . . . ) = (. . . , an+1 , an , . . . ).
+Verification that (g, p) is a subsystem is then simply a calculation,
+(p f )(. . . , an , an 1 , . . . , . . . , bn , bn 1 , . . . )
+
+= p(. . . , an+1 , an , . . . , . . . , β(an , an 1 , . . . ), β(an 1 , an 2 , . . . ), . . . )
+= (. . . , an+1 , an , . . . )
+
+= g(. . . , an , an 1 , . . . )
+= (g p)(. . . , an , an 1 , . . . , . . . , bn , bn 1 , . . . ).
+38
+
+Example 3.
+?B
+A
+
+C
+
+Following the logic of Example 2, the subsystems are {A}, {A B}, {A C},
+and the original system.
+Example 4. Consider the DSEM with three variables A, B, and C given by
+the graph
+A
+
+?C
+
+B
+Following the logic of Example 2, the subsystems are {A}, {B}, and the original
+system. Notice that {C} cannot be a subsystem on its own because its values
+are determined by both A and B.
+When a dynamical system is described by a DSEM with feedback, there are
+often fewer subsystems because the values of the variables cannot be determined
+in isolation.
+Example 5. Consider the DSEM on variables A and B given by the graph
+)
+
+Ah
+
+B
+
+(See also Figure 6 for the sheaf model.) In this case, the only subsystem is the
+entire system, because the values of A cannot be determined without knowing
+B, and conversely the values of B cannot be determined without knowing A.
+Linear systems are special because invariant sets and subsystems reduce to
+the same thing, as the next example shows.
+Example 6. Let V be a finite dimensional vector space and f : V V be a
+linear isomorphism. If we use the usual Euclidean norm on V , f is continuous,
+so it is also a dynamical system. Subsystems and invariant subspaces of f are
+in bijective correspondence.
+To see this, suppose that v V is an eigenvector for f , namely
+f (v) = λv
+
+39
+
+for some λ. Then the subspace spanned by v is an invariant set. Conversely,
+every invariant set of f is a linear subspace, spanned by a set of eigenvectors
+(possibly with complex eigenvalues).
+Since V was assumed to be finite dimensional, every subspace W V also
+has an associated orthogonal projection prW : V W . If W is an invariant set
+for f , then (f |W, prW ) is a subsystem. To see this, suppose that v V , which
+can be written as the decomposition u + w, where w W and prW (u) = 0.
+Because f is a linear isomorphism, the assumption on u means that prW (f (u)) =
+0. All that remains is to verify that the definition of subsystem holds,
+(prW f )(v) = prW (f (u + w))
+
+= prW (f (u) + f (w))
+
+= prW (f (u)) + f (w)
+= f (w)
+= (f |W ) (w)
+
+= (f |W ) (prW (u + w))
+= (f |W prW )(v).
+
+Lemma 13. The relation is a subsystem of is a preorder, or in other words
+a reflexive, transitive relation.
+Proof. Suppose that f : S S is a dynamical system. Reflexivity follows
+immediately by taking (f, id S ) as a subsystem. For transitivity, suppose that
+(g2 , p2 ) is a subsystem of f , and that (g1 , p1 ) is a subsystem of g2 . That is, we
+have the commutative diagram
+f
+
+S
+p2
+
+p1 p2
+
+B2
+
+p2
+g2
+
+p1
+
+B1
+
+/S
+
+/ B2
+
+p1 p2
+
+p1
+
+g1
+
+/ B1
+
+so that (g1 , (p1 p2 )) is a subsystem of f .
+Intuitively, the preorder specifies how data can flow from one subsystem to
+the next. If (g1 , p1 ) is a subsystem of (g2 , p2 ), then each variable in (g2 , p2 ) is
+also a variable of (g1 , p1 ). As a result, the state of g1 can influence the state of
+g2 .
+Example 7. Consider the dynamical system f : Z3 Z3 given by
+f (x, y, z) := ((1 x), y(1 x) + zx, z(1 x) + yx).
+
+40
+
+This has a nontrivial subsystem pr1 : Z3 Z, since the map
+g(x) := 1 x
+makes the following diagram commute
+Z3
+pr1
+
+Z
+
+f
+
+/ Z3
+pr1
+
+g
+
+/Z
+
+In this case, the x variable in the subsystem acts as an input to the overall
+system, even though its behavior is isolated from the rest of the system.
+It is not necessarily the case that subsystems are invariant sets.
+Example 8. Consider the dynamical system f : R2 R2 , given by f (x, y) :=
+(x, y+1). Consider the subset B = {(x, 0) : x R}. This set yields a subsystem,
+since the following diagram commutes
+R2
+
+f
+
+p
+
+B
+
+/ R2
+p
+
+id
+
+/B
+
+where p(x, y) = (x, 0), even though the set B is not an invariant set.
+However, conversely, invariant sets of subsystems do determine invariant sets
+of their parent system.
+Lemma 14. Suppose that f : S S is a dynamical system with g : B B is
+a subsystem with subsystem projection p : S B. If V B is an invariant set
+of g, then p 1 (V ) is an invariant set of f .
+Proof. The hypotheses posit a commutative diagram of the form
+S
+
+f
+
+p
+
+B
+
+/S
+p
+
+g
+
+/B
+
+Suppose that x p 1 (V ) S. We have that p(f (x)) = g(p(x)) via the
+commutative diagram above. Noting that p(x) V by construction, and that
+V is an invariant set of g, this means that g(p(x)) V . Thus, p(f (x)) V , so
+f (x) p 1 (V ), which establishes that p 1 (V ) is an invariant set of f .
+
+41
+
+Lemma 15. Suppose that f : S S is a dynamical system and that Y S
+is an invariant set for f . If g : B B is a subsystem of f with subsystem
+projection p, then g is also a subsystem of f |Y .
+Proof. Suppose that i : Y S is the inclusion map. The hypotheses state that
+the diagram of solid arrows below commutes:
+(f |Y )
+
+Y
+
+/Y
+
+i
+
+i
+
+/S
+
+f
+
+S
+p
+
+p
+
+B
+
+/B
+
+g
+
+The conclusion follows by completing the diagram s dashed arrows with the
+composition p i as the subsystem projection for g as a subsystem of f |Y .
+A related statement to Lemma 15 could consider the conditions under which
+a subsystem of an invariant set lifts to a subsystem of the entire system. Diagrammatically, this consists of a situation where the subsystem projections
+defined by the dashed arrows in the diagram below could be constructed:
+(f |Y )
+
+Y
+
+/Y
+
+i
+
+i
+f
+
+S
+
+B
+
+g
+
+/S
+
+/B
+
+Therefore, when studying a dynamical system, one will often encounter problems of the following form.
+Question 1. When do lifts to the dashed arrows in the diagram above exist?
+Answers to this question relate closely to the expected behavior of systems
+when they are rewritten with new variables. This routinely happens with compiled software, as the next example shows.
+Example 9. Suppose that X represents the state space of a computer, perhaps a Turing machine. The design of the computer and physical laws yield a
+dynamical system f : X X. For this example, f is not bijective.
+The way that the computer is used is that the user loads an executable
+and then runs it. The initial state of the executable is a point within a subset
+U X. The user does not have control over the entire state of the machine,
+42
+
+but rather can constrain it to a smaller portion of the state space. It makes
+sense to require that U is an invariant set, which means that not only the initial
+state is included, but all possible future states as well. Therefore, the execution
+of the executable is completely determined by the commutative diagram
+U
+
+f |U
+
+X
+
+/U
+
+f
+
+/X
+
+As an example in PDP-11 assembly, we could have
+U = {PC {0, 1}, memory = {0 : ADD R1,R2, 1 : HALT}},
+where all values of the unspecified parts of the machine state (other registers,
+the rest the memory) are included in U . If the program counter PC is initialized
+to 0, the program will execute the instructions at 0 and 1, and then will halt.
+Evidently, if PC = 1, then the program halts immediately. No modifications
+to memory can occur given an initialization with U , and PC cannot be moved
+outside of those two instructions. This ensures that f (U ) U is indeed an
+invariant set.
+We might instead imagine that the executable specified by U was the result
+of a compiled, high-level program. Such a program would necessarily be of the
+form g : Y Y , where Y holds the values of the two registers R1 and R2. For
+a PDP-11, this means Y = ({0, 1}16 )2 , and
+g(x, y) := (x, x + y),
+which is to say that R1 is unchanged by the program, and R2 takes the sum of
+R1 and R2.
+The compilation process essentially ensures that we have the following commutative diagram
+U
+
+f |U
+
+q
+
+Y
+
+g
+
+/U
+
+/Y
+
+q
+
+where the q maps select the two registers R1 and R2 from the entirety of the
+machine state.
+Notice that we may write q = p , where is the inclusion of U , X, and
+p still selects the two registers R1 and R2 from the entirety of the machine state.
+Since the machine state is very large in comparison to U , the following diagram
+does not commute:
+f
+/U
+X
+p
+
+Y
+
+g
+
+43
+
+/Y
+
+p
+
+Values of X for which the commutativity fails egregiously are instances of weird
+machine states [13].
+However, when the operating system loads an executable, there are conventions about initialization. This helps to avoid weird machine states. We can
+formalize this idea by way of an initialization function i : Y U that is a right
+inverse to q, namely q i = (p ) i = id Y . This means that we have the
+following commutative diagrams
+UO
+
+f |U
+
+i
+
+Y
+
+g
+
+/U
+
+/Y
+
+f
+
+XO
+q
+
+ i
+
+Y
+
+g
+
+/X
+
+/Y
+
+p
+
+For instance, in the example PDP-11 program, we could use
+i(x, y) := {PC = 0,
+
+R1 = x,
+R2 = y,
+
+R[3-6] = 0,
+memory = {0 : ADD R1,R2, 1 : HALT, [2-] : 0}},
+Notice that since i does not have the ability to change the program counter PC,
+the following diagram does not commute
+UO
+
+f |U
+
+/U
+O
+
+i
+
+Y
+
+i
+g
+
+/Y
+
+Inspired by Example 9, suppose that we have a commutative diagram
+XO
+
+f
+
+i
+
+Y
+
+g
+
+/X
+
+/Y
+
+p
+
+where i is injective, p is surjective, and f , g are bijective.
+This leads to another question that is often of interest when studying system
+behaviors.
+Question 2. Under what conditions does
+X
+
+f
+
+p
+
+Y
+
+g
+
+44
+
+/X
+
+/Y
+
+p
+
+commute? Clearly if g is bijective, then a sufficient condition is that p = g 1 
+p f . It is probably the case that p i = id Y in most applications, but it is
+unlikely to be the case that i p = id X .
+Lemma 16. The subsystem preorder is a meet-semilattice. That is, if we have
+two subsystems fi : Si Si for i = 1, 2 of a dynamical system f : S S,
+there is a common subsystem f3 : S3 S3 of both of them (which might be
+trivial) that satisfies the following universal property. If f4 : S4 S4 is another
+common subsystem of f1 and f2 , then f4 is a subsystem of f3 .
+Proof. We start with two subsystems of a common dynamical system f : S S,
+so that we have a commutative diagram
+SO 1
+
+f1
+
+/ S1
+O
+
+p1
+
+p1
+
+S
+
+/S
+
+f
+
+p2
+
+S2
+
+p2
+
+f2
+
+/ S2
+
+We want to construct a subsystem of all three of these f3 : S3 S3 , that is as
+large as possible. Realize that what is needed to satisfy the universal property
+is a definition for the dashed arrows in
+S
+
+p1
+
+p 3
+
+p2
+
+S2
+
+/ S1
+
+p 
+3
+
+/ S3
+
+such that this diagram is a colimit.
+Since each of the Si are sets, there is a standard colimit construction, namely
+S3 = (S1 S2 )/ where x y if x S1 , y S2 such that there is a z S with
+p1 (z) = x and p2 (z) = y. The colimit condition implies that when we apply
+this construction twice, there is a unique f3 completing the diagram below
+S
+
+p1
+
+p 3
+
+p2
+
+S2
+
+/ S1
+
+p 
+3
+
+f1
+
+/ S3
+
+S1
+f3
+
+f2
+
+S2
+
+45
+
+p 
+3
+
+p 3
+
+/ S3
+
+Proposition 17. Restrict attention to f : S S being a (not necessarily
+linear) bijection on a vector space S, and require that the subsystem projection
+p : S B for each subsystem (g, p) of f is a linear surjection. In this case,
+the relation is a subsystem of is also antisymmetric up to conjugacy by linear
+isomorphisms.
+As a result, data feedback loops are confined to happen within a given subsystem.
+Proof. Suppose that (g2 , p2 ) is a subsystem of g1 : B1 B1 , and that (g1 , p1 )
+is a subsystem of g2 : B2 B2 , so that we have the commutative diagram
+B1
+
+g1
+
+p2
+
+B2
+
+p2
+
+g2
+
+/ B2
+
+g1
+
+/ B1
+
+p1
+
+B1
+
+/ B1
+
+p1
+
+Since p1 and p2 are surjective linear maps, this means that (p1 p2 ) : B1 B1
+is a linear surjection. Since it also evidently preserves dimension, it must be a
+linear isomorphism. Because both p1 and p2 are surjective, this implies that both
+must also be injective. Hence both p1 and p2 must also be linear isomorphisms,
+ 1
+which establishes that g2 = p2 g1 p 1
+2 and g1 = p1 g2 p1 as claimed.
+Example 10. There is no function h that will make the diagram below commute
+Z2
+id
+
+ZO 2
+
+f
+
+/ Z2
+id
+
+h
+
+/ Z2
+O
+
+id
+
+id
+
+Z2
+
+g
+
+/ Z2
+
+where
+f (x, y) = (x, 1 x),
+and
+g(x, y) = (y, y).
+
+46
+
+There is also no function h that will make the diagram below commute
+Z2
+pr1
+
+ZO
+
+f
+
+/Z
+id
+
+h
+
+/Z
+O
+
+pr2
+
+Z2
+
+id
+g
+
+/Z
+
+where
+f (x, y) = 1 x,
+
+and
+
+g(x, y) = y.
+Suppose that f : S S is a dynamical system in which S is a vector
+space and the subsystem projections are all linear surjections, as required by
+Proposition 17. Let (B, ) be the collection of all subsystems of f , with the
+partial order established by Lemma 13 and Proposition 17. Each element of B
+is a pair (gB , pB ) where gB : B B is a bijection and pB : S B. For brevity,
+if g1 is a subsystem of g2 , which is to say that there is a p1,2 : B2 B1 such
+that p1 = p1,2 p2 , we write (g1 , p1 ) (g2 , p2 ).
+Definition 21. Define the sheaf Ff of subsystems of f according to the following recipe:
+Stalks Ff ((gB , pB )) := B, and
+Restrictions Ff ((g1 , p1 ) (g2 , p2 )) := p1,2 .
+Even if the subsystem projections are not linear surjections, the Alexandrov
+topology on the subsystem preorder bundles together all collections of subsystems that participate in cycles. Without the conclusion of Proposition 17, the
+stalks of Ff are not necessarily well defined, since there is no guarantee that
+the subsystems of a given cycle have the same state spaces.
+Lemma 18. For a dynamical system f : S S, the space of global sections of
+Ff is precisely S.
+Proof. First of all, notice that id S : S S meets the criteria for a subsystem.
+We merely need to verify that the definition of global sections for Ff doesn t
+conflict with this. The space of assignments for Ff is
+M
+M
+Ff (p) =
+B.
+p:S B subsystem
+
+p:S B subsystem
+
+Suppose that we have a global section s. On the other hand, if (gB , pB ) 
+(f, id S ), then
+(Ff ((gB , pB ) (f, id S ))) (s(S)) = pB (s(S)) = s(B).
+47
+
+Therefore, the value of s on the subsystem id S : S S determines the values
+of s on every other subsystem.
+Proposition 19. A dynamical system f : S S induces an endomorphism on
+the sheaf of all subsystems, and for which the induced map on global sections is
+f.
+Proof. This follows immediately from the definition, as soon as we notice that
+for a subsystem p : S B, the g map guaranteed by the definition is the
+corresponding component map for the sheaf morphism.
+In short, a multi-scale discrete dynamical system can be encoded as component dynamical systems on some (or all) of the stalks of a sheaf S via self maps
+fx : S(x) S(x). One may also consider the action of different semigroups on
+stalks to model continuous dynamical systems.
+We are now ready to establish the main result of this section, which relates
+the sheaf of subsystems of a DSEM to its graph representation. As we have seen
+in Example 5, feedback loops in the DSEM graph must be confined to being
+entirely within a subsystem. Because we can collapse all feedback loops in an
+arbitrary directed graph to obtain an acyclic graph, we will assume that the
+DSEM graph is acyclic without loss of generality.
+The key insight is that if we select a given variable in the DSEM, any subsystem containing that variable must also contain every variable that can impact
+its value. Any variable with a directed path leading to our variable of interest
+will therefore need to be included in the subsystem.
+Definition 22. In a directed graph G = (V, E) an in-closed subset I V is a
+set of vertices such that if v I, then if e = (w, v) E, then w I.
+
+Lemma 20. If a dynamical system is defined by a DSEM, every in-closed subset
+of variables is a subsystem.
+Proof. Suppose that I is a in-closed subset of variables in a DSEM on a directed
+graph G. If v I then all of the dependencies of v are also in I, so the next
+timestep of v can be predicted from the variables in I. Therefore, projecting out
+just the variables in I from the set of all variables will result in a new dynamical
+update map when restricted to I.
+As a consequence of Lemma 20, we have the following result that explains
+why modeling with DSEM is a good idea.
+Corollary 21. If a dynamical system is defined by a DSEM on a partially
+ordered set, then the Alexandrov topology of the dual order is a subspace of the
+base space topology of its subsystem sheaf.
+Corollary 21 does not establish that the Alexandrov topology of the dual
+order of the DSEM is the subsystem sheaf. This is because if the original
+variables in the DSEM are chosen coarsely, there may be additional subsystems
+that are hidden within them. These hidden subsystems will be present in
+the subsystem sheaf, but will not correspond to distinct in-closed subsets of the
+DSEM graph.
+48
+
+f
+
+ k
+pr1
+
+ k
+pr1
+
+ k 
+
+ k 
+
+pr1
+
+pr1
+
+( k ) 
+
+( k ) 
+pr1
+
+pr1
+
+g
+
+( k ) 
+( k ) 
+pr1,2,5,6
+pr1,2,3,4
+
+pr1
+( k ) 
+pr1
+
+pr1
+( k ) 
+pr1
+
+( k ) 
+( k ) 
+pr1,2,5,6
+
+ k
+
+pr1,2,3,4
+
+pr7
+
+ k k 
+
+ k
+
+pr7
+
+ k k 
+
+Figure 14: Sheaf of subsystems for the Bering Sea example. Solid arrows are
+the subsystem projection maps; dashed arrows are the dynamical system state
+update maps. Maps f and g are explained in the text.
+
+6
+
+Subsystems of the Bering Sea system
+
+Figure 14 shows the sheaf of subsystems for the Bering Sea example, with the
+stalks organized in the same way as shown in Figure 13.
+The function f performs an AR (k) update:
+!
+k 1
+X
+ai xk i ,
+f (x1 , . . . , xk ) = x2 , . . . , xk ,
+i=0
+
+while the function g performs the dynamical update for the subsystem containing the Krill variables:
+!
+k 1
+X
+g(x1 , . . . , xk , y, z) = x2 , . . . , xk ,
+ai xk i , y + cxk , z + dy .
+i=0
+
+Notice how f is obtained from g by projecting out the first k components, in
+accordance with the commutativity of Figure 14.
+Although Figures 1(d) (with modifications to support autoregressive timeseries), 13, and 14 represent different sheaves, they all represent the same dynamical system. Consequently, the global sections of these three sheaves are
+different but are in a natural bijective correspondence. The three sheaves offer
+three distinct perspectives, with increasing granularity,
+Definition 21: Figure 14 Stalks are nested collections of dynamically related
+variables, each represented by sliding windows of timeseries,
+49
+
+Definition 13: Figure 1(d) Each variable is an entire timeseries and appears
+alone in at least one stalk, and
+Definition 14: Figure 13 Each observation (a timestep for a single variable)
+appears alone in at least one stalk.
+With this perspective, the boundaries between subsystems are easily seen in
+Figure 13: those restriction maps that are identity maps from parts to nets are
+those that cross subsystem boundaries. The variables at the heads of any identity maps in Figure 13 are those that are removed by the subsystem projections
+involved. Moreover, the state spaces arise as one time step of the space of local
+sections over each subsystem, once cut.
+
+7
+
+Conclusion
+
+In this chapter, we have demonstrated how the general framework of sheaf modeling applies to several composite dynamical systems, including an ecological
+model of the Bering Sea and a dynamical model of low-level computer software.
+Sheaf modeling provides a coherent mathematical framework for studying the
+complicated interaction of various dynamical subsystems that together determine a larger system. The guiding principles of sheaf modeling are that
+ a sheaf represents a hypothesis about how variables will interact,
+ a non-global assignment represents the observations collected on the variables in its support,
+ minimizing consistency radius predicts values of the variables that were
+not observed, and
+ the minimal consistency radius is a measure of the consistency between
+the observations and the hypothesis.
+This chapter shows that when a dynamical system is described by a DSEM, there
+are three sheaves that provide increasingly granular data about the interactions
+between variables:
+1. the sheaf of subsystems (Definition 21),
+2. the netlist sheaf with timeseries as stalks (Definition 13), and
+3. the netlist sheaf with additional stalks for individual observations (Definition 14).
+With these three sheaves in hand, a system modeler can apply the guiding principles above to measure how well their model fits observational data. The sheaf
+encodings allow the modeler to perform a variety of standard inferences (e.g.
+forward prediction, backward prediction, regression, and missing-data imputation) using a unified framework. The sheaf modeling framework easily supports
+50
+
+hybrid versions, for instance performing simultaneous forward and backward
+predictions, or simultaneously performing regression and prediction. Since the
+sheaf framework measures the fit between observations and the model, the modeler can assess their confidence in these inference tasks.
+It remains future work to compare estimates of uncertainty computed by
+the DSEM (appearing in the V and E matrices) to the consistency radius of
+the corresponding sheaf. In particular, it seems possible to view consistency
+radius as a test statistic for the distributional model posited by the DSEM.
+Indeed, Equation (10) is strikingly close to the log likelihood if the distributions
+of measurement errors are assumed to follow an exponential model. If this is
+true, then it should be possible to lift the sheaf modeling discipline described
+here into a standard statistical hypothesis testing framework.
+
+Acknowledgments
+The linear regression example in Section 3.3 is due to Donna Dietz.
+This article is based upon work supported by the Office of Naval Research
+(ONR) under Contract Nos. N00014-15-1-2090 and N00014-18-1-2541, the Defense Advanced Research Projects Agency (DARPA) SafeDocs program under
+contract HR001119C0072, and the MITRE Corporation s Independent Research
+and Development (IR&D) Program. Any opinions, findings and conclusions or
+recommendations expressed in this article are those of the authors and do not
+necessarily reflect the views of ONR, DARPA, or MITRE.
