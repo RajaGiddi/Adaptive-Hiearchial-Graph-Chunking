@@ -1,0 +1,4 @@
+google-adk
+pytest>=8.0.0
+numpy>=1.26.0
+langchain-google-genai
