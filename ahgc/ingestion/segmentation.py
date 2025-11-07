@@ -73,8 +73,8 @@ def segment_document(text: str) -> List[Dict[str, object]]:
 	return results
 
 
-if __name__ == "__main__":  # Simple manual smoke test
+if __name__ == "__main__":
 	import json
-	sample = "A\n\nB\n\n\nC"  # includes an empty segment between B and C
+	sample = "A\n\nB\n\n\nC"
 	print(json.dumps(segment_document(sample), indent=2))
 
