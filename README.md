@@ -110,23 +110,3 @@ python scripts/plot_recall_vs_chunks.py \
 * Build **visualization tools** for interactive graph inspection.
 
 ---
-
-## 📚 Citation (Placeholder)
-
-If you use this framework, please cite:
-
-```
-@inprogress{ahgc2025,
-  title = {Adaptive Hierarchical Graph Chunking for Efficient Context Preservation in LLM Retrieval},
-  author = {Your Name and Collaborators},
-  year = {2025},
-  note = {Preprint},
-  url = {https://github.com/yourrepo/ahgc}
-}
-```
-
----
-
-**License:** MIT
-
-**Last Updated:** November 2025
