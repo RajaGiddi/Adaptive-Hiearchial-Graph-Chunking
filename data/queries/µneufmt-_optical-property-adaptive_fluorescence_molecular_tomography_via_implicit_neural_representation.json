@@ -1,0 +1,125 @@
+[
+  {
+    "query": "What challenges in fluorescence molecular tomography (FMT) reconstruction does NeuFMT aim to address?",
+    "must_contain": [
+      "fmt",
+      "reconstruct",
+      "challeng",
+      "ill-pos",
+      "opt",
+      "propert"
+    ]
+  },
+  {
+    "query": "How does NeuFMT integrate implicit neural representation with explicit physical models for self-supervised FMT?",
+    "must_contain": [
+      "neufmt",
+      "implicit",
+      "neural",
+      "represent",
+      "physical",
+      "model",
+      "self-supervis"
+    ]
+  },
+  {
+    "query": "What is the key innovation of NeuFMT for jointly optimizing fluorescence distribution and optical properties?",
+    "must_contain": [
+      "neufmt",
+      "innov",
+      "optimiz",
+      "fluoresc",
+      "distribut",
+      "opt",
+      "propert"
+    ]
+  },
+  {
+    "query": "What are the limitations of previous deep learning methods for FMT reconstruction that NeuFMT overcomes?",
+    "must_contain": [
+      "limit",
+      "deep",
+      "learn",
+      "fmt",
+      "reconstruct",
+      "generaliz",
+      "supervis"
+    ]
+  },
+  {
+    "query": "Describe the forward modeling approach used in NeuFMT, including the physical equation and discretization method.",
+    "must_contain": [
+      "forward",
+      "model",
+      "physic",
+      "equat",
+      "discretiz",
+      "diffus",
+      "finite",
+      "element"
+    ]
+  },
+  {
+    "query": "How robust is NeuFMT in reconstructing fluorophore distributions and optical coefficients from erroneous initial guesses?",
+    "must_contain": [
+      "neufmt",
+      "robust",
+      "reconstruct",
+      "fluorophor",
+      "opt",
+      "coefficien",
+      "errone"
+    ]
+  },
+  {
+    "query": "What are the potential clinical applications and significance of NeuFMT for reliable molecular imaging?",
+    "must_contain": [
+      "clinic",
+      "applic",
+      "molecular",
+      "imag",
+      "fluoresc",
+      "guid",
+      "surgeri"
+    ]
+  },
+  {
+    "query": "Why are implicit neural representations well-suited for continuous 3D medical image reconstruction in modalities like FMT?",
+    "must_contain": [
+      "implicit",
+      "neural",
+      "represent",
+      "inr",
+      "suit",
+      "continu",
+      "reconstruct",
+      "3d"
+    ]
+  },
+  {
+    "query": "How does the self-supervised training mechanism in NeuFMT eliminate the need for paired training data?",
+    "must_contain": [
+      "self-supervis",
+      "train",
+      "neufmt",
+      "elimin",
+      "pair",
+      "data",
+      "loss",
+      "forward"
+    ]
+  },
+  {
+    "query": "What experimental validations, including in vivo studies, were conducted to evaluate NeuFMT's performance?",
+    "must_contain": [
+      "experiment",
+      "validat",
+      "in",
+      "vivo",
+      "phantom",
+      "simul",
+      "perform",
+      "evalu"
+    ]
+  }
+]

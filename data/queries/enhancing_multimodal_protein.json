@@ -1,0 +1,117 @@
+[
+  {
+    "query": "What challenges does protein function prediction face with multimodal features?",
+    "must_contain": [
+      "protein",
+      "function",
+      "prediction",
+      "multimodal",
+      "feature",
+      "challeng"
+    ]
+  },
+  {
+    "query": "Describe the DSRPGO method for multimodal protein function prediction.",
+    "must_contain": [
+      "dsrpgo",
+      "method",
+      "multimodal",
+      "protein",
+      "function",
+      "prediction"
+    ]
+  },
+  {
+    "query": "How does reconstructive pre-training enhance fine-grained feature learning in DSRPGO?",
+    "must_contain": [
+      "reconstructive",
+      "pre-train",
+      "feature",
+      "fine-grain",
+      "learn",
+      "dsrpgo"
+    ]
+  },
+  {
+    "query": "Explain the purpose and mechanism of the Bidirectional Interaction Module (BInM).",
+    "must_contain": [
+      "bidirection",
+      "interaction",
+      "module",
+      "binm",
+      "feature",
+      "learn"
+    ]
+  },
+  {
+    "query": "What is the role of the Dynamic Selection Module (DSM) in handling hierarchical multi-label classification?",
+    "must_contain": [
+      "dynamic",
+      "selection",
+      "module",
+      "dsm",
+      "hierarch",
+      "multi-label"
+    ]
+  },
+  {
+    "query": "What types of protein features are processed by the PSSI encoder-decoder model?",
+    "must_contain": [
+      "pssi",
+      "encoder",
+      "decoder",
+      "protein",
+      "spatial",
+      "feature",
+      "model"
+    ]
+  },
+  {
+    "query": "How does the BiMamba Block utilize bidirectional selective scanning for protein data?",
+    "must_contain": [
+      "bimamba",
+      "block",
+      "bidirection",
+      "selective",
+      "scan",
+      "protein",
+      "data"
+    ]
+  },
+  {
+    "query": "What are the distinct learning branches in the DSRPGO model architecture?",
+    "must_contain": [
+      "dsrpgo",
+      "model",
+      "architectur",
+      "branch",
+      "learn",
+      "multimodal"
+    ]
+  },
+  {
+    "query": "How does DSRPGO integrate protein sequence information, and which pre-trained model is used?",
+    "must_contain": [
+      "protein",
+      "sequence",
+      "information",
+      "integrate",
+      "pre-train",
+      "model",
+      "prott5"
+    ]
+  },
+  {
+    "query": "What are the reported performance improvements of DSRPGO on human protein datasets?",
+    "must_contain": [
+      "dsrpgo",
+      "performance",
+      "improve",
+      "bpo",
+      "mfo",
+      "cco",
+      "human",
+      "dataset"
+    ]
+  }
+]

@@ -1,0 +1,119 @@
+[
+  {
+    "query": "What is the primary objective of studying spherically symmetric static boson stars with Coleman-Weinberg potential?",
+    "must_contain": [
+      "boson",
+      "star",
+      "stabiliz",
+      "coleman",
+      "potential"
+    ]
+  },
+  {
+    "query": "How are boson stars defined in the context of complex scalar fields and general relativity?",
+    "must_contain": [
+      "boson",
+      "star",
+      "scalar",
+      "field",
+      "complex",
+      "general",
+      "relativ"
+    ]
+  },
+  {
+    "query": "What is the role of the Coleman-Weinberg self-interaction potential in stabilizing boson stars?",
+    "must_contain": [
+      "coleman",
+      "weinberg",
+      "potential",
+      "self-interact",
+      "stabiliz",
+      "boson",
+      "star"
+    ]
+  },
+  {
+    "query": "Describe the Einstein-Klein Gordon scalar tensor gravity model used in this paper.",
+    "must_contain": [
+      "einstein",
+      "klein",
+      "gordon",
+      "ekg",
+      "gravity",
+      "scalar",
+      "model"
+    ]
+  },
+  {
+    "query": "What mathematical methods are employed to analyze the stability of these boson stars?",
+    "must_contain": [
+      "method",
+      "stabil",
+      "analys",
+      "dynamical",
+      "system",
+      "equation",
+      "field"
+    ]
+  },
+  {
+    "query": "What are the key findings regarding the structure, radius, and matter density of CW boson stars?",
+    "must_contain": [
+      "structur",
+      "radius",
+      "densit",
+      "matter",
+      "boson",
+      "star",
+      "coleman"
+    ]
+  },
+  {
+    "query": "How do the properties of these boson stars compare to black holes or neutron stars?",
+    "must_contain": [
+      "boson",
+      "star",
+      "black",
+      "hole",
+      "neutron",
+      "compact",
+      "compar"
+    ]
+  },
+  {
+    "query": "What is the importance of the Coleman-Weinberg potential in cosmic inflation, as mentioned?",
+    "must_contain": [
+      "coleman",
+      "weinberg",
+      "potential",
+      "cosmic",
+      "inflat",
+      "import"
+    ]
+  },
+  {
+    "query": "How does the Coleman-Weinberg potential ensure a hard surface and prevent quick decay of boson particles?",
+    "must_contain": [
+      "coleman",
+      "potential",
+      "hard",
+      "surface",
+      "decay",
+      "boson",
+      "particle"
+    ]
+  },
+  {
+    "query": "Which field equations are derived and solved for the spherically symmetric static curved line element?",
+    "must_contain": [
+      "field",
+      "equation",
+      "spher",
+      "symmetric",
+      "static",
+      "line",
+      "element"
+    ]
+  }
+]

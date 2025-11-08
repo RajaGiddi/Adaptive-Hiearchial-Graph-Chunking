@@ -1,0 +1,115 @@
+[
+  {
+    "query": "What is the main problem addressed in this paper regarding probabilistic assignments?",
+    "must_contain": [
+      "problem",
+      "probabilistic",
+      "assignment",
+      "rule",
+      "agent",
+      "object"
+    ]
+  },
+  {
+    "query": "How is SD-top-strategy-proofness defined and what motivates its introduction?",
+    "must_contain": [
+      "sd-top-strategy-proof",
+      "strategy-proof",
+      "manipulation",
+      "probabil",
+      "top",
+      "motivation"
+    ]
+  },
+  {
+    "query": "What are the key properties satisfied by the TTC rule in this probabilistic setting?",
+    "must_contain": [
+      "ttc",
+      "rule",
+      "probabilistic",
+      "sd-pareto",
+      "sd-individual",
+      "sd-top-strategy"
+    ]
+  },
+  {
+    "query": "How do FPT and FTT domains influence the characterization of probabilistic assignment rules?",
+    "must_contain": [
+      "fpt",
+      "ftt",
+      "domain",
+      "probabilistic",
+      "assignment",
+      "rule",
+      "characteriz"
+    ]
+  },
+  {
+    "query": "What is the first main result concerning the uniqueness of the TTC rule?",
+    "must_contain": [
+      "first",
+      "main",
+      "result",
+      "ttc",
+      "unique",
+      "sd-pareto",
+      "sd-top-strategy"
+    ]
+  },
+  {
+    "query": "How does SD-pair efficiency compare to SD-Pareto efficiency in the probabilistic framework?",
+    "must_contain": [
+      "sd-pair",
+      "efficiency",
+      "sd-pareto",
+      "probabilistic",
+      "framework",
+      "compare"
+    ]
+  },
+  {
+    "query": "What assumptions are made about the initial endowments in the probabilistic assignment problem?",
+    "must_contain": [
+      "initial",
+      "endowment",
+      "deterministic",
+      "assumption",
+      "probabilistic",
+      "problem"
+    ]
+  },
+  {
+    "query": "How do the paper's findings generalize previous deterministic results by Ma (1994) and Ekici (2024)?",
+    "must_contain": [
+      "generaliz",
+      "deterministic",
+      "probabilistic",
+      "ma",
+      "ekici",
+      "result"
+    ]
+  },
+  {
+    "query": "What are the ex post notions of efficiency and individual rationality examined in the paper?",
+    "must_contain": [
+      "ex post",
+      "notion",
+      "efficiency",
+      "individual",
+      "rationality",
+      "theorem"
+    ]
+  },
+  {
+    "query": "What related literature discusses impossibility results for probabilistic assignment rules, especially with fractional endowments?",
+    "must_contain": [
+      "related",
+      "literature",
+      "impossibility",
+      "probabilistic",
+      "assignment",
+      "fractional",
+      "endowment"
+    ]
+  }
+]

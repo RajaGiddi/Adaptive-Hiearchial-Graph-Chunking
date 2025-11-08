@@ -1,0 +1,120 @@
+[
+  {
+    "query": "What is the primary problem addressed by introducing explorability in pushdown automata?",
+    "must_contain": [
+      "problem",
+      "address",
+      "explorabil",
+      "pushdown",
+      "automata",
+      "nondetermin"
+    ]
+  },
+  {
+    "query": "How is k-explorability formally defined for pushdown automata, and what does it imply?",
+    "must_contain": [
+      "k-explorabil",
+      "defin",
+      "pushdown",
+      "automata",
+      "run",
+      "concurrent",
+      "input"
+    ]
+  },
+  {
+    "query": "How does explorability generalize history-determinism in the context of pushdown automata?",
+    "must_contain": [
+      "explorabil",
+      "generaliz",
+      "history-determin",
+      "pda",
+      "nondetermin",
+      "relat"
+    ]
+  },
+  {
+    "query": "What is the expressiveness hierarchy for k-explorable PDAs compared to HD-PDAs and general NPDAs?",
+    "must_contain": [
+      "expressiv",
+      "hierarch",
+      "k-explorabil",
+      "pda",
+      "class",
+      "nondetermin",
+      "hd"
+    ]
+  },
+  {
+    "query": "How does parameterized explorability extend the concept, and which level captures context-free languages?",
+    "must_contain": [
+      "parameteriz",
+      "explorabil",
+      "context-free",
+      "languag",
+      "cfl",
+      "exponential",
+      "expressiv"
+    ]
+  },
+  {
+    "query": "What are the succinctness implications of explorability, particularly the gap with history-deterministic PDAs?",
+    "must_contain": [
+      "succinct",
+      "gap",
+      "explorabil",
+      "history-determin",
+      "pda",
+      "doubl",
+      "exponential"
+    ]
+  },
+  {
+    "query": "Describe the k-explorability game for pushdown automata, including its players and game arena.",
+    "must_contain": [
+      "k-explorabil",
+      "game",
+      "pda",
+      "player",
+      "arena",
+      "definition",
+      "state"
+    ]
+  },
+  {
+    "query": "How do explorable pushdown automata compare in expressive power to fully nondeterministic PDAs?",
+    "must_contain": [
+      "explorable",
+      "pda",
+      "nondetermin",
+      "general",
+      "expressiv",
+      "class",
+      "strict"
+    ]
+  },
+  {
+    "query": "What are the motivations for quantifying intermediate degrees of nondeterminism in automata theory?",
+    "must_contain": [
+      "nondetermin",
+      "quantifi",
+      "measure",
+      "determin",
+      "intermediate",
+      "automata",
+      "spectrum"
+    ]
+  },
+  {
+    "query": "What is the specific succinctness gap between deterministic PDAs and 2-explorable PDAs?",
+    "must_contain": [
+      "succinct",
+      "gap",
+      "dpda",
+      "2-explorabil",
+      "pda",
+      "recursiv",
+      "enumer"
+    ]
+  }
+]

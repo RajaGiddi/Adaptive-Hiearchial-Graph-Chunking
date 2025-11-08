@@ -1,0 +1,128 @@
+[
+  {
+    "query": "What is the F(ν) cosmology proposal and its motivation for studying the accelerating universe?",
+    "must_contain": [
+      "f(nu)",
+      "cosmolog",
+      "proposal",
+      "accelerat",
+      "univers",
+      "hankel",
+      "index"
+    ]
+  },
+  {
+    "query": "How are Hankel functions used as approximate solutions to the Mukhanov-Sasaki equation in this cosmology?",
+    "must_contain": [
+      "hankel",
+      "funct",
+      "solut",
+      "mukhanov",
+      "sasaki",
+      "equat",
+      "cosmolog"
+    ]
+  },
+  {
+    "query": "What is the significance of the Hankel function index (ν) in defining different space-time geometries?",
+    "must_contain": [
+      "hankel",
+      "funct",
+      "index",
+      "nu",
+      "space",
+      "time",
+      "geometr",
+      "background"
+    ]
+  },
+  {
+    "query": "What are the observational constraints on the Hankel function index (ν) derived from Planck satellite data?",
+    "must_contain": [
+      "observat",
+      "constraint",
+      "hankel",
+      "index",
+      "nu",
+      "planck",
+      "data"
+    ]
+  },
+  {
+    "query": "How is the scalar spectral index (ns) derived in terms of the Hankel index (ν) within F(ν) cosmology?",
+    "must_contain": [
+      "scalar",
+      "spectral",
+      "index",
+      "ns",
+      "hankel",
+      "nu",
+      "f(nu)",
+      "cosmolog"
+    ]
+  },
+  {
+    "query": "Explain the relationship between the slow-roll parameter and the Hankel function index (ν) in this model.",
+    "must_contain": [
+      "slow-roll",
+      "parameter",
+      "hankel",
+      "funct",
+      "index",
+      "nu",
+      "equat"
+    ]
+  },
+  {
+    "query": "How does the equation of state parameter (w) relate to the Hankel index (ν) and the type of cosmic fluid?",
+    "must_contain": [
+      "equat",
+      "state",
+      "parameter",
+      "w",
+      "hankel",
+      "index",
+      "nu",
+      "cosmic",
+      "fluid"
+    ]
+  },
+  {
+    "query": "Describe the role of asymptotic expansion of the Hankel function in deriving alternative solutions for early inflation.",
+    "must_contain": [
+      "asymptot",
+      "expans",
+      "hankel",
+      "funct",
+      "solut",
+      "early",
+      "inflat",
+      "mode"
+    ]
+  },
+  {
+    "query": "What is the formula for the deceleration parameter (q) in terms of the Hankel index (ν) in this framework?",
+    "must_contain": [
+      "decelerat",
+      "parameter",
+      "q",
+      "hankel",
+      "index",
+      "nu",
+      "formula"
+    ]
+  },
+  {
+    "query": "What are the implications of this model for primordial gravitational waves and the expansion of cosmic voids?",
+    "must_contain": [
+      "implicat",
+      "model",
+      "primordial",
+      "gravit",
+      "wave",
+      "expans",
+      "cosmic",
+      "void"
+    ]
+  }
+]

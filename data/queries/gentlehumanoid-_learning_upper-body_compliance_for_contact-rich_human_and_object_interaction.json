@@ -1,0 +1,122 @@
+[
+  {
+    "query": "What challenges does GentleHumanoid address in achieving safe humanoid physical interaction?",
+    "must_contain": [
+      "challenge",
+      "humanoid",
+      "physical",
+      "interaction",
+      "compliance",
+      "safe"
+    ]
+  },
+  {
+    "query": "How does GentleHumanoid integrate impedance control for upper-body compliance in whole-body motion tracking?",
+    "must_contain": [
+      "gentlehumanoid",
+      "impedance",
+      "control",
+      "upper",
+      "body",
+      "compliance",
+      "tracking"
+    ]
+  },
+  {
+    "query": "Explain the unified spring-based formulation for modeling resistive and guiding contact forces.",
+    "must_contain": [
+      "spring",
+      "formulation",
+      "resistive",
+      "guiding",
+      "contact",
+      "force",
+      "model"
+    ]
+  },
+  {
+    "query": "How are diverse interaction scenarios simulated during reinforcement learning training?",
+    "must_contain": [
+      "simulate",
+      "interaction",
+      "scenario",
+      "training",
+      "rl",
+      "human",
+      "motion"
+    ]
+  },
+  {
+    "query": "What are the key contributions of the GentleHumanoid framework to humanoid control?",
+    "must_contain": [
+      "contribution",
+      "gentlehumanoid",
+      "framework",
+      "control",
+      "compliance",
+      "force",
+      "model"
+    ]
+  },
+  {
+    "query": "How does the force-thresholding mechanism ensure safety during human-robot physical interaction?",
+    "must_contain": [
+      "force",
+      "threshold",
+      "safe",
+      "human",
+      "robot",
+      "interaction",
+      "limit"
+    ]
+  },
+  {
+    "query": "What evaluation methods and scenarios were used to validate GentleHumanoid's performance?",
+    "must_contain": [
+      "evaluation",
+      "method",
+      "scenario",
+      "validate",
+      "performance",
+      "hugging",
+      "sit"
+    ]
+  },
+  {
+    "query": "How does GentleHumanoid's policy compare to baseline RL tracking policies in terms of contact forces?",
+    "must_contain": [
+      "compare",
+      "baseline",
+      "rl",
+      "tracking",
+      "policy",
+      "contact",
+      "force"
+    ]
+  },
+  {
+    "query": "Describe the problem formulation for learning compliant motion-tracking in humanoid robots.",
+    "must_contain": [
+      "problem",
+      "formulation",
+      "compliant",
+      "motion",
+      "tracking",
+      "humanoid",
+      "force"
+    ]
+  },
+  {
+    "query": "How does the framework ensure kinematically consistent forces across the upper-body kinematic chain?",
+    "must_contain": [
+      "kinematic",
+      "consistent",
+      "force",
+      "upper",
+      "body",
+      "chain",
+      "sampling",
+      "posture"
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+{"method": "ahgc", "recall_at_k": 1.0, "num_chunks": 29, "k": 1, "total_queries": 10, "hits": 10}
+{"method": "fixed", "recall_at_k": 1.0, "num_chunks": 40, "k": 1, "total_queries": 10, "hits": 10}
+{"method": "sliding", "recall_at_k": 1.0, "num_chunks": 79, "k": 1, "total_queries": 10, "hits": 10}
+{"method": "sentence", "recall_at_k": 1.0, "num_chunks": 213, "k": 1, "total_queries": 10, "hits": 10}
+{"method": "paragraph", "recall_at_k": 1.0, "num_chunks": 208, "k": 1, "total_queries": 10, "hits": 10}
+{"method": "recursive", "recall_at_k": 1.0, "num_chunks": 265, "k": 1, "total_queries": 10, "hits": 10}
+{"method": "semantic", "recall_at_k": 1.0, "num_chunks": 12, "k": 1, "total_queries": 10, "hits": 10}
+{"method": "delimiter", "recall_at_k": 1.0, "num_chunks": 208, "k": 1, "total_queries": 10, "hits": 10}
+{"method": "token_limit", "recall_at_k": 1.0, "num_chunks": 40, "k": 1, "total_queries": 10, "hits": 10}
+{"method": "format_aware", "recall_at_k": 1.0, "num_chunks": 1, "k": 1, "total_queries": 10, "hits": 10}
+{"method": "hybrid", "recall_at_k": 1.0, "num_chunks": 265, "k": 1, "total_queries": 10, "hits": 10}

@@ -1,0 +1,111 @@
+[
+  {
+    "query": "What challenges does this paper address in modeling large composite dynamical systems?",
+    "must_contain": [
+      "challeng",
+      "model",
+      "composit",
+      "dynamical",
+      "system"
+    ]
+  },
+  {
+    "query": "How are sheaves used to generalize DSEMs for analyzing composite dynamical systems?",
+    "must_contain": [
+      "sheaf",
+      "dsem",
+      "generaliz",
+      "analyz",
+      "dynamical",
+      "system"
+    ]
+  },
+  {
+    "query": "What is the role of netlists in translating dynamical structural equation models into sheaf representations?",
+    "must_contain": [
+      "netlist",
+      "dsem",
+      "sheaf",
+      "represent",
+      "translat"
+    ]
+  },
+  {
+    "query": "What are the advantages of using sheaf modeling for studying variable interactions and data consistency?",
+    "must_contain": [
+      "sheaf",
+      "model",
+      "advantag",
+      "variabl",
+      "interact",
+      "consistenc"
+    ]
+  },
+  {
+    "query": "How does this paper define and analyze subsystems within a composite dynamical system?",
+    "must_contain": [
+      "subsystem",
+      "decompos",
+      "definit",
+      "analyz",
+      "composit",
+      "dynamical",
+      "system"
+    ]
+  },
+  {
+    "query": "What is consistency radius optimization and how is it used for inference in sheaf models?",
+    "must_contain": [
+      "consistenc",
+      "radiu",
+      "optimiz",
+      "infer",
+      "sheaf",
+      "model"
+    ]
+  },
+  {
+    "query": "How is the Bering Sea food web model used as a real-world example for sheaf modeling?",
+    "must_contain": [
+      "bering",
+      "sea",
+      "model",
+      "sheaf",
+      "exampl",
+      "applicat"
+    ]
+  },
+  {
+    "query": "What is the duality between subsystems and invariant sets in the context of dynamical systems?",
+    "must_contain": [
+      "dual",
+      "subsystem",
+      "invariant",
+      "set",
+      "dynamical",
+      "system"
+    ]
+  },
+  {
+    "query": "What are the three types of sheaves presented for providing granular data about variable interactions?",
+    "must_contain": [
+      "sheaf",
+      "type",
+      "granular",
+      "data",
+      "variabl",
+      "interact"
+    ]
+  },
+  {
+    "query": "What is the graphical recipe for translating dynamical structural equation models into sheaves?",
+    "must_contain": [
+      "dsem",
+      "sheaf",
+      "translat",
+      "graphic",
+      "recip",
+      "model"
+    ]
+  }
+]

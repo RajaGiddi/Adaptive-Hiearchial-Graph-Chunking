@@ -1,0 +1,119 @@
+[
+  {
+    "query": "What is the primary research question addressed concerning the state complexity of multiple concatenation?",
+    "must_contain": [
+      "state",
+      "complex",
+      "multiple",
+      "concaten",
+      "language",
+      "automata"
+    ]
+  },
+  {
+    "query": "How are witness languages constructed to meet the upper bound for multiple concatenation over a k+1 letter alphabet?",
+    "must_contain": [
+      "witness",
+      "language",
+      "upper",
+      "bound",
+      "alphabet",
+      "concaten",
+      "proof"
+    ]
+  },
+  {
+    "query": "How does this paper address and solve the open problem concerning witnesses for multiple concatenation over a k-letter alphabet?",
+    "must_contain": [
+      "open",
+      "problem",
+      "witness",
+      "concaten",
+      "alphabet",
+      "language",
+      "solve"
+    ]
+  },
+  {
+    "query": "What are the specific findings regarding the state complexity when some component languages are recognized by two-state automata?",
+    "must_contain": [
+      "state",
+      "automata",
+      "language",
+      "concaten",
+      "two-state",
+      "case"
+    ]
+  },
+  {
+    "query": "What is the optimal alphabet size for describing witnesses for the concatenation of three regular languages?",
+    "must_contain": [
+      "alphabet",
+      "optimal",
+      "concaten",
+      "language",
+      "ternary",
+      "witness"
+    ]
+  },
+  {
+    "query": "What are the established state complexity results for multiple concatenation when considering binary and ternary languages?",
+    "must_contain": [
+      "state",
+      "complex",
+      "binary",
+      "ternary",
+      "language",
+      "concaten",
+      "bound"
+    ]
+  },
+  {
+    "query": "How is the tight upper bound derived for the state complexity of multiple concatenation of unary cyclic languages?",
+    "must_contain": [
+      "unary",
+      "language",
+      "cyclic",
+      "state",
+      "complex",
+      "bound",
+      "automata"
+    ]
+  },
+  {
+    "query": "Describe the construction of the NFA for multiple concatenation from individual deterministic finite automata.",
+    "must_contain": [
+      "nfa",
+      "dfa",
+      "concaten",
+      "construct",
+      "automaton",
+      "transition",
+      "state"
+    ]
+  },
+  {
+    "query": "What observation or lemma is utilized to prove the pairwise distinguishability of states in the subset automaton?",
+    "must_contain": [
+      "distinguish",
+      "state",
+      "subset",
+      "automaton",
+      "nfa",
+      "co-reachable",
+      "lemma"
+    ]
+  },
+  {
+    "query": "What are the key properties and operations of the symbols in the witness automata constructed for the k+1 letter alphabet?",
+    "must_contain": [
+      "witness",
+      "automaton",
+      "alphabet",
+      "symbol",
+      "circular",
+      "shift",
+      "identity"
+    ]
+  }
+]

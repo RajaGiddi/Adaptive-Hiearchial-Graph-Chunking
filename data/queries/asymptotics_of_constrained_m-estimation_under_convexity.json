@@ -1,0 +1,122 @@
+[
+  {
+    "query": "What is the main contribution regarding asymptotic theory for constrained M-estimation?",
+    "must_contain": [
+      "asymptot",
+      "theory",
+      "constrained",
+      "m-estim",
+      "convex",
+      "loss",
+      "contribution"
+    ]
+  },
+  {
+    "query": "What are the primary assumptions regarding the loss function and convex constraint sets?",
+    "must_contain": [
+      "assumpt",
+      "loss",
+      "function",
+      "convex",
+      "constraint",
+      "set",
+      "differentiable"
+    ]
+  },
+  {
+    "query": "How do the asymptotic distributions of M-estimators depend on the loss and constraint boundary?",
+    "must_contain": [
+      "asymptot",
+      "distribut",
+      "m-estim",
+      "loss",
+      "function",
+      "boundary",
+      "constraint"
+    ]
+  },
+  {
+    "query": "What practical applications are discussed for constrained M-estimation with convex loss?",
+    "must_contain": [
+      "applic",
+      "robust",
+      "location",
+      "estimat",
+      "regression",
+      "convex",
+      "loss"
+    ]
+  },
+  {
+    "query": "What mathematical tools from convex analysis are utilized to develop the asymptotic theory?",
+    "must_contain": [
+      "convex",
+      "analys",
+      "tool",
+      "metric",
+      "project",
+      "directional",
+      "deriv"
+    ]
+  },
+  {
+    "query": "How does this work differ from prior asymptotic theories assuming smoothness and local domination?",
+    "must_contain": [
+      "asymptot",
+      "theory",
+      "smooth",
+      "assumpt",
+      "domination",
+      "convex",
+      "loss"
+    ]
+  },
+  {
+    "query": "What are the findings regarding the consistency of convex M-estimators under constraints?",
+    "must_contain": [
+      "consist",
+      "convex",
+      "m-estim",
+      "constrained",
+      "result",
+      "section",
+      "theory"
+    ]
+  },
+  {
+    "query": "How is the asymptotic theory extended to U-estimators with convex loss functions?",
+    "must_contain": [
+      "u-estim",
+      "asymptot",
+      "theory",
+      "convex",
+      "loss",
+      "function",
+      "extension"
+    ]
+  },
+  {
+    "query": "Can you describe a simple illustrative example of constrained M-estimation with metric projection?",
+    "must_contain": [
+      "example",
+      "constrained",
+      "m-estim",
+      "metric",
+      "project",
+      "convex",
+      "set"
+    ]
+  },
+  {
+    "query": "What foundational theoretical aspects regarding empirical minimizer existence are discussed?",
+    "must_contain": [
+      "theoret",
+      "foundat",
+      "empirical",
+      "minimizer",
+      "exist",
+      "measurable",
+      "selection"
+    ]
+  }
+]

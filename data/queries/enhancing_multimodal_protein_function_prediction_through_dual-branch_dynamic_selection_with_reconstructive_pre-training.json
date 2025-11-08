@@ -1,0 +1,121 @@
+[
+  {
+    "query": "What are the challenges in multimodal protein function prediction that this paper addresses?",
+    "must_contain": [
+      "protein",
+      "function",
+      "prediction",
+      "multimodal",
+      "challeng",
+      "feature",
+      "information"
+    ]
+  },
+  {
+    "query": "Can you explain the overall architecture and stages of the proposed DSRPGO model?",
+    "must_contain": [
+      "proposed",
+      "model",
+      "dsrpgo",
+      "method",
+      "architecture",
+      "stage",
+      "training"
+    ]
+  },
+  {
+    "query": "How does the reconstructive pre-training phase help in extracting fine-grained protein features?",
+    "must_contain": [
+      "reconstructive",
+      "pre-train",
+      "feature",
+      "protein",
+      "fine-grain",
+      "learn"
+    ]
+  },
+  {
+    "query": "Describe the roles of the multimodal shared learning and interactive learning branches in DSRPGO.",
+    "must_contain": [
+      "multimodal",
+      "branch",
+      "learn",
+      "interact",
+      "share",
+      "dsrpgo",
+      "feature"
+    ]
+  },
+  {
+    "query": "What is the purpose of the Bidirectional Interaction Module (BInM) and how does it enhance feature fusion?",
+    "must_contain": [
+      "bidirection",
+      "interact",
+      "module",
+      "binm",
+      "feature",
+      "fusion",
+      "enhance"
+    ]
+  },
+  {
+    "query": "How does the Dynamic Selection Module (DSM) address the hierarchical multi-label classification problem?",
+    "must_contain": [
+      "dynamic",
+      "selection",
+      "module",
+      "dsm",
+      "multilabel",
+      "classification",
+      "protein"
+    ]
+  },
+  {
+    "query": "What types of multimodal protein features are integrated and processed by the DSRPGO model?",
+    "must_contain": [
+      "multimodal",
+      "protein",
+      "feature",
+      "data",
+      "input",
+      "sequence",
+      "spatial"
+    ]
+  },
+  {
+    "query": "Explain the PSSI and PSeI encoder-decoder models used for processing spatial and sequence information.",
+    "must_contain": [
+      "pssi",
+      "psei",
+      "encoder",
+      "decoder",
+      "sequence",
+      "spatial",
+      "information"
+    ]
+  },
+  {
+    "query": "What are the main performance improvements observed for DSRPGO on human datasets compared to benchmarks?",
+    "must_contain": [
+      "perform",
+      "result",
+      "dsrpgo",
+      "improve",
+      "dataset",
+      "benchmark",
+      "protein"
+    ]
+  },
+  {
+    "query": "Summarize the main contributions of this paper to the field of protein function prediction.",
+    "must_contain": [
+      "contribution",
+      "protein",
+      "function",
+      "prediction",
+      "method",
+      "multimodal",
+      "enhance"
+    ]
+  }
+]

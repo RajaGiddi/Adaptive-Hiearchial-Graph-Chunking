@@ -1,0 +1,121 @@
+[
+  {
+    "query": "What is the core problem addressed by this paper regarding robot policy evaluation?",
+    "must_contain": [
+      "problem",
+      "robot",
+      "policy",
+      "evaluation",
+      "real",
+      "world",
+      "cost"
+    ]
+  },
+  {
+    "query": "How does the proposed framework enable accurate real-to-sim robot policy evaluation?",
+    "must_contain": [
+      "framework",
+      "real",
+      "sim",
+      "policy",
+      "evaluation",
+      "gaussian",
+      "splatting"
+    ]
+  },
+  {
+    "query": "How are realistic soft-body interactions simulated within the proposed framework?",
+    "must_contain": [
+      "soft",
+      "body",
+      "dynamics",
+      "simulation",
+      "phys",
+      "twin",
+      "interaction"
+    ]
+  },
+  {
+    "query": "What rendering technique is used to achieve photorealistic simulation, and how is it enhanced?",
+    "must_contain": [
+      "rendering",
+      "gaussian",
+      "splatting",
+      "photorealist",
+      "alignment",
+      "deform"
+    ]
+  },
+  {
+    "query": "What types of deformable manipulation tasks and policies were used to validate the framework?",
+    "must_contain": [
+      "task",
+      "deform",
+      "manipul",
+      "policy",
+      "evaluation",
+      "validation",
+      "robot"
+    ]
+  },
+  {
+    "query": "What is the main finding regarding the correlation between simulated and real-world policy performance?",
+    "must_contain": [
+      "correlation",
+      "simulat",
+      "real",
+      "world",
+      "policy",
+      "performance",
+      "result"
+    ]
+  },
+  {
+    "query": "How are soft-body digital twins constructed and integrated into the simulation environment?",
+    "must_contain": [
+      "digital",
+      "twin",
+      "soft",
+      "body",
+      "construct",
+      "simulation",
+      "video"
+    ]
+  },
+  {
+    "query": "How does this work specifically address and narrow the traditional sim-to-real gap?",
+    "must_contain": [
+      "sim",
+      "real",
+      "gap",
+      "address",
+      "fidelity",
+      "dynamics",
+      "appearance"
+    ]
+  },
+  {
+    "query": "How does this framework compare to prior simulation evaluation methods like SIMPLER or Real-is-sim?",
+    "must_contain": [
+      "simpler",
+      "real",
+      "sim",
+      "compare",
+      "gaussian",
+      "splatting",
+      "soft"
+    ]
+  },
+  {
+    "query": "What are the implications and guidance offered for future simulation-based policy evaluation pipelines?",
+    "must_contain": [
+      "implic",
+      "guidanc",
+      "future",
+      "simulation",
+      "evaluation",
+      "pipeline",
+      "reliabil"
+    ]
+  }
+]

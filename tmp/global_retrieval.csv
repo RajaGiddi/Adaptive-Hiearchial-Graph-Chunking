@@ -1,0 +1,12 @@
+method, total_chunks, recall@1
+ahgc, 619, 0.9250
+delimiter, 5221, 0.9812
+fixed, 958, 0.9938
+format_aware, 16, 1.0000
+hybrid, 7140, 0.9875
+paragraph, 5221, 0.9812
+recursive, 7143, 0.9875
+semantic, 1343, 0.9938
+sentence, 3814, 1.0000
+sliding, 1890, 0.9875
+token_limit, 958, 0.9938

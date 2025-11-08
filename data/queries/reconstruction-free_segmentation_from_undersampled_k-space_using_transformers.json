@@ -1,0 +1,122 @@
+[
+  {
+    "query": "What is the main problem addressed by the paper concerning MRI image segmentation at high acceleration factors?",
+    "must_contain": [
+      "problem",
+      "mri",
+      "segmentation",
+      "acceleration",
+      "factor",
+      "reconstruction",
+      "undersampl"
+    ]
+  },
+  {
+    "query": "How does the proposed transformer architecture facilitate reconstruction-free segmentation directly from undersampled k-space?",
+    "must_contain": [
+      "transformer",
+      "architecture",
+      "k-space",
+      "undersampl",
+      "segmentation",
+      "reconstruction",
+      "direct"
+    ]
+  },
+  {
+    "query": "Describe the encoder and decoder components of the DiSK transformer architecture and their specific roles.",
+    "must_contain": [
+      "encoder",
+      "decoder",
+      "architecture",
+      "latent",
+      "attention",
+      "block",
+      "k-space"
+    ]
+  },
+  {
+    "query": "What is the primary novel contribution of this research to cardiac MRI segmentation from k-space measurements?",
+    "must_contain": [
+      "novel",
+      "contribution",
+      "cardiac",
+      "mri",
+      "segmentation",
+      "k-space",
+      "measurement"
+    ]
+  },
+  {
+    "query": "What specific properties of transformers make them suitable for direct processing of sparse k-space measurements?",
+    "must_contain": [
+      "transformer",
+      "k-space",
+      "propert",
+      "global",
+      "attention",
+      "spars",
+      "correlation"
+    ]
+  },
+  {
+    "query": "How was the proposed model evaluated, and what baseline segmentation methods were used for comparison?",
+    "must_contain": [
+      "evaluat",
+      "baseline",
+      "compar",
+      "segmentation",
+      "acceleration",
+      "dice",
+      "hausdorff"
+    ]
+  },
+  {
+    "query": "What are the main experimental results, especially concerning Dice scores and Hausdorff distances across acceleration factors?",
+    "must_contain": [
+      "result",
+      "dice",
+      "hausdorff",
+      "acceleration",
+      "performance",
+      "baseline",
+      "score"
+    ]
+  },
+  {
+    "query": "What are the clinical implications and potential impact of achieving reconstruction-free cardiac segmentation at high acceleration factors?",
+    "must_contain": [
+      "implication",
+      "clinical",
+      "impact",
+      "cardiac",
+      "segmentation",
+      "acceleration",
+      "acquisition"
+    ]
+  },
+  {
+    "query": "Which loss functions were employed to supervise the segmentation output in the proposed transformer model?",
+    "must_contain": [
+      "loss",
+      "function",
+      "supervis",
+      "segmentation",
+      "dice",
+      "cross-entropy",
+      "train"
+    ]
+  },
+  {
+    "query": "Describe the dataset used for training and testing, and the method for generating synthetic undersampled k-space data.",
+    "must_contain": [
+      "dataset",
+      "train",
+      "test",
+      "k-space",
+      "undersampl",
+      "cardiac",
+      "uk-biobank"
+    ]
+  }
+]

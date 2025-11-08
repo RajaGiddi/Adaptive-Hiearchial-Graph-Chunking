@@ -1,0 +1,122 @@
+[
+  {
+    "query": "What challenges in electricity price formation in energy markets are addressed by this paper?",
+    "must_contain": [
+      "challeng",
+      "electricity",
+      "price",
+      "form",
+      "energy",
+      "market",
+      "causal"
+    ]
+  },
+  {
+    "query": "How do Augmented Time Series Causal Models (ATSCM) extend existing counterfactual reasoning frameworks?",
+    "must_contain": [
+      "atscm",
+      "extend",
+      "counterfactual",
+      "reason",
+      "framework",
+      "temporal",
+      "data"
+    ]
+  },
+  {
+    "query": "Describe the three-level generative hierarchy of the ATSCM architecture for energy markets.",
+    "must_contain": [
+      "atscm",
+      "architectur",
+      "generat",
+      "hierarch",
+      "level",
+      "energy",
+      "market"
+    ]
+  },
+  {
+    "query": "How does the ATSCM framework integrate neural causal discovery for learning time-varying causal graphs?",
+    "must_contain": [
+      "causal",
+      "discover",
+      "neural",
+      "graph",
+      "learn",
+      "time",
+      "vary"
+    ]
+  },
+  {
+    "query": "What types of counterfactual queries can ATSCM answer regarding energy market scenarios and interventions?",
+    "must_contain": [
+      "counterfactual",
+      "query",
+      "energy",
+      "market",
+      "scenario",
+      "intervent",
+      "renewable"
+    ]
+  },
+  {
+    "query": "What interpretable energy factors are explicitly modeled within the ATSCM framework?",
+    "must_contain": [
+      "interpret",
+      "factor",
+      "energy",
+      "model",
+      "weather",
+      "generation",
+      "demand"
+    ]
+  },
+  {
+    "query": "How does ATSCM differentiate from traditional electricity price forecasting methods and static causal models?",
+    "must_contain": [
+      "atscm",
+      "differenti",
+      "forecast",
+      "method",
+      "static",
+      "causal",
+      "model"
+    ]
+  },
+  {
+    "query": "What are the key components of the training objective used for the ATSCM architecture?",
+    "must_contain": [
+      "train",
+      "object",
+      "atscm",
+      "reconstruct",
+      "causal",
+      "consist",
+      "discover"
+    ]
+  },
+  {
+    "query": "What are the potential applications and future work directions for ATSCM in energy market analysis?",
+    "must_contain": [
+      "applic",
+      "future",
+      "work",
+      "energy",
+      "market",
+      "analysi",
+      "grid"
+    ]
+  },
+  {
+    "query": "How does the paper define and model continuous causal regime changes in energy markets?",
+    "must_contain": [
+      "regim",
+      "chang",
+      "causal",
+      "model",
+      "energy",
+      "market",
+      "continu"
+    ]
+  }
+]

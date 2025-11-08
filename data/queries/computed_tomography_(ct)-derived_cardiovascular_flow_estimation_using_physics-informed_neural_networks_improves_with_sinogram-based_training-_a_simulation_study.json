@@ -1,0 +1,121 @@
+[
+  {
+    "query": "What challenge does this study address regarding CT-derived cardiovascular flow estimation?",
+    "must_contain": [
+      "ct",
+      "cardiovascular",
+      "flow",
+      "estimat",
+      "problem",
+      "limit",
+      "non-invas"
+    ]
+  },
+  {
+    "query": "How does the proposed SinoFlow framework estimate cardiovascular flow from CT data?",
+    "must_contain": [
+      "sinoflow",
+      "framework",
+      "estimat",
+      "flow",
+      "ct",
+      "pinn",
+      "data"
+    ]
+  },
+  {
+    "query": "What is the primary advantage of SinoFlow compared to ImageFlow for flow estimation?",
+    "must_contain": [
+      "sinoflow",
+      "imageflow",
+      "compar",
+      "advantag",
+      "estimat",
+      "artifact",
+      "reconstruct"
+    ]
+  },
+  {
+    "query": "Why is training directly with sinogram data beneficial for PINN-based flow estimation in CT?",
+    "must_contain": [
+      "sinogram",
+      "data",
+      "train",
+      "pinn",
+      "estimat",
+      "benefit",
+      "ct"
+    ]
+  },
+  {
+    "query": "How do CT imaging artifacts and noise impact the accuracy of PINN-based flow estimation?",
+    "must_contain": [
+      "ct",
+      "imaging",
+      "artifact",
+      "noise",
+      "impact",
+      "accurac",
+      "pinn"
+    ]
+  },
+  {
+    "query": "Describe the methodology used to generate the pulsatile flow fields for the simulation study.",
+    "must_contain": [
+      "method",
+      "flow",
+      "field",
+      "generat",
+      "pulsatile",
+      "simulation",
+      "cfd"
+    ]
+  },
+  {
+    "query": "How is the contrast agent concentration dynamics modeled within the simulated flow fields?",
+    "must_contain": [
+      "contrast",
+      "agent",
+      "concentrat",
+      "model",
+      "dynamic",
+      "flow",
+      "advect"
+    ]
+  },
+  {
+    "query": "How does SinoFlow demonstrate compatibility with pulsed-mode CT imaging and its parameters?",
+    "must_contain": [
+      "pulsed-mode",
+      "imaging",
+      "ct",
+      "sinoflow",
+      "compatib",
+      "parameter"
+    ]
+  },
+  {
+    "query": "What were the key findings regarding SinoFlow's performance in improving flow estimation accuracy?",
+    "must_contain": [
+      "sinoflow",
+      "result",
+      "performance",
+      "estimat",
+      "accurac",
+      "error",
+      "improve"
+    ]
+  },
+  {
+    "query": "What are the broader implications of SinoFlow for future non-invasive CT-based blood flow assessment?",
+    "must_contain": [
+      "implication",
+      "future",
+      "non-invas",
+      "ct",
+      "flow",
+      "assess",
+      "pinn"
+    ]
+  }
+]

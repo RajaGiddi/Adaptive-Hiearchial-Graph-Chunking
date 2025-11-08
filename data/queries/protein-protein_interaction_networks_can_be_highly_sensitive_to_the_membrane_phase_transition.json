@@ -1,0 +1,122 @@
+[
+  {
+    "query": "What is the main research question or problem addressed regarding protein interaction networks and membrane phase transitions?",
+    "must_contain": [
+      "protein",
+      "interact",
+      "network",
+      "membrane",
+      "phase",
+      "transition",
+      "critical"
+    ]
+  },
+  {
+    "query": "How sensitive are protein-protein interaction networks to thermodynamic parameters near the membrane's critical point?",
+    "must_contain": [
+      "protein",
+      "interact",
+      "network",
+      "sensitiv",
+      "critical",
+      "thermodynam",
+      "parameter"
+    ]
+  },
+  {
+    "query": "Describe the Monte Carlo simulation model used to investigate protein-protein interactions in a critical membrane solvent.",
+    "must_contain": [
+      "model",
+      "monte carlo",
+      "simulat",
+      "protein",
+      "interact",
+      "membrane",
+      "solvent"
+    ]
+  },
+  {
+    "query": "How is the membrane represented in the simulation, and what are the key components of the system's Hamiltonian?",
+    "must_contain": [
+      "membrane",
+      "represent",
+      "simulat",
+      "ising",
+      "spin",
+      "hamiltonian",
+      "lipid"
+    ]
+  },
+  {
+    "query": "What algorithms are used to simulate the diffusive dynamics of both lipids and protein inclusions in the model?",
+    "must_contain": [
+      "dynamic",
+      "lipid",
+      "protein",
+      "inclusion",
+      "kawasaki",
+      "algorithm",
+      "diffus"
+    ]
+  },
+  {
+    "query": "Explain the diagrammatic method used to qualitatively predict signaling outcomes based on component partitioning and temperature.",
+    "must_contain": [
+      "qualitative",
+      "analysis",
+      "diagram",
+      "method",
+      "partition",
+      "signal",
+      "temperature"
+    ]
+  },
+  {
+    "query": "What are \"pockets\" in the context of this paper, and how do they form in the protein-protein interaction networks?",
+    "must_contain": [
+      "pocket",
+      "domain",
+      "form",
+      "protein",
+      "interact",
+      "network",
+      "equilibrium"
+    ]
+  },
+  {
+    "query": "How do changes in membrane domain size and critical temperature affect protein interactions, especially for larger proteins?",
+    "must_contain": [
+      "domain",
+      "size",
+      "critical",
+      "temperature",
+      "protein",
+      "interact",
+      "perturb"
+    ]
+  },
+  {
+    "query": "What experimental evidence suggests that live cell membranes are poised close to a miscibility critical point?",
+    "must_contain": [
+      "experiment",
+      "evidence",
+      "live",
+      "cell",
+      "membrane",
+      "critical",
+      "point"
+    ]
+  },
+  {
+    "query": "How does the partitioning of signaling components into different membrane domains influence interaction outcomes?",
+    "must_contain": [
+      "partition",
+      "component",
+      "signal",
+      "domain",
+      "membrane",
+      "interact",
+      "outcome"
+    ]
+  }
+]
