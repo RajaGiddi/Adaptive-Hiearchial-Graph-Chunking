@@ -15,10 +15,10 @@ Conventional chunking methods (fixed, sentence-based, sliding, etc.) often trade
 ## 🚀 Key Features
 
 - 🔹 **Adaptive Hierarchical Chunking** - builds multi-level semantic graphs to find natural boundaries.  
-- 🔹 **Graph-Aware Context Preservation** — captures long-range dependencies between text segments.  
-- 🔹 **Pareto-Optimal Efficiency** — achieves near-perfect retrieval accuracy with up to **85% fewer chunks**.  
-- 🔹 **Multi-Domain Generalization** — tested on 12–16 ArXiv papers from 7 domains with stable performance.  
-- 🔹 **Fully Reproducible Pipeline** — includes scripts for extraction, evaluation, and visualization.
+- 🔹 **Graph-Aware Context Preservation** - captures long-range dependencies between text segments.  
+- 🔹 **Pareto-Optimal Efficiency** - achieves near-perfect retrieval accuracy with up to **85% fewer chunks**.  
+- 🔹 **Multi-Domain Generalization** - tested on 12–16 ArXiv papers from 7 domains with stable performance.  
+- 🔹 **Fully Reproducible Pipeline** - includes scripts for extraction, evaluation, and visualization.
 
 ---
 
