@@ -1,7 +1,7 @@
 # 🧩 Adaptive Hierarchical Graph Chunking (AHGC)
 
 **AHGC** is a novel **adaptive chunking algorithm** designed to optimize retrieval efficiency and context preservation for large language model (LLM) pipelines such as **Retrieval-Augmented Generation (RAG)**.  
-It constructs **hierarchical semantic graphs** that adaptively segment text into meaningful, context-rich chunks — minimizing redundancy while preserving recall.
+It constructs **hierarchical semantic graphs** that adaptively segment text into meaningful, context-rich chunks, minimizing redundancy while preserving recall.
 
 ---
 
@@ -14,7 +14,7 @@ Conventional chunking methods (fixed, sentence-based, sliding, etc.) often trade
 
 ## 🚀 Key Features
 
-- 🔹 **Adaptive Hierarchical Chunking** — builds multi-level semantic graphs to find natural boundaries.  
+- 🔹 **Adaptive Hierarchical Chunking** - builds multi-level semantic graphs to find natural boundaries.  
 - 🔹 **Graph-Aware Context Preservation** — captures long-range dependencies between text segments.  
 - 🔹 **Pareto-Optimal Efficiency** — achieves near-perfect retrieval accuracy with up to **85% fewer chunks**.  
 - 🔹 **Multi-Domain Generalization** — tested on 12–16 ArXiv papers from 7 domains with stable performance.  
